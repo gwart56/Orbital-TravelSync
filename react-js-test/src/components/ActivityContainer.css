@@ -1,0 +1,81 @@
+.activity-grid {
+    background-color: bisque;
+    display: grid;
+    justify-content: center;
+    margin-bottom: 20px;
+    /* width:100%; */
+}
+
+.activity-container {
+    display:flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    justify-content: center;
+    background-color: aqua;
+    width:100%;
+    margin: 20px;
+}
+
+.activity-edit-butt {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    font-weight: bold;
+    width: 200px;
+    padding: 5px;
+}
+
+.activity-edit-butt:hover {
+    background-color: gray;
+    color: white;
+    cursor: pointer;
+}
+
+.error-text {
+    color: red;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+.activity-info {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    /* width:100%; */
+}
+
+.activity-input {
+    font: inherit;
+    color:blue;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: lightblue;
+    outline: none;
+    width:auto;
+    flex:none;
+    display: inline-block;
+}
+
+.val {
+    text-align: left;
+    padding-left:5px;
+    display: block;
+    background: pink;
+}
+
+.activity-butt-div {
+    display: flex;
+    justify-content: center;
+    /* background-color: aqua; */
+}
+
+.delete-act-butt {
+    margin-left:20px;
+}
+/*
+.delete-act-butt:hover {
+    color: white;
+    background-color: red;
+} */
