@@ -13,8 +13,8 @@ export class Itinerary {
 
     constructor(name, dayArr, numOfDays, startDate) { //(String, array of TravelDays)
         this.name = name;
-        this.numOfDays = this.numOfDays;
-        this.startDate = this.startDate;
+        this.numOfDays = numOfDays;
+        this.startDate = startDate;
         this.travelDays = [...dayArr];
         this.id = Itinerary.count;
         Itinerary.count++;
@@ -34,20 +34,10 @@ export class Itinerary {
     removeDay(id) {
         this.travelDays = deleteDayArray(this.travelDays, id);
     }
-    
-    addActivityToDay(dayId, vals) {
-        const targetDay = this.travelDays.find(day => day.id === dayId);
-        targetDay.addActivity(vals);
-    }
 
-    removeActivityToDay(dayId, id) {
+    setActivitiesOfDay(dayId, actArr) {
         const targetDay = this.travelDays.find(day => day.id === dayId);
-        targetDay.removeActivity(id);
-    }
-
-    editActivityToDay(dayId, id, vals) {
-        const targetDay = this.travelDays.find(day => day.id === dayId);
-        targetDay.editActivity(id, vals);
+        targetDay.activities = actArr;
     }
 }
 
@@ -145,14 +135,15 @@ export function addActivityArray(arr) {
 }
 
 export function addDayArray(arr) {
-    if (arr.length == 0) {
+    const arrLen = arr.length;
+    if (arrLen == 0) {
         return [new TravelDay(new dayjs().format('DD-MM-YYYY'), [new Activity("(new)","","","")])];
     }
     arr = sortDates(arr); //sort the dates
 
-    const latestdate = arr[arr.length-1].date;
-    const newdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
-    const newArr = [...arr, new TravelDay(newdate, [new Activity("(new)","","","")])];
+    const latestdate = arr[arrLen - 1].date; //get last date
+    const newdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY'); //add one date
+    const newArr = [...arr, new TravelDay(newdate, [new Activity("(new)","","","")])]; 
     return newArr;
 }
 
@@ -162,13 +153,17 @@ export function deleteDayArray(arr, id) {
 }
 
 export function loadItinFromLocal() {
-    const saved = localStorage.getItem("travelDays");
+    const saved = localStorage.getItem("itinLocal");
     if (saved) {
         const parsed = JSON.parse(saved);
         const itinerary = Itinerary.fromJSON(parsed);
         return itinerary;
     }
     return defaultItin;
+}
+
+export function saveToLocal(itin) {
+    localStorage.setItem("itinLocal", JSON.stringify(itin));
 }
 
 
@@ -184,4 +179,4 @@ let defTravelDays = [new TravelDay(
     dayjs().format('DD-MM-YYYY')
     , defActivities)];
 
-export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays);
+export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, 1, dayjs().format('DD-MM-YYYY'));

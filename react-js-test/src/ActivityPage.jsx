@@ -5,7 +5,7 @@ import { sortDates } from './utils/dates';
 import { useState } from 'react';
 import ActivityContainer from './components/ActivityContainer';
 import Header from './components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, addDayArray, deleteDayArray, Activity, TravelDay, Itinerary, loadItinFromLocal} from './data/activity';
+import {addActivityArray, editActivityArray, deleteActivityArray, addDayArray, deleteDayArray, Activity, TravelDay, Itinerary, loadItinFromLocal, saveToLocal} from './data/activity';
 
 const itin = loadItinFromLocal();
 
@@ -16,18 +16,21 @@ function ActivityContent({activityArr, dayId}) {
     console.log("saved: id-" + id + ", " + valuesArray);
     const newActArr = editActivityArray(activities, id, valuesArray);
     setActivities(newActArr);
+    itin.setActivitiesOfDay(dayId, newActArr);
   }
 
   function handleDelete(id) {
     console.log("deleted: id-" + id);
     const newActArr = deleteActivityArray(activities, id);
     setActivities(newActArr);
+    itin.setActivitiesOfDay(dayId, newActArr);
   }
 
   function handleAdd() {
     console.log("added new activity");
     const newActArr = addActivityArray(activities);
     setActivities(newActArr);
+    itin.setActivitiesOfDay(dayId, newActArr);
   }
 
   const activityElements = [...activities]
@@ -53,13 +56,16 @@ function TravelDayContent({dayArr}) {
 
   function handleAdd() {
     setTravelDays(addDayArray(travelDays));
+    itin.addDay();
   }
 
   function handleDelete(id) {
     setTravelDays(deleteDayArray(travelDays, id));
+    itin.removeDay(id);
   }
 
   let totalNumDays = 0;
+  let latestdate = itin.startDate;
   const dayElements = sortDates([...travelDays])
     // .sort((a, b) => dayjs(a.date, "DD-MM-YYYY").diff(dayjs(b.date, "DD-MM-YYYY")))
     .map(d => 
@@ -69,8 +75,8 @@ function TravelDayContent({dayArr}) {
           <button className="delete-act-butt btn btn-danger" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
         </h2>
         <h5>
-          Date: {d.date}
-        </h5>
+          Date: {latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY')} 
+        </h5> 
         <ActivityContent
           activityArr={d.activities}
           dayId={d.id}
@@ -83,12 +89,13 @@ function TravelDayContent({dayArr}) {
       {dayElements}
       <button className="btn btn-success" onClick={handleAdd}>Add Day</button>
     </div>
-  )
+  );
 }
 
 
 
 function ActivityPage() {
+  console.log(itin);
     return (
         <>
             <Header />
@@ -97,6 +104,9 @@ function ActivityPage() {
             <TravelDayContent 
               dayArr={itin.travelDays}
             />
+            <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
+            <br></br>
+            <button className='btn btn-primary' onClick={()=>console.log(itin)}>Test</button>
             <div style={{height: "50px"}}/>
         </>
     );
