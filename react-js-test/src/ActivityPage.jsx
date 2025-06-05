@@ -87,7 +87,7 @@ function TravelDayContent({dayArr}) {
   return (
     <div className="day-content">
       {dayElements}
-      <button className="btn btn-success" onClick={handleAdd}>Add Day</button>
+      <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
     </div>
   );
 }
@@ -104,9 +104,10 @@ function ActivityPage() {
             <TravelDayContent 
               dayArr={itin.travelDays}
             />
+            <div style={{height: "50px"}}/> 
             <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
-            <br></br>
-            <button className='btn btn-primary' onClick={()=>console.log(itin)}>Test</button>
+            <div style={{height: "20px"}}/> 
+            <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
             <div style={{height: "50px"}}/>
         </>
     );

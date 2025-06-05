@@ -44,11 +44,9 @@ export class Itinerary {
 export class TravelDay {
     static count = 0;
     id;
-    date;
     activities;
 
     constructor(date, activityArr) {
-        this.date = date;//placeholder change later?
         this.activities = [...activityArr];
         this.id = TravelDay.count;
         TravelDay.count++;
