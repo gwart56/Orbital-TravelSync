@@ -1,11 +1,11 @@
 import './ActivityPage.css';
 import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
-import { sortDates } from './utils/dates';
+import { sortDates } from '../utils/dates';
 import { useState } from 'react';
-import ActivityContainer from './components/ActivityContainer';
-import Header from './components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, addDayArray, deleteDayArray, Activity, TravelDay, Itinerary, loadItinFromLocal, saveToLocal} from './data/activity';
+import ActivityContainer from '../components/ActivityContainer';
+import Header from '../components/Header';
+import {addActivityArray, editActivityArray, deleteActivityArray, addDayArray, deleteDayArray, Activity, TravelDay, Itinerary, loadItinFromLocal, saveToLocal} from '../data/activity';
 
 const itin = loadItinFromLocal();
 
