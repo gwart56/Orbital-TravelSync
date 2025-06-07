@@ -5,7 +5,7 @@
 
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import ActivityPage from "./ActivityPage";
+import ActivityPage from "./pages/ActivityPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
