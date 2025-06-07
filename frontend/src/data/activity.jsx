@@ -28,16 +28,19 @@ export class Itinerary {
     }
 
     addDay() {
-        this.travelDays = addDayArray(this.travelDays);
+        const newDayArr = addDayArray(this.travelDays);
+        return new Itinerary(this.name, newDayArr, this.numOfDays, this.startDate);
     }
 
     removeDay(id) {
-        this.travelDays = deleteDayArray(this.travelDays, id);
+        const newDayArr = deleteDayArray(this.travelDays, id);        
+        return new Itinerary(this.name, newDayArr, this.numOfDays, this.startDate);
     }
 
     setActivitiesOfDay(dayId, actArr) {
         const targetDay = this.travelDays.find(day => day.id === dayId);
         targetDay.activities = actArr;
+        return new Itinerary(this.name, this.travelDays, this.numOfDays, this.startDate);
     }
 }
 
@@ -161,6 +164,7 @@ export function loadItinFromLocal() {
 }
 
 export function saveToLocal(itin) {
+    console.log("auto-saved itinerary to localStorage");
     localStorage.setItem("itinLocal", JSON.stringify(itin));
 }
 

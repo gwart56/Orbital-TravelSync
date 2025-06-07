@@ -2,35 +2,35 @@ import './ActivityPage.css';
 import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { sortDates } from '../utils/dates';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, addDayArray, deleteDayArray, Activity, TravelDay, Itinerary, loadItinFromLocal, saveToLocal} from '../data/activity';
+import { use } from 'react';
 
-const itin = loadItinFromLocal();
-
-function ActivityContent({activityArr, dayId}) {
-  const [activities, setActivities] = useState([...activityArr]);
+function ActivityContent({activityArr, dayId, itin, setItin}) {
+  // const [activities, setActivities] = useState([...activityArr]);
+  const activities = activityArr;
 
   function handleSave(id, valuesArray) {
     console.log("saved: id-" + id + ", " + valuesArray);
     const newActArr = editActivityArray(activities, id, valuesArray);
-    setActivities(newActArr);
-    itin.setActivitiesOfDay(dayId, newActArr);
+    // setActivities(newActArr);
+    setItin(itin.setActivitiesOfDay(dayId, newActArr));
   }
 
   function handleDelete(id) {
     console.log("deleted: id-" + id);
     const newActArr = deleteActivityArray(activities, id);
-    setActivities(newActArr);
-    itin.setActivitiesOfDay(dayId, newActArr);
+    // setActivities(newActArr);
+    setItin(itin.setActivitiesOfDay(dayId, newActArr));
   }
 
   function handleAdd() {
     console.log("added new activity");
     const newActArr = addActivityArray(activities);
-    setActivities(newActArr);
-    itin.setActivitiesOfDay(dayId, newActArr);
+    // setActivities(newActArr);
+    setItin(itin.setActivitiesOfDay(dayId, newActArr));
   }
 
   const activityElements = [...activities]
@@ -51,17 +51,18 @@ function ActivityContent({activityArr, dayId}) {
   );
 }
 
-function TravelDayContent({dayArr}) {
-  const [travelDays, setTravelDays] = useState([...dayArr]);
+function TravelDayContent({dayArr, itin, setItin}) {
+  // const [travelDays, setTravelDays] = useState([...dayArr]);
+  const travelDays = dayArr;
 
   function handleAdd() {
-    setTravelDays(addDayArray(travelDays));
-    itin.addDay();
+    // setTravelDays(addDayArray(travelDays));
+    setItin(itin.addDay());
   }
 
   function handleDelete(id) {
-    setTravelDays(deleteDayArray(travelDays, id));
-    itin.removeDay(id);
+    // setTravelDays(deleteDayArray(travelDays, id));
+    setItin(itin.removeDay(id));
   }
 
   let totalNumDays = 0;
@@ -80,6 +81,8 @@ function TravelDayContent({dayArr}) {
         <ActivityContent
           activityArr={d.activities}
           dayId={d.id}
+          itin={itin}
+          setItin={setItin}
         />
       </div>)
     );
@@ -95,6 +98,12 @@ function TravelDayContent({dayArr}) {
 
 
 function ActivityPage() {
+  const [itin, setItin] = useState(loadItinFromLocal()); //loads itinerary from localstorage
+
+  useEffect(() => { //saves to localstorage everytime there is an update to itin
+    saveToLocal(itin);
+  }, [itin]);
+
   console.log(itin);
     return (
         <>
@@ -103,12 +112,17 @@ function ActivityPage() {
             <h3>{itin.name}</h3>
             <TravelDayContent 
               dayArr={itin.travelDays}
+              itin={itin}
+              setItin={setItin}
             />
             <div style={{height: "50px"}}/> 
             <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
             <div style={{height: "20px"}}/> 
+            <button className='btn btn-primary' onClick={()=>localStorage.removeItem('itinLocal')}>Clear Local Storage</button>
+            <div style={{height: "20px"}}/> 
             <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
             <div style={{height: "50px"}}/>
+            
         </>
     );
 }
