@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLocal, saveToLocal} from '../data/activity';
+import ItineraryInfo from '../components/ItineraryInfo';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
@@ -14,7 +15,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   function handleSave(id, valuesArray) {
     console.log("saved: id-" + id + ", " + valuesArray);
     const newActArr = editActivityArray(activities, id, valuesArray);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr));
+    setItin(itin.setActivitiesOfDay(dayId, newActArr)); //updates itinerary
   }
 
   function handleDelete(id) {
@@ -41,7 +42,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
       />);
   return (
     <div className = "activity-grid js-activity-grid">
-      <button className="new-activity-butt btn btn-secondary" onClick={handleAdd}>Add Activity</button>
+      <button className="new-activity-butt btn btn-success" onClick={handleAdd}>Add Activity</button>
       {activityElements}
     </div>
   );
@@ -60,7 +61,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
   }
 
   let totalNumDays = 0;
-  let latestdate = itin.startDate;
+  let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
   const dayElements = [...travelDays]
     .map(d => 
       (<div className="travel-day-container" key={d.id}>
@@ -101,8 +102,11 @@ function ActivityPage() {
     return (
         <>
             <Header />
-            <h1 className="text-primary">Welcome to TravelSync</h1>
-            <h3>{itin.name}</h3>
+            <h1 className="text-primary" style={{margin: "20px"}}>Welcome to TravelSync</h1>
+            <ItineraryInfo
+              itin={itin}
+              setItin={setItin}
+            />
             <TravelDayContent 
               dayArr={itin.travelDays}
               itin={itin}

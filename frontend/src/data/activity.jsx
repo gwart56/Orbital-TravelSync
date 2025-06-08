@@ -8,12 +8,10 @@ export class Itinerary {
     id;
     name;
     travelDays;
-    numOfDays;
     startDate;
 
-    constructor(name, dayArr, numOfDays, startDate) { //(String, array of TravelDays)
+    constructor(name, dayArr, startDate) { //(String, array of TravelDays)
         this.name = name;
-        this.numOfDays = numOfDays;
         this.startDate = startDate;
         this.travelDays = [...dayArr];
         this.id = Itinerary.count;
@@ -21,7 +19,7 @@ export class Itinerary {
     }
 
     static fromJSON(data) {
-        const it = new Itinerary(data.name, [], data.numOfDays, data.startDate);
+        const it = new Itinerary(data.name, [], data.startDate);
         it.id = data.id;
         it.travelDays = data.travelDays.map(TravelDay.fromJSON);
         return it;
@@ -29,18 +27,18 @@ export class Itinerary {
 
     addDay() {
         const newDayArr = addDayArray(this.travelDays);
-        return new Itinerary(this.name, newDayArr, this.numOfDays, this.startDate);
+        return new Itinerary(this.name, newDayArr, this.startDate);
     }
 
     removeDay(id) {
         const newDayArr = deleteDayArray(this.travelDays, id);        
-        return new Itinerary(this.name, newDayArr, this.numOfDays, this.startDate);
+        return new Itinerary(this.name, newDayArr, this.startDate);
     }
 
     setActivitiesOfDay(dayId, actArr) {
         const targetDay = this.travelDays.find(day => day.id === dayId);
         targetDay.activities = actArr;
-        return new Itinerary(this.name, this.travelDays, this.numOfDays, this.startDate);
+        return new Itinerary(this.name, this.travelDays, this.startDate);
     }
 }
 
@@ -55,18 +53,18 @@ export class TravelDay {
         TravelDay.count++;
     }
 
-    addActivity(vals) {
-        this.activities.push(new Activity(vals));
-    }
+    // addActivity(vals) {
+    //     this.activities.push(new Activity(vals));
+    // }
 
-    removeActivity(id) {
-        this.activities = this.activities.filter(act => act.id != id);
-    }
+    // removeActivity(id) {
+    //     this.activities = this.activities.filter(act => act.id != id);
+    // }
 
-    editActivity(id, vals) {
-        this.removeActivity(id);
-        this.addActivity([...vals, id]);
-    }
+    // editActivity(id, vals) {
+    //     this.removeActivity(id);
+    //     this.addActivity([...vals, id]);
+    // }
 
     static fromJSON(data) {
         const day = new TravelDay(data.date, []);
@@ -119,6 +117,7 @@ export class Activity {
     }
 }
 
+//ACTIVITY ARRAY FUNCTIONS----------------------
 export function editActivityArray(arr, id, vals) {
     arr = arr.filter(act => act.id != id);
     arr.push(new Activity([...vals, id])); //use the same id
@@ -135,6 +134,7 @@ export function addActivityArray(arr) {
     return newArr;
 }
 
+//DAY ARRAY FUNCTIONS-------------------
 export function addDayArray(arr) {
     const arrLen = arr.length;
     if (arrLen == 0) {
@@ -153,6 +153,7 @@ export function deleteDayArray(arr, id) {
     return arr;
 }
 
+//ITIN FUNCTIONS
 export function loadItinFromLocal() {
     const saved = localStorage.getItem("itinLocal");
     if (saved) {
@@ -168,6 +169,16 @@ export function saveToLocal(itin) {
     localStorage.setItem("itinLocal", JSON.stringify(itin));
 }
 
+export function updateItinStartDate(itin, newDate) {
+    newDate = dayjs(newDate, 'YYYY-MM-DD').format('DD-MM-YYYY');
+    console.log(itin + " HAHAHHAHA");
+    return new Itinerary(itin.name, itin.travelDays, newDate);
+}
+
+export function updateItinName(itin, newName) {
+    return new Itinerary(newName, itin.travelDays, itin.startDate);
+}
+
 
 //----------------example values-----------------
 let defActivities = [
@@ -181,4 +192,4 @@ let defTravelDays = [new TravelDay(
     dayjs().format('DD-MM-YYYY')
     , defActivities)];
 
-export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, 1, dayjs().format('DD-MM-YYYY'));
+export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'));
