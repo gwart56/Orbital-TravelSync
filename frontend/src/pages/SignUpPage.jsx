@@ -1,26 +1,89 @@
 import Header from "../components/Header";
-
-
-function signup(formData){
-    const [email, password] = formData.values();
-    console.log(email);
-    console.log(password);
-    //TODO--- Implement signing up
-}
+import { useState } from "react";
 
 export default function SignUpPage() {
+    const [formState, setFormState] = useState({
+        name: '',
+        email: '',
+        password: ''
+    });
+
+    const handleChange = (e) => {
+        setFormState({ ...formState, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formState),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                alert(data.message || 'Signup failed');
+                return;
+            }
+
+            alert('Signup successful!');
+            console.log('User:', data.user);
+            // Redirect or save token if needed
+        } catch (error) {
+            console.error('Error during signup:', error);
+            alert('An error occurred. Please try again.');
+        }
+    };
+
     return (
         <>
             <Header />
             <h1 className="text-primary">Welcome to TravelSync</h1>
             <p className="lead">Plan your group trips easily.</p>
-            <div style={{maxWidth: "70%", margin: "0 auto"}}>
-                <form action={signup}>
+            <div style={{ maxWidth: "70%", margin: "0 auto" }}>
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="name" className="form-label mt-3">Name:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        className="form-control"
+                        placeholder="Your Name"
+                        value={formState.name}
+                        onChange={handleChange}
+                        required
+                    />
+
                     <label htmlFor="email" className="form-label mt-3">Email:</label>
-                    <input type="email" id="email" name="email" className="form-control" placeholder="you@example.com" autoComplete="username" required/>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        className="form-control"
+                        placeholder="you@example.com"
+                        value={formState.email}
+                        onChange={handleChange}
+                        required
+                    />
+
                     <label htmlFor="password" className="form-label mt-3">Password:</label>
-                    <input type="password" id="password" name="password" className="form-control" placeholder="Password" autoComplete="new-password" required/>
-                    <button className="btn btn-success mt-3">Submit</button>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        className="form-control"
+                        placeholder="Password"
+                        value={formState.password}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <button type="submit" className="btn btn-success mt-3">Submit</button>
                 </form>
             </div>
         </>
