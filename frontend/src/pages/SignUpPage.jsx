@@ -2,6 +2,8 @@ import Header from "../components/Header";
 import { useState } from "react";
 
 export default function SignUpPage() {
+    const [error, setError] = useState(''); //initialise to no errors
+    const [successful, setSuccessful] = useState(''); //initialise to no successful
     const [formState, setFormState] = useState({
         name: '',
         email: '',
@@ -27,16 +29,21 @@ export default function SignUpPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                alert(data.message || 'Signup failed');
+                setError(data.message || 'Signup failed');
+                setSuccessful('');
                 return;
             }
 
-            alert('Signup successful!');
+            // alert('Signup successful!');
             console.log('User:', data.user);
+            setSuccessful('Signup successful!');
+            setError('');
             // Redirect or save token if needed
         } catch (error) {
             console.error('Error during signup:', error);
-            alert('An error occurred. Please try again.');
+            setError('An error occurred. Please try again.');
+            // alert('An error occurred. Please try again.');
+            setSuccessful('');
         }
     };
 
@@ -85,6 +92,16 @@ export default function SignUpPage() {
 
                     <button type="submit" className="btn btn-success mt-3">Submit</button>
                 </form>
+                {error && ( //DISPLAY ERROR MSG
+                    <div className="alert alert-danger mt-3" role="alert">
+                        {error}
+                    </div>
+                    )}
+                {successful && ( //DISPLAY SUCCESS MSG
+                    <div className="alert alert-success mt-3" role="alert">
+                        {successful}
+                    </div>
+                    )}
             </div>
         </>
     );
