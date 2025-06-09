@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa';
 
 export default function Header() {
     return (
-        <header className="hidden-headr">
+        <header className="hidden-headr mb-3">
             <nav className="nav-bar">
                 <a>Home</a>
                 <a>About</a>

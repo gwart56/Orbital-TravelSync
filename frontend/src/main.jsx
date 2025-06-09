@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import ActivityPage from "./pages/ActivityPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SignUpPage from "./pages/SignUpPage";
 
 
 const name = "";
@@ -16,4 +17,10 @@ const name = "";
 // } else {
 //   createRoot(document.getElementById("root")).render(<h1>Hello World</h1>); 
 // }
-createRoot(document.getElementById("root")).render(<><ActivityPage/></>);
+createRoot(document.getElementById("root"))
+    .render(
+         <>
+            {/* <ActivityPage /> */}
+            <SignUpPage />
+        </>
+    );
