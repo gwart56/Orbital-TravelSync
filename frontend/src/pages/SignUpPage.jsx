@@ -1,49 +1,38 @@
 import Header from "../components/Header";
 import { useState } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 export default function SignUpPage() {
-    const [error, setError] = useState(''); //initialise to no errors
-    const [successful, setSuccessful] = useState(''); //initialise to no successful
-    const [formState, setFormState] = useState({
-        name: '',
-        email: '',
-        password: ''
-    });
+    const [errorMsg, setError] = useState(''); //initialise to no errors
+    const [successfulMsg, setSuccessful] = useState(''); //initialise to no successful
 
-    const handleChange = (e) => {
-        setFormState({ ...formState, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
+        setError('');
+        setSuccessful('Please wait...');
+        const formData = new FormData(e.target);
+        const formdata = Object.fromEntries(formData.entries()); //convert into Object entries from formData
+        console.log(formdata);
+        console.log('Trying to sign up '+ formdata.name + "..., email: " + formdata.email);
 
-        try {
-            const response = await fetch('http://localhost:5000/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formState),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.message || 'Signup failed');
-                setSuccessful('');
-                return;
-            }
-
-            // alert('Signup successful!');
-            console.log('User:', data.user);
-            setSuccessful('Signup successful!');
-            setError('');
-            // Redirect or save token if needed
-        } catch (error) {
-            console.error('Error during signup:', error);
-            setError('An error occurred. Please try again.');
-            // alert('An error occurred. Please try again.');
+        if (formdata.password != formdata.confirmPassword) {
+            setError('Passwords must match!');
             setSuccessful('');
+            return;
+        }
+
+        const { error } = await supabase.auth.signUp({ //handles sign up
+            email: formdata.email,
+            password: formdata.password,
+            options: { formdata: { name: formdata.name } }, //send extra info about the name
+        })
+
+        if (error) {
+            setError(error.message);
+            setSuccessful('');
+        } else {
+            setSuccessful('Signup successful! Check email to confirm.');
+            setError('');
         }
     };
 
@@ -61,8 +50,6 @@ export default function SignUpPage() {
                         name="name"
                         className="form-control"
                         placeholder="Your Name"
-                        value={formState.name}
-                        onChange={handleChange}
                         required
                     />
 
@@ -73,8 +60,6 @@ export default function SignUpPage() {
                         name="email"
                         className="form-control"
                         placeholder="you@example.com"
-                        value={formState.email}
-                        onChange={handleChange}
                         required
                     />
 
@@ -85,21 +70,29 @@ export default function SignUpPage() {
                         name="password"
                         className="form-control"
                         placeholder="Password"
-                        value={formState.password}
-                        onChange={handleChange}
+                        required
+                    />
+
+                    <label htmlFor="confirm-password" className="form-label mt-3">Confirm Password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="confirmPassword"
+                        className="form-control"
+                        placeholder="Confirm Password"
                         required
                     />
 
                     <button type="submit" className="btn btn-success mt-3">Submit</button>
                 </form>
-                {error && ( //DISPLAY ERROR MSG
+                {errorMsg && ( //DISPLAY ERROR MSG
                     <div className="alert alert-danger mt-3" role="alert">
-                        {error}
+                        {errorMsg}
                     </div>
                     )}
-                {successful && ( //DISPLAY SUCCESS MSG
+                {successfulMsg && ( //DISPLAY SUCCESS MSG
                     <div className="alert alert-success mt-3" role="alert">
-                        {successful}
+                        {successfulMsg}
                     </div>
                     )}
             </div>
