@@ -1,10 +1,13 @@
 import Header from "../components/Header";
 import { useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuthContext } from "../lib/AuthContext";
+import './LoginPage.css';
 
-export default function SignUpPage() {
+function SignUpContent() {
     const [errorMsg, setError] = useState(''); //initialise to no errors
     const [successfulMsg, setSuccessful] = useState(''); //initialise to no successful
+    const {signUpNewUser} = useAuthContext();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -21,27 +24,33 @@ export default function SignUpPage() {
             return;
         }
 
-        const { error } = await supabase.auth.signUp({ //handles sign up
-            email: formdata.email,
-            password: formdata.password,
-            options: { formdata: { name: formdata.name } }, //send extra info about the name
-        })
+        // const { error } = await supabase.auth.signUp({ //handles sign up
+        //     email: formdata.email,
+        //     password: formdata.password,
+        //     options: { formdata: { name: formdata.name } }, //send extra info about the name
+        // })
 
-        if (error) {
+        try {
+            const result = await signUpNewUser(formdata.email, formdata.password, formdata.name);
+            if (!result.success) {
+                setError(result.error);
+                setSuccessful('');
+            } else {
+                setSuccessful('Signup successful! Check email to confirm.');
+                setError('');
+            }
+        } catch (error) {
             setError(error.message);
             setSuccessful('');
-        } else {
-            setSuccessful('Signup successful! Check email to confirm.');
-            setError('');
+            console.error("ERROR: ", error);
         }
     };
 
     return (
-        <>
-            <Header />
-            <h1 className="text-primary">Welcome to TravelSync</h1>
+        <div className="login-form-container">
+            <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
             <p className="lead">Plan your group trips easily.</p>
-            <div style={{ maxWidth: "70%", margin: "0 auto" }}>
+            <div className="login-form">
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="name" className="form-label mt-3">Name:</label>
                     <input
@@ -83,8 +92,9 @@ export default function SignUpPage() {
                         required
                     />
 
-                    <button type="submit" className="btn btn-success mt-3">Sign Up</button>
+                    <button type="submit" className="btn btn-success mt-3" style={{margin: "20px"}}>Sign Up</button>
                 </form>
+                <Link to="/login">Already hv account? Login</Link>
                 {errorMsg && ( //DISPLAY ERROR MSG
                     <div className="alert alert-danger mt-3" role="alert">
                         {errorMsg}
@@ -96,6 +106,22 @@ export default function SignUpPage() {
                     </div>
                     )}
             </div>
-        </>
+        </div>
     );
+}
+
+export default function SignUpPage() {
+    return (<>
+        <Header />
+        <div className="login-container">
+            <div className="login-image-container">
+                <img 
+                    src="https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    alt="kamikochi scenery"
+                    className="login-image"
+                />
+            </div>
+            <SignUpContent /> {/*class: login-form-container*/}
+        </div>
+    </>)
 }
