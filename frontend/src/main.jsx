@@ -8,9 +8,7 @@ import App from "./App";
 import ActivityPage from "./pages/ActivityPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SignUpPage from "./pages/SignUpPage";
-
-
-const name = "";
+import { AuthContextProvider } from "./lib/AuthContext";
 
 // if (name) { 
 //   createRoot(document.getElementById("root")).render(<h1>Hello {name}</h1>);
@@ -21,6 +19,7 @@ createRoot(document.getElementById("root"))
     .render(
          <>
             {/* <ActivityPage /> */}
-            <SignUpPage />
+            <App></App>
+            
         </>
     );
