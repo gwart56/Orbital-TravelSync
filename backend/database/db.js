@@ -14,7 +14,7 @@ console.log('Connecting to DB with:', {
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
+  password: "******", // Don't log the password for security
   port: process.env.DB_PORT,
 });
 

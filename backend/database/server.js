@@ -5,7 +5,7 @@ const cors = require('cors');
 const userRoutes = require('./routes/auth');
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Adjust this to your frontend URL
+  origin: 'https://orbital-travelsync.vercel.app/', // Adjust this to your frontend URL
   credentials: true,
 }));
 app.use(express.json());
