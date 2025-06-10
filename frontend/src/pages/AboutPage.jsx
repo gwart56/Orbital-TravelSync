@@ -17,6 +17,8 @@ function AboutPage()  {
     minHeight: '100vh',
   };
 
+  //text-white bg-secondary bg-opacity-50 <---- for white text with transparent grey background
+
   return (
     <div style={backgroundStyle}>
     <Header />
@@ -24,7 +26,7 @@ function AboutPage()  {
       {/* Hero Section */}
       <div className="row text-center mb-5">
         <div className="col" style={{marginTop: "50px"}}>
-          <h1 className="display-4 fw-bold text-primary">About TravelSync</h1>
+          <h1 className="display-4 fw-bold text-primary">TravelSync</h1>
           <p className="lead">Simplifying Group Travel, One Trip at a Time</p>
         </div>
       </div>
@@ -32,7 +34,7 @@ function AboutPage()  {
       {/* Mission Section */}
       <div className="row mb-5">
         <div className="col-md-8 mx-auto text-center">
-          <p className="fs-5 text-white">
+          <p className="fs-5 text-white bg-secondary bg-opacity-50">
             Planning a trip with friends or family should be fun—not frustrating. At <span className="fw-bold">TravelSync</span>, 
             we're on a mission to transform chaotic travel planning into a seamless, collaborative experience.
           </p>
@@ -42,7 +44,7 @@ function AboutPage()  {
       {/* Why Section */}
       <div className="row mb-5">
         <div className="col">
-          <h2 className="text-center mb-4">Why We Built TravelSync</h2>
+          <h2 className="text-center mb-4 text-white bg-secondary bg-opacity-50">Why We Built TravelSync</h2>
           <div className="card shadow-sm">
             <div className="card-body">
               <p>As travelers ourselves, we've felt the pain of:</p>
@@ -66,10 +68,10 @@ function AboutPage()  {
       {/* Features Section */}
       <div className="row mb-5">
         <div className="col">
-          <h2 className="text-center mb-4">Our Core Features</h2>
+          <h2 className="text-center mb-4 text-white bg-secondary bg-opacity-50">Our Core Features</h2>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             <div className="col">
-              <div className="card h-100 shadow-sm p-2 pt-5">
+              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
                 <div className="card-body">
                   <h5 className="card-title">✅ Smart Hotel Booking</h5>
                   <p className="card-text">Aggregate prices and locations from top sites</p>
@@ -77,7 +79,7 @@ function AboutPage()  {
               </div>
             </div>
             <div className="col">
-              <div className="card h-100 shadow-sm">
+              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
                 <div className="card-body">
                   <h5 className="card-title">✅ Shared Itineraries</h5>
                   <p className="card-text">Add activities and sync plans in real-time</p>
@@ -85,7 +87,7 @@ function AboutPage()  {
               </div>
             </div>
             <div className="col">
-              <div className="card h-100 shadow-sm">
+              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
                 <div className="card-body">
                   <h5 className="card-title">✅ Expense Splitting</h5>
                   <p className="card-text">Split costs fairly in any currency</p>
@@ -93,7 +95,7 @@ function AboutPage()  {
               </div>
             </div>
             <div className="col">
-              <div className="card h-100 shadow-sm">
+              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
                 <div className="card-body">
                   <h5 className="card-title">✅ Interactive Maps</h5>
                   <p className="card-text">See hotels and attractions visually</p>
@@ -107,8 +109,8 @@ function AboutPage()  {
       {/* Team CTA */}
       <div className="row text-center mb-4">
         <div className="col">
-          <h2 className="text-white">Meet the Team</h2>
-          <p className="text-white">
+          <h2 className="text-white bg-secondary bg-opacity-50">Meet the Team</h2>
+          <p className="text-white bg-secondary bg-opacity-50">
             We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips smoother. 
             As part of our Orbital Project level Apollo 11, we aim to launch your travel plans to new heights.
           </p>
@@ -121,8 +123,8 @@ function AboutPage()  {
           <button className="btn btn-primary btn-lg px-4" onClick={handleClick}>
             Start Planning Your Adventure
           </button>
-          <p className="mt-3 text-muted">
-            "Because 'Where are we staying again?' shouldn't be your most-asked question."
+          <p className="mt-3 text-white bg-secondary bg-opacity-75">
+            "Insert slogan here blah blah blah bla"
           </p>
         </div>
       </div>
