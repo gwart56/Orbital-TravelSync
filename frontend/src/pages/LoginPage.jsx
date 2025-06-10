@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 
-export default function SignUpPage() {
+export default function LoginPage() {
     const [errorMsg, setError] = useState(''); //initialise to no errors
     const [successfulMsg, setSuccessful] = useState(''); //initialise to no successful
 
@@ -13,13 +13,7 @@ export default function SignUpPage() {
         const formData = new FormData(e.target);
         const formdata = Object.fromEntries(formData.entries()); //convert into Object entries from formData
         console.log(formdata);
-        console.log('Trying to sign up '+ formdata.name + "..., email: " + formdata.email);
-
-        if (formdata.password != formdata.confirmPassword) {
-            setError('Passwords must match!');
-            setSuccessful('');
-            return;
-        }
+        console.log('Trying to sign into email: ' + formdata.email);
 
         const { error } = await supabase.auth.signUp({ //handles sign up
             email: formdata.email,
@@ -43,15 +37,6 @@ export default function SignUpPage() {
             <p className="lead">Plan your group trips easily.</p>
             <div style={{ maxWidth: "70%", margin: "0 auto" }}>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="name" className="form-label mt-3">Name:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="form-control"
-                        placeholder="Your Name"
-                        required
-                    />
 
                     <label htmlFor="email" className="form-label mt-3">Email:</label>
                     <input
@@ -73,17 +58,7 @@ export default function SignUpPage() {
                         required
                     />
 
-                    <label htmlFor="confirm-password" className="form-label mt-3">Confirm Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="confirmPassword"
-                        className="form-control"
-                        placeholder="Confirm Password"
-                        required
-                    />
-
-                    <button type="submit" className="btn btn-success mt-3">Sign Up</button>
+                    <button type="submit" className="btn btn-success mt-3">Login</button>
                 </form>
                 {errorMsg && ( //DISPLAY ERROR MSG
                     <div className="alert alert-danger mt-3" role="alert">
