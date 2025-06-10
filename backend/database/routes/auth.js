@@ -27,7 +27,7 @@ router.post('/signup', async (req, res) => {
       [name, email, hashedPassword]
     );
 
-    res.status(201).json({ user: newUser.rows[0] });
+    res.status(201).json({ user: newUser.rows[0] }); // Return user details without password
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
