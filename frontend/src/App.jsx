@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Dashboard from './pages/Dashboard';
 import { AuthContextProvider, useAuthContext } from './lib/AuthContext';
+import AboutPage from './pages/AboutPage';
 
 function AppRoutes() {
 
@@ -17,6 +18,7 @@ function AppRoutes() {
             {/* Public Routes */}
             <Route path="/login" element={!session ? <LoginPage /> : <Navigate to="/dashboard" />} />
             <Route path="/signup" element={!session ? <SignUpPage /> : <Navigate to="/dashboard" />} />
+            <Route path="/about" element={<AboutPage />} />
 
             {/* Protected Route */}
             <Route
