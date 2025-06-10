@@ -116,6 +116,7 @@ export default function SignUpPage() {
         <div className="login-container">
             <div className="login-image-container">
                 <img 
+                    style={{backgroundAttachment: "fixed"}}
                     src="https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                     alt="kamikochi scenery"
                     className="login-image"
