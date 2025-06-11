@@ -64,7 +64,7 @@ function LoginPageContent() {
 
                     <button type="submit" className="btn btn-success mt-3" style={{margin: "20px"}}>Login</button>
                 </form>
-                <Link to="/signup">Don't hv an account? Click hereto signup</Link>
+                <Link to="/signup">Don't have an account? Click here to signup!</Link>
                 {errorMsg && ( //DISPLAY ERROR MSG
                     <div className="alert alert-danger mt-3" role="alert">
                         {errorMsg}
