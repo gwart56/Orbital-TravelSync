@@ -11,7 +11,7 @@ function DashboardNotLoggedIn() {
 }
 
 function DashboardContent({user}) {
-    const {signOutUser, deleteUser} = useAuthContext();
+    const {signOutUser} = useAuthContext();
     const navigate = useNavigate(); //used for navigation
 
     async function handleClick() {
