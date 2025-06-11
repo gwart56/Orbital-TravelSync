@@ -6,6 +6,7 @@ import SignUpPage from './pages/SignUpPage';
 import Dashboard from './pages/Dashboard';
 import { AuthContextProvider, useAuthContext } from './lib/AuthContext';
 import AboutPage from './pages/AboutPage';
+import ActivityPage from './pages/ActivityPage';
 
 function AppRoutes() {
 
@@ -19,16 +20,10 @@ function AppRoutes() {
             <Route path="/login" element={!session ? <LoginPage /> : <Navigate to="/dashboard" />} />
             <Route path="/signup" element={!session ? <SignUpPage /> : <Navigate to="/dashboard" />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/dashboard" element={<Dashboard />}/>
 
             {/* Protected Route */}
-            <Route
-              path="/dashboard"
-              element={
-              // <Dashboard /> :
-                <Dashboard /> 
-              // <Navigate to="/login" />
-              }
-            />
+            <Route path="/activities/:id" element={session ? <ActivityPage /> : <Navigate to="/dashboard" />}/>
 
             {/* Default route */}
             <Route path="*" element={<Navigate to={session ? "/dashboard" : "/login"} />} />
