@@ -1,4 +1,5 @@
-// backend/server.js
+// may not be using this file, but keeping it for reference
+// Orbital-TravelSync Backend Server
 const express = require('express');
 const app = express();
 const cors = require('cors');

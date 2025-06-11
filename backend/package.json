@@ -7,8 +7,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0"
-  }, 
+  },
   "scripts": {
     "dev": "node database/server.js"
+  },
+  "devDependencies": {
+    "supabase": "^2.24.3"
   }
 }
