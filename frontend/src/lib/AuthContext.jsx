@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from "./supabaseClient";
+import { supabase, supabaseAdmin } from "./supabaseClient";
 
 
 const AuthContext = createContext();
@@ -41,6 +41,19 @@ export function AuthContextProvider({children}) {
         }
     }
 
+    async function deleteUser(userId) {
+        const { data, error } = await supabase.auth.admin.deleteUser(userId);
+
+        if (error) {
+            console.error('Error deleting user:', error)
+            return null
+        }
+
+        console.log('Deleted user:', data)
+        return data;
+    }
+
+
     useEffect(() => { //useEffect is used for side effects (TODO: might modify this later idk)
             supabase.auth.getSession().then(({ data: { session } }) => {
                 setSession(session);
@@ -55,7 +68,7 @@ export function AuthContextProvider({children}) {
         }, []);
 
     return (
-        <AuthContext.Provider value ={{signUpNewUser, signInUser, signOutUser, session}}>
+        <AuthContext.Provider value ={{signUpNewUser, signInUser, signOutUser, deleteUser, session}}>
             {children}
         </ AuthContext.Provider>
     );

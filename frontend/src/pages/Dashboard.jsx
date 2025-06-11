@@ -11,7 +11,7 @@ function DashboardNotLoggedIn() {
 }
 
 function DashboardContent({user}) {
-    const {signOutUser} = useAuthContext();
+    const {signOutUser, deleteUser} = useAuthContext();
     const navigate = useNavigate(); //used for navigation
 
     async function handleClick() {
@@ -23,10 +23,28 @@ function DashboardContent({user}) {
             console.error('error: ', error.message);
         }
     }
+
+    async function handleDeleteAccount() {
+        const confirmDelete = window.confirm("Are you sure you want to delete your account? This cannot be undone.");
+        if (!confirmDelete) return;
+
+        try {
+            await deleteUser(user.id);
+            navigate('/signup');
+            console.log("deleted");
+        } catch (error) {
+            console.error("Error deleting account:", error.message);
+            alert("Failed to delete account: " + error.message);
+        }
+    }
+
     return (<>
         <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync, {user?.user_metadata?.name || user?.email}</h1>
         <h2 style={{margin: "20px"}}>Dashboard</h2>
         <button className="btn btn-danger" onClick={handleClick}>Log Out</button>
+        <button className="btn btn-outline-danger" onClick={handleDeleteAccount}>
+            Delete Account
+        </button>
     </>)
 }
 
