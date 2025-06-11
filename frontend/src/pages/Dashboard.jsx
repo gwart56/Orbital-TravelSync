@@ -1,7 +1,7 @@
 import Header from "../components/Header";
 import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
-import { addItineraryForUser, loadAllItineraryForUser } from "../lib/supabaseItinerary";
+import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
 import { supabase } from "../lib/supabaseClient";
 import { useState, useEffect } from "react";
 
@@ -32,7 +32,18 @@ function ItineraryLinks({userId, navigate}) {
         } catch (err) {
           console.error('Failed to create new Itinerary...', err);
         }
-      }
+    }
+
+    const deleteItinerary = async () => {
+        try {
+            const newItin = await deleteItineraryById(userId);
+            console.log('successfully created new itinerary');
+            console.log(newItin);
+            goToActivityPage(newItin.id);
+        } catch (err) {
+          console.error('Failed to create new Itinerary...', err);
+        }
+    }
 
     useEffect(() => {
         const fetchItins = async () => {

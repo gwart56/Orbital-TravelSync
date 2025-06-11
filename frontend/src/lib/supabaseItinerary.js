@@ -15,7 +15,7 @@ export async function addItineraryForUser(userId) {
     ])
     .select(); // get inserted row back (optional, may or may not remove this later)
 
-    console.log("adding to supabase, itin with userId: " + userId);
+    console.log("Adding to supabase, itin with userId: " + userId);
 
     if (error) throw error;
     return data[0]; // contains the inserted row with 'id' and other columns
@@ -35,7 +35,7 @@ export async function updateItineraryById(itinDbId, updatedItin) {
 
     if (error) throw error;
 
-    console.log("updating supabase, itin with itinId: " + itinDbId);
+    console.log("Updating supabase, itin with itinId: " + itinDbId);
 
     return data[0];
 }
@@ -68,4 +68,18 @@ export async function loadItineraryById(itinDbId) {
 
     if (error) throw error;
     return Itinerary.fromJSON(data.itinerary_data);
+}
+
+export async function deleteItineraryById(itinDbId) {
+  const { error } = await supabase
+    .from('itineraries') 
+    .delete()
+    .eq('id', itinDbId);
+
+  if (error) {
+    console.error("Failed to delete itinerary:", error.message);
+    throw error;
+  }
+
+  console.log("Successfully deleted itinerary with ID:", itinDbId);
 }
