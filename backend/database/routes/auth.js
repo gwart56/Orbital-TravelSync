@@ -1,3 +1,5 @@
+// Auth routes for user signup and login (mayn not be using this file, but keeping it for reference)
+
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');

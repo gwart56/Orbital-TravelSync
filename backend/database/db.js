@@ -1,3 +1,5 @@
+// old local database connection
+// This file is used to connect to the PostgreSQL database using the pg library.
 
 require('dotenv').config({ path: __dirname + '/.env' });
 
