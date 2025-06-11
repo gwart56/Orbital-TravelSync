@@ -7,9 +7,9 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 //creates a supabase client
 
-const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-console.log("SERVICE KEY: ", serviceKey);
+// console.log("SERVICE KEY: ", serviceKey);
 
-export const supabaseAdmin = createClient(supabaseUrl, serviceKey);
+// export const supabaseAdmin = createClient(supabaseUrl, serviceKey);
 //ADMIN CLIENT 

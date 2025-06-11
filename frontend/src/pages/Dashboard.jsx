@@ -25,16 +25,27 @@ function DashboardContent({user}) {
     }
 
     async function handleDeleteAccount() {
-        const confirmDelete = window.confirm("Are you sure you want to delete your account? This cannot be undone.");
-        if (!confirmDelete) return;
+        if (!window.confirm("Are you sure? This cannot be undone.")) return;
 
         try {
-            await deleteUser(user.id);
+            const res = await fetch('/api/delete-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id }),
+            });
+
+            if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to delete user');
+            }
+
+            await signOutUser();
             navigate('/signup');
-            console.log("deleted");
+            alert('Account deleted successfully');
+
         } catch (error) {
-            console.error("Error deleting account:", error.message);
-            alert("Failed to delete account: " + error.message);
+            console.error('Error deleting account:', error)
+            alert('Failed to delete account: ' + error.message)
         }
     }
 
