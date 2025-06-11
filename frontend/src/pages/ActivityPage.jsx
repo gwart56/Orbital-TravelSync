@@ -6,6 +6,8 @@ import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLocal, saveToLocal} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryInfo';
+import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
+import { useParams } from 'react-router-dom';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
@@ -92,26 +94,57 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
 
 function ActivityPage() {
-  const [itin, setItin] = useState(loadItinFromLocal()); //loads itinerary from localstorage
+  // const [itin, setItin] = useState(loadItinFromLocal()); //loads itinerary from localstorage
 
-  useEffect(() => { //saves to localstorage everytime there is an update to itin
-    saveToLocal(itin);
-  }, [itin]);
+  // useEffect(() => { //saves to localstorage everytime there is an update to itin
+  //   saveToLocal(itin);
+  // }, [itin]);
+
+  const [itin, setItin] = useState(null); //initialize itin to null
+
+  const { id: itinDbId } = useParams(); //get the itinDbId from the URL
+
+  useEffect( () => {
+      const fetchItin = async () => {
+        try {
+          const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
+          setItin(loadedItin);
+        } catch (err) {
+          console.error("Failed to load itinerary", err);
+        }
+      }
+      fetchItin();
+    }
+    ,[itinDbId]); //re-fetch the moment the itin id in url changes 
+    //***(this is bcuz the component stays mounted even if u change url)
+
+  const saveToDB = async (itin) => {
+    try {
+      await updateItineraryById(itinDbId, itin);
+    } catch (err) {
+      console.error('Failed to update Itinerary...', err);
+    }
+  }
 
   console.log(itin);
     return (
         <>
             <Header />
-            <h1 className="text-primary" style={{margin: "20px"}}>Welcome to TravelSync</h1>
-            <ItineraryInfo
-              itin={itin}
-              setItin={setItin}
-            />
-            <TravelDayContent 
-              dayArr={itin.travelDays}
-              itin={itin}
-              setItin={setItin}
-            />
+            <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
+            {itin && ( //**makes sure itin is not null first before loading all the info and content
+              <>
+                <ItineraryInfo
+                  itin={itin}
+                  setItin={setItin}
+                />
+                <TravelDayContent 
+                  dayArr={itin.travelDays}
+                  itin={itin}
+                  setItin={setItin}
+                /> 
+              </>)}
+            <button className='btn btn-primary' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
+            <div style={{height: "20px"}}/>
             {/*buttons below just for testing*/}
             <div style={{height: "50px"}}/> 
             <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
