@@ -66,7 +66,7 @@ function ItineraryLinks({userId, navigate}) {
             <button className="itin-button btn btn-success mb-3" key={it.itinDbId} onClick={() => goToActivityPage(it.itinDbId)}>
                 {it.itin.name}
             </button>
-            <button className="btn btn-danger" onClick={()=>deleteItinerary(it.itinDbId)}>
+            <button className="btn btn-danger mb-3" onClick={()=>deleteItinerary(it.itinDbId)}>
                 DELETE
             </button>
         </div>
