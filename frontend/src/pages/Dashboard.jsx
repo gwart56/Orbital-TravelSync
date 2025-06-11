@@ -107,7 +107,7 @@ function DashboardContent() {
 
     async function handleDeleteAccount() {
         if (!window.confirm("Are you sure? This cannot be undone.")) return;
-
+        // todo: delete all data associated with user
         try {
             const res = await fetch('/api/delete-user', {
             method: 'POST',
