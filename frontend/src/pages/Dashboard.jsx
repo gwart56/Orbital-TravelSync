@@ -34,14 +34,13 @@ function ItineraryLinks({userId, navigate}) {
         }
     }
 
-    const deleteItinerary = async () => {
+    const deleteItinerary = async (itinDbId) => {
         try {
-            const newItin = await deleteItineraryById(userId);
-            console.log('successfully created new itinerary');
-            console.log(newItin);
-            goToActivityPage(newItin.id);
+            await deleteItineraryById(itinDbId);
+            console.log('successfully deleted new itinerary');
+            navigate('/');
         } catch (err) {
-          console.error('Failed to create new Itinerary...', err);
+            console.error('Failed to create new Itinerary...', err);
         }
     }
 
@@ -66,6 +65,9 @@ function ItineraryLinks({userId, navigate}) {
         <div>
             <button className="itin-button btn btn-success mb-3" key={it.itinDbId} onClick={() => goToActivityPage(it.itinDbId)}>
                 {it.itin.name}
+            </button>
+            <button className="btn btn-danger" onClick={()=>deleteItinerary(it.itinDbId)}>
+                DELETE
             </button>
         </div>
       )) : (<h3>No Itineraries</h3>);
