@@ -27,7 +27,7 @@ function AboutPage()  {
       <div className="row text-center mb-5">
         <div className="col" style={{marginTop: "50px"}}>
           <h1 className="display-4 fw-bold text-primary">TravelSync</h1>
-          <p className="lead">Simplifying Group Travel, One Trip at a Time</p>
+          <p className="lead">Syncing Group Travel, One Trip At A Time</p>
         </div>
       </div>
 
@@ -124,7 +124,7 @@ function AboutPage()  {
             Start Planning Your Adventure
           </button>
           <p className="mt-3 text-white bg-secondary bg-opacity-75">
-            "Insert slogan here blah blah blah bla"
+            Sync Your Plans. Travel in Sync.
           </p>
         </div>
       </div>

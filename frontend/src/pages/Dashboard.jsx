@@ -8,8 +8,8 @@ import { useState, useEffect } from "react";
 function DashboardNotLoggedIn() {
     return (<>
         <h1 className="text-primary" style={{margin: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
-        <h2>Not Logged In</h2>
-        <Link to="/login">Click here to log in</Link>
+        <h2>Log in to plan your next holiday!</h2>
+        <Link to="/login">Click here to log in!</Link>
     </>)
 }
 

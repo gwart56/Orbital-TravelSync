@@ -39,7 +39,7 @@ function LoginPageContent() {
     return (
         <div className="login-form-container">        
             <h1 className="text-primary">Welcome to TravelSync</h1>
-            <p className="lead">Plan your group trips easily.</p>
+            <p className="lead">Sync Your Plans. Travel in Sync.</p>
             <div className="login-form">
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="email" className="form-label mt-3">Email:</label>

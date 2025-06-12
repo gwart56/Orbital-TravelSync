@@ -49,7 +49,7 @@ function SignUpContent() {
     return (
         <div className="login-form-container">
             <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
-            <p className="lead">Plan your group trips easily.</p>
+            <p className="lead">Sync Your Plans. Travel in Sync.</p>
             <div className="login-form">
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="name" className="form-label mt-3">Name:</label>
@@ -94,7 +94,7 @@ function SignUpContent() {
 
                     <button type="submit" className="btn btn-success mt-3" style={{margin: "20px"}}>Sign Up</button>
                 </form>
-                <Link to="/login">Already have account? Login</Link>
+                <Link to="/login">Already have account? Click here to log in!</Link>
                 {errorMsg && ( //DISPLAY ERROR MSG
                     <div className="alert alert-danger mt-3" role="alert">
                         {errorMsg}
