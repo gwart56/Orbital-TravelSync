@@ -9,17 +9,19 @@ export class Itinerary {
     name;
     travelDays;
     startDate;
+    hotels;
 
-    constructor(name, dayArr, startDate) { //(String, array of TravelDays)
+    constructor(name, dayArr, startDate, hotels = []) { //(String, array of TravelDays)
         this.name = name;
         this.startDate = startDate;
         this.travelDays = [...dayArr];
+        this.hotels = hotels;
         this.id = Itinerary.count;
         Itinerary.count++;
     }
 
     static fromJSON(data) {
-        const it = new Itinerary(data.name, [], data.startDate);
+        const it = new Itinerary(data.name, [], data.startDate, data.hotels);
         it.id = data.id;
         it.travelDays = data.travelDays.map(TravelDay.fromJSON);
         return it;
@@ -172,11 +174,17 @@ export function saveToLocal(itin) {
 export function updateItinStartDate(itin, newDate) {
     newDate = dayjs(newDate, 'YYYY-MM-DD').format('DD-MM-YYYY');
     console.log(itin + " HAHAHHAHA");
-    return new Itinerary(itin.name, itin.travelDays, newDate);
+    return new Itinerary(itin.name, itin.travelDays, newDate, itin.hotels);
 }
 
 export function updateItinName(itin, newName) {
-    return new Itinerary(newName, itin.travelDays, itin.startDate);
+    return new Itinerary(newName, itin.travelDays, itin.startDate, itin.hotels);
+}
+
+export function setItinHotels(itin, hotelArray) {
+    const newItin = new Itinerary(itin.name, itin.travelDays, itin.startDate, hotelArray);
+    newItin.id = itin.id;
+    return newItin;
 }
 
 
@@ -192,4 +200,4 @@ let defTravelDays = [new TravelDay(
     dayjs().format('DD-MM-YYYY')
     , defActivities)];
 
-export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'));
+export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'), []);

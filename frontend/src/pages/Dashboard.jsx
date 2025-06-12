@@ -2,7 +2,6 @@ import Header from "../components/Header";
 import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
 import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
-import { supabase } from "../lib/supabaseClient";
 import { useState, useEffect } from "react";
 
 function DashboardNotLoggedIn() {
@@ -61,16 +60,18 @@ function ItineraryLinks({userId, navigate}) {
         navigate(`/activities/${itinDbId}`);
     };
 
-    const itinsElements = itinsArray? itinsArray.map(it => (
-        <div>
-            <button className="itin-button btn btn-success mb-3" key={it.itinDbId} onClick={() => goToActivityPage(it.itinDbId)}>
-                {it.itin.name}
-            </button>
-            <button className="btn btn-danger mb-3" onClick={()=>deleteItinerary(it.itinDbId)}>
-                DELETE
-            </button>
-        </div>
-      )) : (<h3>No Itineraries</h3>);
+    const itinsElements = itinsArray? 
+        itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
+        : itinsArray.map(it => (
+            <div key={it.itinDbId} className="itin-link-container">
+                <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
+                    {it.itin.name}
+                </button>
+                <button className="btn btn-danger m-3" onClick={()=>deleteItinerary(it.itinDbId)}>
+                    DELETE
+                </button>
+            </div>
+        )) : (<h3>Loading Itineraries...</h3>);
 
     return (
         <div>
