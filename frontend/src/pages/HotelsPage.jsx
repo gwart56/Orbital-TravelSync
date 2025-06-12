@@ -4,44 +4,84 @@ import ItineraryInfo from "../components/ItineraryInfo";
 import { useNavigate, useParams } from "react-router-dom";
 import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
 import HotelContainer from "../components/HotelContainer";
-import { addHotelToArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
+import { addHGToArr, addHotelToArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
 import { setItinHotels } from "../data/activity";
+import HGInfo from "../components/HotelGroupInfo";
 
-function HotelsContent({itin, setItin}) {
-    const hotels = itin.hotels; //initialize hotels from itin
+function HotelsContent({hotelGrp, hgId, itin, setItin}) {
+    const hotels = hotelGrp?.hotels; 
+    const hgName = hotelGrp?.name;
 
     const updateHotel = (targetId, updatedH) => {
         const newHotelArr = editHotelInArr(targetId, hotels, updatedH);
-        setItin(prev => setItinHotels(prev, newHotelArr));
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
     const deleteHotel = targetId => {
         const newHotelArr = deleteHotelFromArr(targetId, hotels);
-        setItin(prev => setItinHotels(prev, newHotelArr));
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
     const addNewHotel = () => {
         const newHotelArr = addHotelToArr(hotels);
-        setItin(prev => setItinHotels(prev, newHotelArr));
-        console.log("added new hotel");
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
+        // console.log("added new hotel");
+    }
+
+    const renameHG = (newName) => {
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: newName, hotels: hotels} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
     const hotelsElements = hotels
-        .map(h => (<HotelContainer
-            key={h.id}
-            hotel={h}
-            onSave={updatedH => updateHotel(h.id, updatedH)}
-            onDelete={deleteHotel}
-        />));
+        .map(h => (
+        <div>
+            <HotelContainer
+                key={h.id}
+                hotel={h}
+                onSave={updatedH => updateHotel(h.id, updatedH)}
+                onDelete={deleteHotel}
+            />
+        </div>));
 
     return (
         <>
-        <div>
-            {hotelsElements}
-            <button className='btn btn-primary m-3' onClick={()=>addNewHotel()}>Add New Hotel</button>
-        </div>
+            <div>
+                <HGInfo hg={hotelGrp} renameHG={renameHG}/>
+                {hotelsElements}
+                <button className='btn btn-primary m-3' onClick={()=>addNewHotel()}>Add New Hotel</button>
+            </div>
         </>
     );
+}
+
+function HotelGroupsContent({itin, setItin}) {
+    const hotelGroupsArr = itin.hotelGrps;
+    const hotelGrpsElements = hotelGroupsArr.map(hg => (
+        <div className="hg-content" key={hg.id}>
+            <HotelsContent
+                hotelGrp={hg}
+                itin={itin}
+                setItin={setItin}
+                hgId={hg.id}
+            />
+        </div>
+    ));
+
+    const addNewHG = () => {
+        const newHotelGrps = addHGToArr(hotelGroupsArr);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
+        console.log("added new hotel grp");
+    }
+
+    return (
+        <div className="hg-content container">
+            {hotelGrpsElements}
+            <button className='btn btn-primary m-3' onClick={addNewHG}>Add New Hotel Group</button>
+        </div>);
 }
 
 export function HotelsPage() {
@@ -52,8 +92,7 @@ export function HotelsPage() {
     useEffect( () => {
           const fetchItin = async () => {
             try {
-              const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
-              setItin(loadedItin);
+              loadItineraryById(itinDbId).then((loadedItin) => setItin(loadedItin));
             } catch (err) {
               console.error("Failed to load itinerary", err);
             }
@@ -65,11 +104,9 @@ export function HotelsPage() {
     
     const saveToDB = async (itin) => {
             try {
-                
-  console.log(itin);
-            await updateItineraryById(itinDbId, itin);
+                await updateItineraryById(itinDbId, itin);
             } catch (err) {
-            console.error('Failed to update Itinerary...', err);
+                console.error('Failed to update Itinerary...', err);
             }
         };
     
@@ -83,7 +120,7 @@ export function HotelsPage() {
                 <>
                     <ItineraryInfo itin={itin} setItin={setItin} />
                     <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>Activities</button>
-                    <HotelsContent itin={itin} setItin={setItin} />
+                    <HotelGroupsContent itin={itin} setItin={setItin} />
                     <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
                 </>
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}

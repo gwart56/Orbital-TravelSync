@@ -71,7 +71,7 @@ function ItineraryLinks({userId, navigate}) {
                     DELETE
                 </button>
             </div>
-        )) : (<h3>Loading Itineraries...</h3>);
+        )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
 
     return (
         <div>
@@ -133,7 +133,7 @@ function DashboardContent() {
 
     return (<>
         <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync, {userName}</h1>
-        <h2 style={{margin: "20px"}}>Dashboard</h2>
+        <h2 style={{margin: "20px"}}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
         <button className="btn btn-danger" onClick={handleClick}>Log Out</button>
         <button className="btn btn-outline-danger" onClick={handleDeleteAccount}>

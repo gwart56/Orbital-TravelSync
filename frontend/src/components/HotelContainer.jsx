@@ -58,22 +58,30 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
         </form>
       ) : (
         <>
-          <div className="mb-2">
-            <strong>Name: </strong>
-            <span>{hotel.name}</span>
-          </div>
-          <div className="mb-3">
-            <strong>Price: </strong>
-            <span>{hotel.price}</span>
-          </div>
-          <div className="d-flex gap-2 justify-content-center">
-            <button className="btn btn-primary" onClick={handleEditClick}>
-              Edit
-            </button>
-            <button className="btn btn-danger" onClick={() => onDelete(hotel.id)}>
-              Delete
-            </button>
-          </div>
+          <div className="d-flex align-items-center gap-3 flex-wrap">
+  {/* Name label + value */}
+  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+    <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
+    <span className="text-truncate" style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.name}>
+      {hotel.name}
+    </span>
+  </div>
+
+  {/* Price label + value */}
+  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+    <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+    <span className="text-truncate" style={{ maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.price}>
+      {hotel.price}
+    </span>
+  </div>
+
+  {/* Buttons pushed right */}
+  <div className="ms-auto d-flex gap-2">
+    <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
+    <button className="btn btn-danger" onClick={() => onDelete(hotel.id)}>Delete</button>
+  </div>
+</div>
+
         </>
       )}
     </div>
