@@ -89,7 +89,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
     );
 
   return (
-    <div className="day-content">
+    <div className="day-content p-5">
       {dayElements}
       <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
     </div>
@@ -133,7 +133,7 @@ function ActivityPage() {
   }
 
     return (
-        <>
+        <div className="">
             <Header />
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
@@ -162,7 +162,7 @@ function ActivityPage() {
             <div style={{height: "20px"}}/>  */}
             <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
             <div style={{height: "50px"}}/>
-        </>
+        </div>
     );
 }
 

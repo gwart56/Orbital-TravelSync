@@ -190,7 +190,7 @@ export function setItinHotels(itin, hotelArray) {
 
 //----------------example values-----------------
 let defActivities = [
-    new Activity("Lunch at macs", "12:00", "RoundOne", "address road 12345"),
+    new Activity("Lunch at macs", "12:00", "McDonalds", "address road 12345"),
     new Activity("RoundOne", "08:00", "RoundOne", "address road 12345"),   
     new Activity("Dinner", "15:00", "Sushi Place", "address road 12345"),
     new Activity(["Supper", "20:00", "FamilyMart", "address road 12345"])
