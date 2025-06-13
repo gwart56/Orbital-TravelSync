@@ -51,7 +51,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
               type="text"
               name="address"
               defaultValue={hotel.address}
-              className="form-control d-inline w-auto"
+              className="form-control"
             />
           </div>
           <div className="mb-3">
@@ -60,7 +60,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
               type="url"
               name="link"
               defaultValue={hotel.link}
-              className="form-control d-inline w-auto"
+              className="form-control"
             />
           </div>
           <div className="d-flex gap-2 justify-content-center">
