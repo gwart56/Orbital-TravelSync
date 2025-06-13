@@ -14,6 +14,8 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
         ...hotel,
         name: formData.get("name"),
         price: formData.get("price"),
+        address: formData.get("address"),
+        link: formData.get("link")
     };
     onSave(updatedHotel);
     setIsEditing(false);
@@ -41,6 +43,24 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
               defaultValue={hotel.price}
               className="form-control d-inline w-auto"
               required
+            />
+          </div>
+          <div className="mb-2">
+            <strong>Address: </strong>
+            <input
+              type="text"
+              name="address"
+              defaultValue={hotel.address}
+              className="form-control"
+            />
+          </div>
+          <div className="mb-3">
+            <strong>Link: </strong>
+            <input
+              type="url"
+              name="link"
+              defaultValue={hotel.link}
+              className="form-control"
             />
           </div>
           <div className="d-flex gap-2 justify-content-center">
@@ -73,6 +93,22 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
     <span className="text-truncate" style={{ maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.price}>
       {hotel.price}
     </span>
+  </div>
+
+  {/* Address label + value */}
+  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "2 1 0" }}>
+    <strong className="me-1">Address:</strong>
+    <span title={hotel.address} className="text-truncate" style={{ maxWidth: "300px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      {hotel.address}
+    </span>
+  </div>
+
+  {/* Link label + value */}
+  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "2 1 0" }}>
+    <strong className="me-1">Link:</strong>
+    <a href={hotel.link} target="_blank" rel="noopener noreferrer" className="text-truncate" style={{ maxWidth: "200px", display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+      {hotel.link}
+    </a>
   </div>
 
   {/* Buttons pushed right */}

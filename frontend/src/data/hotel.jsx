@@ -1,11 +1,13 @@
 //IM NOT USING CLASSES ANYMORE JUST PLAIN JS OBJEC
 import {v4 as genId} from "uuid";
 
-export function newHotel(name, price) {
+export function newHotel(name, price, address, link) {
     return {
         id: genId(),
         name: name, 
-        price: price
+        price: price,
+        address: address,
+        link: link
     };
 }
 
