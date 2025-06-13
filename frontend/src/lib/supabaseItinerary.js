@@ -49,10 +49,28 @@ export async function loadAllItineraryForUser(userId) {
 
     if (error) throw error;
 
+    const formatDate = (dateStr) => {
+      const date = new Date(dateStr);
+
+      // Format it to your local timezone (e.g. Singapore, GMT+8)
+      const formatted = date.toLocaleString('en-SG', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      return formatted;
+    }
+
+
     // Convert raw data to your Itinerary class instances
     const itinArray = data.map(row => ({
         itinDbId: row.id, // supabase db row ID, useful for updates/deletes
-        itin: Itinerary.fromJSON(row.itinerary_data)
+        itin: Itinerary.fromJSON(row.itinerary_data),
+        dateCreated: formatDate(row.created_at)
     }));
 
     return itinArray;

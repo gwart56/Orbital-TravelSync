@@ -20,6 +20,7 @@ function ItineraryLinks({userId, navigate}) {
     // IS IN FORM [..., {
         // itinDbId: *itin supabase id*, 
         // itin: *ItineraryClassObj*
+        // dateCreated: *date created*
     //}] ***jus for my own ref
 
     const addNewItinerary = async () => {
@@ -60,10 +61,13 @@ function ItineraryLinks({userId, navigate}) {
         navigate(`/activities/${itinDbId}`);
     };
 
+
     const itinsElements = itinsArray? 
         itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
         : itinsArray.map(it => (
             <div key={it.itinDbId} className="itin-link-container">
+                <span className="m-3">Created: {it.dateCreated}</span>
+                <span>Itinerary Date: {it.itin.startDate}</span>
                 <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
                     {it.itin.name}
                 </button>
