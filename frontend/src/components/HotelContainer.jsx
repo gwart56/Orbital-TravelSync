@@ -153,7 +153,15 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
     Visit Site
     </button>
 
+    <button
+      className="btn btn-success"
+      onClick={null} // Placeholder for confirmation logic
+    >
+      Choose Hotel
+    </button>
+
   <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
+
   <button
     className="btn btn-danger"
     onClick={() => {

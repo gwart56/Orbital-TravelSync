@@ -13,12 +13,12 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
     const hgName = hotelGrp?.name;
 
     const [confirmedHotel, setConfirmedHotel] = useState(false);
-        const handleConfirmClick = () => {
-            const confirmed = window.confirm(`Are you sure you want to confirm "${hotel.name}"?`);
-            if (confirmed) {
-                setConfirmedHotel(true);
-            }
+    const handleConfirmClick = () => {
+        const confirmed = window.confirm(`Are you sure you want to confirm "${hotel.name}"?`);
+        if (confirmed) {
+            setConfirmedHotel(true);
         }
+    }
 
     const updateHotel = (targetId, updatedH) => {
         const newHotelArr = editHotelInArr(targetId, hotels, updatedH);
