@@ -51,7 +51,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
               type="text"
               name="address"
               defaultValue={hotel.address}
-              className="form-control"
+              className="form-control d-inline w-auto"
             />
           </div>
           <div className="mb-3">
@@ -60,7 +60,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
               type="url"
               name="link"
               defaultValue={hotel.link}
-              className="form-control"
+              className="form-control d-inline w-auto"
             />
           </div>
           <div className="d-flex gap-2 justify-content-center">
@@ -78,6 +78,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
         </form>
       ) : (
         <>
+
           <div className="d-flex align-items-center gap-3 flex-wrap">
   {/* Name label + value */}
   <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
@@ -112,9 +113,19 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
   </div>
 
   {/* Buttons pushed right */}
-  <div className="ms-auto d-flex gap-2">
-    <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
-    <button className="btn btn-danger" onClick={() => onDelete(hotel.id)}>Delete</button>
+  <div className="ms-md-auto d-flex gap-2">
+  <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
+  <button
+    className="btn btn-danger"
+    onClick={() => {
+      const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
+      if (confirmed) {
+        onDelete(hotel.id);
+      }
+    }}
+  >
+    Delete
+  </button>
   </div>
 </div>
 
