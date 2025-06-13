@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const HotelContainer = ({ hotel, onSave, onDelete }) => {
+const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
   
   const handleEditClick = () => {
@@ -155,7 +155,7 @@ const HotelContainer = ({ hotel, onSave, onDelete }) => {
 
     <button
       className="btn btn-success"
-      onClick={null} // Placeholder for confirmation logic
+      onClick={() => onConfirm(hotel)} // passing the hotel object directly to HotelsPage
     >
       Choose Hotel
     </button>

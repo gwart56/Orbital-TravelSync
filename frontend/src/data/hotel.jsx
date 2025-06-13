@@ -12,7 +12,7 @@ export function newHotel(name, price, address, link, checkInDate, checkInTime, c
         checkInTime: checkInTime || "15:00", // default check-in time
         checkOutDate,
         checkOutTime: checkOutTime || "11:00", // default check-out time
-        isConfirmed: false || isConfirmed //default to false if not provided
+        isConfirmed: isConfirmed ?? false // default to false if not provided
     };
 }
 
