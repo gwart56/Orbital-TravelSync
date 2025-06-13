@@ -9,17 +9,19 @@ export class Itinerary {
     name;
     travelDays;
     startDate;
+    hotelGrps;
 
-    constructor(name, dayArr, startDate) { //(String, array of TravelDays)
+    constructor(name, dayArr, startDate, hotelGrps = []) { //(String, array of TravelDays)
         this.name = name;
         this.startDate = startDate;
         this.travelDays = [...dayArr];
+        this.hotelGrps = hotelGrps;
         this.id = Itinerary.count;
         Itinerary.count++;
     }
 
     static fromJSON(data) {
-        const it = new Itinerary(data.name, [], data.startDate);
+        const it = new Itinerary(data.name, [], data.startDate, data.hotelGrps);
         it.id = data.id;
         it.travelDays = data.travelDays.map(TravelDay.fromJSON);
         return it;
@@ -172,17 +174,23 @@ export function saveToLocal(itin) {
 export function updateItinStartDate(itin, newDate) {
     newDate = dayjs(newDate, 'YYYY-MM-DD').format('DD-MM-YYYY');
     console.log(itin + " HAHAHHAHA");
-    return new Itinerary(itin.name, itin.travelDays, newDate);
+    return new Itinerary(itin.name, itin.travelDays, newDate, itin.hotelGrps);
 }
 
 export function updateItinName(itin, newName) {
-    return new Itinerary(newName, itin.travelDays, itin.startDate);
+    return new Itinerary(newName, itin.travelDays, itin.startDate, itin.hotelGrps);
+}
+
+export function setItinHotels(itin, hotelArray) {
+    const newItin = new Itinerary(itin.name, itin.travelDays, itin.startDate, hotelArray);
+    newItin.id = itin.id;
+    return newItin;
 }
 
 
 //----------------example values-----------------
 let defActivities = [
-    new Activity("Lunch at macs", "12:00", "RoundOne", "address road 12345"),
+    new Activity("Lunch at macs", "12:00", "McDonalds", "address road 12345"),
     new Activity("RoundOne", "08:00", "RoundOne", "address road 12345"),   
     new Activity("Dinner", "15:00", "Sushi Place", "address road 12345"),
     new Activity(["Supper", "20:00", "FamilyMart", "address road 12345"])
@@ -192,4 +200,4 @@ let defTravelDays = [new TravelDay(
     dayjs().format('DD-MM-YYYY')
     , defActivities)];
 
-export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'));
+export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'), []);

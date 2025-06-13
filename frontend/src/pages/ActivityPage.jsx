@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLocal, saveToLocal} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
@@ -32,7 +32,12 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
     setItin(itin.setActivitiesOfDay(dayId, newActArr));
   }
 
-  const activityElements = [...activities]
+  const activityElements = activities.length==0
+  ? (<div className="activity-container border rounded p-3 my-3"
+    style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
+      <h3>No Activities on this Day. Please Click "Add Activity" to add new ones.</h3>
+    </div>)
+  :[...activities]
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
     .map((a) => 
       <ActivityContainer 
@@ -68,8 +73,8 @@ function TravelDayContent({dayArr, itin, setItin}) {
     .map(d => 
       (<div className="travel-day-container" key={d.id}>
         <h2>
-          Day {totalNumDays++ + 1}
-          <button className="delete-act-butt btn btn-danger" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
+          <span>Day {totalNumDays++ + 1}</span>
+          <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
         </h2>
         <h5>
           Date: {latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY')} 
@@ -84,7 +89,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
     );
 
   return (
-    <div className="day-content">
+    <div className="day-content p-5">
       {dayElements}
       <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
     </div>
@@ -95,7 +100,6 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
 function ActivityPage() {
   // const [itin, setItin] = useState(loadItinFromLocal()); //loads itinerary from localstorage
-
   // useEffect(() => { //saves to localstorage everytime there is an update to itin
   //   saveToLocal(itin);
   // }, [itin]);
@@ -103,6 +107,8 @@ function ActivityPage() {
   const [itin, setItin] = useState(null); //initialize itin to null
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
+
+  const navigate = useNavigate();
 
   useEffect( () => {
       const fetchItin = async () => {
@@ -126,34 +132,37 @@ function ActivityPage() {
     }
   }
 
-  console.log(itin);
     return (
-        <>
+        <div className="">
             <Header />
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
-            {itin && ( //**makes sure itin is not null first before loading all the info and content
+            {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo
                   itin={itin}
                   setItin={setItin}
                 />
+                <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>Hotel Comparisons</button>
                 <TravelDayContent 
                   dayArr={itin.travelDays}
                   itin={itin}
                   setItin={setItin}
                 /> 
-              </>)}
-            <button className='btn btn-primary' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
+              </>)
+              : (<h3 className="text-secondary">Loading Activities...</h3>)}
+            <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
+            <div style={{height: "20px"}}/>
+            <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
             <div style={{height: "20px"}}/>
             {/*buttons below just for testing*/}
-            <div style={{height: "50px"}}/> 
+            {/* <div style={{height: "50px"}}/> 
             <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
             <div style={{height: "20px"}}/> 
             <button className='btn btn-primary' onClick={()=>localStorage.removeItem('itinLocal')}>Clear Local Storage</button>
-            <div style={{height: "20px"}}/> 
+            <div style={{height: "20px"}}/>  */}
             <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
             <div style={{height: "50px"}}/>
-        </>
+        </div>
     );
 }
 

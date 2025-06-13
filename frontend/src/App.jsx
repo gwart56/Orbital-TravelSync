@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import { AuthContextProvider, useAuthContext } from './lib/AuthContext';
 import AboutPage from './pages/AboutPage';
 import ActivityPage from './pages/ActivityPage';
+import { HotelsPage } from './pages/HotelsPage';
 
 function AppRoutes() {
 
@@ -24,6 +25,7 @@ function AppRoutes() {
 
             {/* Protected Route */}
             <Route path="/activities/:id" element={session ? <ActivityPage /> : <Navigate to="/dashboard" />}/>
+            <Route path="/hotels/:id" element={session ? <HotelsPage /> : <Navigate to="/dashboard" />}/>
 
             {/* Default route */}
             <Route path="*" element={<Navigate to={session ? "/dashboard" : "/login"} />} />
