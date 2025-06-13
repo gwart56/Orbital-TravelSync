@@ -71,8 +71,15 @@ function ItineraryLinks({userId, navigate}) {
                 <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
                     {it.itin.name}
                 </button>
-                <button className="btn btn-danger m-3" onClick={()=>deleteItinerary(it.itinDbId)}>
-                    DELETE
+                <button
+                className="btn btn-danger m-3"
+                onClick={() => {
+                    if (window.confirm("Are you sure you want to delete this itinerary? THIS CANNOT BE UNDONE.")) {
+                    deleteItinerary(it.itinDbId);
+                    }
+                }}
+                >
+                DELETE
                 </button>
             </div>
         )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
