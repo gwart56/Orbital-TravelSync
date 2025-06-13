@@ -12,6 +12,14 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
     const hotels = hotelGrp?.hotels; 
     const hgName = hotelGrp?.name;
 
+    const [confirmedHotel, setConfirmedHotel] = useState(false);
+        const handleConfirmClick = () => {
+            const confirmed = window.confirm(`Are you sure you want to confirm "${hotel.name}"?`);
+            if (confirmed) {
+                setConfirmedHotel(true);
+            }
+        }
+
     const updateHotel = (targetId, updatedH) => {
         const newHotelArr = editHotelInArr(targetId, hotels, updatedH);
         const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
@@ -44,16 +52,61 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                 hotel={h}
                 onSave={updatedH => updateHotel(h.id, updatedH)}
                 onDelete={deleteHotel}
+                setConfirmedHotel={setConfirmedHotel}
             />
         </div>));
 
+    // DELETE THIS LATER
+    const hotel = hotels[0] || {}; //get the first hotel or an empty object if no hotels
+    
+
     return (
         <>
-            <div className="m-5 border rounded p-3">
+            <div className="m-5 border rounded p-3">               
                 <HGInfo hg={hotelGrp} renameHG={renameHG}/>
+                { confirmedHotel ? (
+                <div className="d-flex flex-column gap-2">
+                    {/* Name label + value */}
+                    <div className="d-flex align-items-center">
+                        <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
+                        <span
+                        className="text-truncate"
+                        style={{
+                            maxWidth: "200px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                        }}
+                        title={hotel.name}
+                        >
+                        {hotel.name}
+                        </span>
+                    </div>
+
+                    {/* Price label + value */}
+                    <div className="d-flex align-items-center">
+                        <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+                        <span
+                        className="text-truncate"
+                        style={{
+                            maxWidth: "100px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                        }}
+                        title={hotel.price}
+                        >
+                        {hotel.price}
+                        </span>
+                    </div>
+                </div>
+
+                ) : (
+                <>
                 {hotelsElements}
                 <button className='btn btn-primary m-3' onClick={()=>addNewHotel()}>Add New Hotel</button>
-            </div>
+                </>
+            )} </div>
         </>
     );
 }
