@@ -49,7 +49,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
 
     return (
         <>
-            <div>
+            <div className="m-5 border rounded p-3">
                 <HGInfo hg={hotelGrp} renameHG={renameHG}/>
                 {hotelsElements}
                 <button className='btn btn-primary m-3' onClick={()=>addNewHotel()}>Add New Hotel</button>
@@ -122,7 +122,8 @@ export function HotelsPage() {
                     <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>Activities</button>
                     <HotelGroupsContent itin={itin} setItin={setItin} />
                     <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
-                </>
+                    <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
+                </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}
             
         </>

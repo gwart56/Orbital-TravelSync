@@ -32,7 +32,12 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
     setItin(itin.setActivitiesOfDay(dayId, newActArr));
   }
 
-  const activityElements = [...activities]
+  const activityElements = activities.length==0
+  ? (<div className="activity-container border rounded p-3 my-3"
+    style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
+      <h3>No Activities on this Day. Please Click "Add Activity" to add new ones.</h3>
+    </div>)
+  :[...activities]
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
     .map((a) => 
       <ActivityContainer 
@@ -68,8 +73,8 @@ function TravelDayContent({dayArr, itin, setItin}) {
     .map(d => 
       (<div className="travel-day-container" key={d.id}>
         <h2>
-          Day {totalNumDays++ + 1}
-          <button className="delete-act-butt btn btn-danger" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
+          <span>Day {totalNumDays++ + 1}</span>
+          <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
         </h2>
         <h5>
           Date: {latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY')} 
@@ -147,7 +152,7 @@ function ActivityPage() {
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
             <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
             <div style={{height: "20px"}}/>
-            <button className='btn btn-primary m-3' onClick={()=>navigate('/')}>Back To Home</button>
+            <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
             <div style={{height: "20px"}}/>
             {/*buttons below just for testing*/}
             {/* <div style={{height: "50px"}}/> 
