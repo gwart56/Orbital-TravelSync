@@ -14,14 +14,11 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
 
     const [confirmedHotel, setConfirmedHotel] = useState(false);
     const handleConfirmClick = (targetHotel) => {
-    const confirmed = window.confirm(`Are you sure you want to confirm "${targetHotel.name}"?`);
-    if (confirmed) {
         // Mark hotel as confirmed in the data
         const updatedHotel = { ...targetHotel, isConfirmed: true };
         updateHotel(targetHotel.id, updatedHotel);
         // Set this hotel as confirmed for display
         setConfirmedHotel(updatedHotel);
-    }
     }
 
     const updateHotel = (targetId, updatedH) => {
@@ -59,10 +56,6 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                 onConfirm={handleConfirmClick}
             />
         </div>));
-
-    // DELETE THIS LATER
-    // const hotel = hotels[0] || {}; //get the first hotel or an empty object if no hotels
-    
 
     return (
         <>
@@ -108,7 +101,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                         <span
                             className="text-truncate"
                             style={{
-                            maxWidth: "200px",
+                            maxWidth: "400px",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap"
@@ -119,22 +112,71 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                         </span>
                         </div>
 
+                    {/* Todo: checkin checkout time; add link button and also option to unconfirm hotel */}
                         <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Link:</strong>
+                        <strong className="me-1" style={{ minWidth: "50px" }}>Check-in Time:</strong>
                         <span
                             className="text-truncate"
                             style={{
-                            maxWidth: "200px",
+                            maxWidth: "100px",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap"
                             }}
-                            title={confirmedHotel.link}
+                            title={confirmedHotel.checkInTime}
                         >
-                            {confirmedHotel.link}
+                            {confirmedHotel.checkInTime}
                         </span>
                         </div>
-                    {/* Todo: checkin checkout time; add link button and also option to unconfirm hotel */}
+
+                        <div className="d-flex align-items-center">
+                        <strong className="me-1" style={{ minWidth: "50px" }}>Check-out Time:</strong>
+                        <span
+                            className="text-truncate"
+                            style={{
+                            maxWidth: "100px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap"
+                            }}
+                            title={confirmedHotel.checkOutTime}
+                        >
+                            {confirmedHotel.checkOutTime}
+                        </span>
+                        </div>
+
+                        <div className="d-flex gap-2 m-3">
+                            <button
+                                className="btn btn-outline-primary btn-sm text-truncate"
+                                style={{
+                                maxWidth: "200px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                                }}
+                                onClick={() => {
+                                if (confirmedHotel.link) {
+                                    window.open(confirmedHotel.link, "_blank", "noopener,noreferrer");
+                                }
+                                }}
+                                title={confirmedHotel.link || "No link available"}
+                                disabled={!confirmedHotel.link}
+                            >
+                                Visit Site
+                            </button>
+
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => {
+                                const updatedHotel = { ...confirmedHotel, isConfirmed: false };
+                                updateHotel(confirmedHotel.id, updatedHotel);
+                                setConfirmedHotel(false);
+                                }}
+                            >
+                                Unconfirm Hotel
+                            </button>
+                        </div>
+
 
                     </div>
                     ) : (
