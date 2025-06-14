@@ -144,7 +144,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                         </span>
                         </div>
 
-                        {/* TODO: make link button change to add link button when link not there*/}
+                        {/* TODO: add an edit button and also allow user to view previous hotels*/}
                         <div className="d-flex gap-2 m-3">
                             <button
                                 className="btn btn-outline-primary btn-sm text-truncate"
