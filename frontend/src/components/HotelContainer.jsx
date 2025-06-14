@@ -106,38 +106,41 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
       ) : (
         <>
 
-<div className="d-flex align-items-center gap-3 flex-wrap">
-  {/* Name label + value */}
-  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
-    <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
-    <span className="text-truncate" style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.name}>
-      {hotel.name}
-    </span>
-  </div>
+      <div className="d-flex align-items-center gap-3 flex-wrap">
+        {/* Name label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
+          <span className="text-truncate" style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.name}>
+            {hotel.name}
+          </span>
+        </div>
 
-  {/* Price label + value */}
-  <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
-    <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-    <span className="text-truncate" style={{ maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.price}>
-      {hotel.price}
-    </span>
-  </div>
+        {/* Price label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+          <span className="text-truncate" style={{ maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.price}>
+            {hotel.price}
+          </span>
+        </div>
 
-  {/* Address label + value */}
-  <div className="d-flex align-items-start flex-wrap" style={{ minWidth: "0", flex: "2 1 0" }}>
-    <strong className="me-1">Address:</strong>
-    <span style={{ wordBreak: "break-word", maxWidth: "300px" }}>
-      {hotel.address}
-    </span>
-  </div>
+        {/* Address label + value */}
+        <div className="d-flex align-items-start flex-wrap" style={{ minWidth: "0", flex: "2 1 0" }}>
+          <strong className="me-1">Address:</strong>
+          <span style={{ wordBreak: "break-word", maxWidth: "300px" }}>
+            {hotel.address}
+          </span>
+        </div>
 
-    {/* Buttons pushed right */}
-  <div className="ms-md-auto d-flex gap-2">
-    <button
+        {/* Buttons */}
+<div className="d-grid mt-2"
+     style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", maxWidth: "320px" }}>
+  
+  {/* Top Left: Visit Site */}
+  <button
     type="button"
-    className="btn btn-outline-primary btn-sm text-truncate"
+    className={`btn btn-md text-truncate ${hotel.link ? 'btn-info text-white' : 'btn-outline-primary'}`}
     style={{
-      maxWidth: "200px",
+      maxWidth: "100%",
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
@@ -148,22 +151,24 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
       }
     }}
     title={hotel.link || "No link available"}
-    disabled={!hotel.link} // Optional: disables button if no link
-    >
-    Visit Site
-    </button>
+    disabled={!hotel.link}
+  >
+    🔗 Visit
+  </button>
 
-    <button
-      className="btn btn-success"
-      onClick={() => onConfirm(hotel)} // passing the hotel object directly to HotelsPage
-    >
-      Choose Hotel
-    </button>
+  {/* Top Right: Edit */}
+  <button className="btn btn-primary btn-md" onClick={handleEditClick}>
+    ✏️ Edit
+  </button>
 
-  <button className="btn btn-primary" onClick={handleEditClick}>Edit</button>
+  {/* Bottom Left: Choose Hotel */}
+  <button className="btn btn-success btn-md" onClick={() => onConfirm(hotel)}>
+    ✅ Choose
+  </button>
 
+  {/* Bottom Right: Delete */}
   <button
-    className="btn btn-danger"
+    className="btn btn-danger btn-md"
     onClick={() => {
       const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
       if (confirmed) {
@@ -171,12 +176,12 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
       }
     }}
   >
-    Delete
+    🗑️ Delete
   </button>
-  </div>
 </div>
+      </div>
 
-        </>
+            </>
       )}
     </div>
   );

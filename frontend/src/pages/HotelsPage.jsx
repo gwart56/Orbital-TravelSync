@@ -112,7 +112,6 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                         </span>
                         </div>
 
-                    {/* Todo: checkin checkout time; add link button and also option to unconfirm hotel */}
                         <div className="d-flex align-items-center">
                         <strong className="me-1" style={{ minWidth: "50px" }}>Check-in Time:</strong>
                         <span
@@ -145,6 +144,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                         </span>
                         </div>
 
+                        {/* TODO: make link button change to add link button when link not there*/}
                         <div className="d-flex gap-2 m-3">
                             <button
                                 className="btn btn-outline-primary btn-sm text-truncate"
@@ -177,7 +177,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
                             </button>
                         </div>
 
-
+                    {/* Todo: allow page to spawn with confirmed hotel */}
                     </div>
                     ) : (
                     <>
