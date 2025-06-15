@@ -4,16 +4,22 @@ import ItineraryInfo from "../components/ItineraryInfo";
 import { useNavigate, useParams } from "react-router-dom";
 import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
 import HotelContainer from "../components/HotelContainer";
-import { addHGToArr, addHotelToArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
+import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
 import { setItinHotels } from "../data/activity";
 import HGInfo from "../components/HotelGroupInfo";
+import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
 
-function HotelsContent({hotelGrp, hgId, itin, setItin}) {
+function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
     const hgName = hotelGrp?.name;
 
-    //todo: add a state to track the confirmed hotel
-    const [confirmedHotel, setConfirmedHotel] = useState(false);
+    const getConfirmedHotel = () => {
+        //THIS RETURNS THE CONFIRMED HOTEL IN A HOTEL GROUP (ASSUMES ONLY 1 CONFIRMED HOTEL)
+        //RETURNS UNDEFINED IF NO CONFIRMED HOTEL
+        return hotels.find(h => h.isConfirmed == true);
+    }
+    
+    const [confirmedHotel, setConfirmedHotel] = useState(getConfirmedHotel);
     const handleConfirmClick = (targetHotel) => {
         // Mark hotel as confirmed in the data
         const updatedHotel = { ...targetHotel, isConfirmed: true };
@@ -24,25 +30,25 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
 
     const updateHotel = (targetId, updatedH) => {
         const newHotelArr = editHotelInArr(targetId, hotels, updatedH);
-        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, hotels: newHotelArr} : hg);
         setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
     const deleteHotel = targetId => {
         const newHotelArr = deleteHotelFromArr(targetId, hotels);
-        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, hotels: newHotelArr} : hg);
         setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
     const addNewHotel = () => {
         const newHotelArr = addHotelToArr(hotels);
-        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: hgName, hotels: newHotelArr} : hg);
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, hotels: newHotelArr} : hg);
         setItin(prev => setItinHotels(prev, newHotelGrps));
         // console.log("added new hotel");
     }
 
     const renameHG = (newName) => {
-        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {id: hgId, name: newName, hotels: hotels} : hg);
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, name: newName} : hg);
         setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
@@ -62,130 +68,20 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
         <>
             <div className="m-5 border rounded p-3">               
                 <HGInfo hg={hotelGrp} renameHG={renameHG}/>
-                    {confirmedHotel ? (
-                    <div className="d-flex flex-column gap-2">
-
-                        <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
-                        <span
-                            className="text-truncate"
-                            style={{
-                            maxWidth: "200px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                            }}
-                            title={confirmedHotel.name}
-                        >
-                            {confirmedHotel.name}
-                        </span>
-                        </div>
-
-                        <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-                        <span
-                            className="text-truncate"
-                            style={{
-                            maxWidth: "100px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                            }}
-                            title={confirmedHotel.price}
-                        >
-                            {confirmedHotel.price}
-                        </span>
-                        </div>
-                        
-                        <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Address:</strong>
-                        <span
-                            className="text-truncate"
-                            style={{
-                            maxWidth: "400px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                            }}
-                            title={confirmedHotel.address}
-                        >
-                            {confirmedHotel.address}
-                        </span>
-                        </div>
-
-                        <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Check-in Time:</strong>
-                        <span
-                            className="text-truncate"
-                            style={{
-                            maxWidth: "100px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                            }}
-                            title={confirmedHotel.checkInTime}
-                        >
-                            {confirmedHotel.checkInTime}
-                        </span>
-                        </div>
-
-                        <div className="d-flex align-items-center">
-                        <strong className="me-1" style={{ minWidth: "50px" }}>Check-out Time:</strong>
-                        <span
-                            className="text-truncate"
-                            style={{
-                            maxWidth: "100px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap"
-                            }}
-                            title={confirmedHotel.checkOutTime}
-                        >
-                            {confirmedHotel.checkOutTime}
-                        </span>
-                        </div>
-
-                        {/* TODO: add an edit button and also allow user to view previous hotels*/}
-                        <div className="d-flex gap-2 m-3">
-                            <button
-                                className="btn btn-outline-primary btn-sm text-truncate"
-                                style={{
-                                maxWidth: "200px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap"
-                                }}
-                                onClick={() => {
-                                if (confirmedHotel.link) {
-                                    window.open(confirmedHotel.link, "_blank", "noopener,noreferrer");
-                                }
-                                }}
-                                title={confirmedHotel.link || "No link available"}
-                                disabled={!confirmedHotel.link}
-                            >
-                                Visit Site
-                            </button>
-
-                            <button
-                                className="btn btn-secondary"
-                                onClick={() => {
-                                const updatedHotel = { ...confirmedHotel, isConfirmed: false };
-                                updateHotel(confirmedHotel.id, updatedHotel);
-                                setConfirmedHotel(false);
-                                }}
-                            >
-                                Unconfirm Hotel
-                            </button>
-                        </div>
-
-                    {/* Todo: allow page to spawn with confirmed hotel */}
-                    </div>
-                    ) : (
-                    <>
-                        {hotelsElements}
-                        <button className='btn btn-primary m-3' onClick={addNewHotel}>Add New Hotel</button>
-                    </>
-                    )} </div>
+                {confirmedHotel ? (
+                    <ConfirmedHotelGroup //THIS CONTAINER ONLY APPEARS WHEN THERS CONFIRMED HOTEL
+                        confirmedHotel={confirmedHotel}
+                        updateHotel={updateHotel}
+                        setConfirmedHotel={setConfirmedHotel}
+                    />
+                ) : (//THIS IS FOR UNCONFIRMED HOTELS, 
+                <> 
+                    {hotelsElements}
+                    <button className='btn btn-primary m-3' onClick={addNewHotel}>Add New Hotel To Group</button>
+                    <button className='btn btn-danger m-3' onClick={deleteHG}>Delete Hotel Group</button>
+                </>
+                )} 
+            </div>
         </>
     );
 }
@@ -194,11 +90,12 @@ function HotelGroupsContent({itin, setItin}) {
     const hotelGroupsArr = itin.hotelGrps;
     const hotelGrpsElements = hotelGroupsArr.map(hg => (
         <div className="hg-content" key={hg.id}>
-            <HotelsContent
+            <HotelGrpContent
                 hotelGrp={hg}
                 itin={itin}
                 setItin={setItin}
                 hgId={hg.id}
+                deleteHG={() => deleteHG(hg.id)}
             />
         </div>
     ));
@@ -207,6 +104,15 @@ function HotelGroupsContent({itin, setItin}) {
         const newHotelGrps = addHGToArr(hotelGroupsArr);
         setItin(prev => setItinHotels(prev, newHotelGrps));
         console.log("added new hotel grp");
+    }
+
+    const deleteHG = (hgId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this Hotel Group?");
+        if (confirmDelete) {                               
+            const newHotelGrps = deleteHGFromArr(hgId, hotelGroupsArr);
+            setItin(prev => setItinHotels(prev, newHotelGrps));
+            console.log("deleted hotel grp");
+        }
     }
 
     return (
@@ -251,7 +157,7 @@ export function HotelsPage() {
             {itin? (
                 <>
                     <ItineraryInfo itin={itin} setItin={setItin} />
-                    <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>Activities</button>
+                    <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>To Activities</button>
                     <HotelGroupsContent itin={itin} setItin={setItin} />
                     <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
                     <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>

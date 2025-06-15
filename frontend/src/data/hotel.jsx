@@ -38,6 +38,7 @@ export function editHotelInArr(targetId, hotelArray, updatedHotel) {
 }
 
 //functions dealinf with array of HotelGroups
+//hgArray means HOTEL GROUP ARRAY
 export function deleteHGFromArr(id, hgArray) {
     return hgArray.filter(h => h.id != id);
 }
@@ -48,4 +49,8 @@ export function addHGToArr(hgArray) {
 
 export function editHGInArr(targetId, hgArray, updatedHG) {
     return hgArray.map(h => h.id == targetId? updatedHG: h);
+}
+
+export function getAllConfirmedHotelsFromArr(hgArray) { //RETURNS ARRAY OF CONFIRMED HOTELS
+    return hgArray.map(hg => hg.hotels.find(h => h.isConfirmed));
 }

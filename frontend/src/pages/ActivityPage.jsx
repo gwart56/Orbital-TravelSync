@@ -64,7 +64,10 @@ function TravelDayContent({dayArr, itin, setItin}) {
   }
 
   function handleDelete(id) {
-    setItin(itin.removeDay(id));
+      const confirmDelete = window.confirm("Are you sure you want to delete this day?");
+      if (confirmDelete) {
+          setItin(itin.removeDay(id));
+      }
   }
 
   let totalNumDays = 0;
@@ -142,7 +145,8 @@ function ActivityPage() {
                   itin={itin}
                   setItin={setItin}
                 />
-                <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>Hotel Comparisons</button>
+                <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>To Hotel Comparisons</button>
+                <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
                 <TravelDayContent 
                   dayArr={itin.travelDays}
                   itin={itin}

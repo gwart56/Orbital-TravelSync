@@ -181,7 +181,7 @@ export function updateItinName(itin, newName) {
     return new Itinerary(newName, itin.travelDays, itin.startDate, itin.hotelGrps);
 }
 
-export function setItinHotels(itin, hotelArray) {
+export function setItinHotels(itin, hotelArray) {//NOTE HOTEL REFERS TO HOTEL GROUPS HERE
     const newItin = new Itinerary(itin.name, itin.travelDays, itin.startDate, hotelArray);
     newItin.id = itin.id;
     return newItin;
