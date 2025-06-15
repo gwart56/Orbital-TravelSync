@@ -12,6 +12,7 @@ function HotelsContent({hotelGrp, hgId, itin, setItin}) {
     const hotels = hotelGrp?.hotels; 
     const hgName = hotelGrp?.name;
 
+    //todo: add a state to track the confirmed hotel
     const [confirmedHotel, setConfirmedHotel] = useState(false);
     const handleConfirmClick = (targetHotel) => {
         // Mark hotel as confirmed in the data
