@@ -94,36 +94,39 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
 
             {/* TODO: add an edit button and also allow user to view previous hotels*/}
             <div className="d-flex gap-2 m-3">
+
                 <button
-                    className="btn btn-outline-primary btn-sm text-truncate"
+                    type="button"
+                    className={`btn btn-md text-truncate ${confirmedHotel.link ? 'btn-info text-white' : 'btn-outline-primary'}`}
                     style={{
-                    maxWidth: "200px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
+                        maxWidth: "100%",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                     }}
                     onClick={() => {
-                    if (confirmedHotel.link) {
-                        window.open(confirmedHotel.link, "_blank", "noopener,noreferrer");
-                    }
+                        if (confirmedHotel.link) {
+                            window.open(confirmedHotel.link, "_blank", "noopener,noreferrer");
+                        }
                     }}
                     title={confirmedHotel.link || "No link available"}
                     disabled={!confirmedHotel.link}
                 >
-                    Visit Site
+                    🔗 Visit
                 </button>
 
                 <button
-                    className="btn btn-secondary"
+                    className="btn btn-danger text-white"
                     onClick={() => {
-                    const updatedHotel = { ...confirmedHotel, isConfirmed: false };
-                    updateHotel(confirmedHotel.id, updatedHotel);
-                    setConfirmedHotel(false);
+                        const updatedHotel = { ...confirmedHotel, isConfirmed: false };
+                        updateHotel(confirmedHotel.id, updatedHotel);
+                        setConfirmedHotel(false);
                     }}
                 >
-                    Unconfirm Hotel
+                    🗙 Unconfirm Hotel
                 </button>
             </div>
+
 
         {/* Todo: allow page to spawn with confirmed hotel */}
         </div>);
