@@ -3,12 +3,14 @@ import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
 import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
 import { useState, useEffect } from "react";
+import { MdDeleteForever } from 'react-icons/md';
 
 function DashboardNotLoggedIn() {
     return (<>
         <h1 className="text-primary" style={{margin: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
         <h2>Log in to plan your next holiday!</h2>
         <Link to="/login">Click here to log in!</Link>
+        <Link to="/signup">Don't have an account? Sign up here!</Link>
     </>)
 }
 
@@ -65,22 +67,26 @@ function ItineraryLinks({userId, navigate}) {
     const itinsElements = itinsArray? 
         itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
         : itinsArray.map(it => (
-            <div key={it.itinDbId} className="itin-link-container">
-                <span className="m-3">Created: {it.dateCreated}</span>
-                <span>Itinerary Date: {it.itin.startDate}</span>
-                <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
-                    {it.itin.name}
-                </button>
-                <button
-                className="btn btn-danger m-3"
-                onClick={() => {
-                    if (window.confirm("Are you sure you want to delete this itinerary? THIS CANNOT BE UNDONE.")) {
-                    deleteItinerary(it.itinDbId);
-                    }
-                }}
-                >
-                DELETE
-                </button>
+            <div className="d-flex justify-content-center">
+                <div key={it.itinDbId} className="itin-link-container d-flex align-items-center flex-wrap">
+                    <span className="m-3">Created: {it.dateCreated}</span>
+                    <span>Itinerary Date: {it.itin.startDate}</span>
+                    <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
+                        {it.itin.name}
+                    </button>
+                    <button
+                        className="delete-act-butt btn btn-danger d-flex align-items-center gap-1"
+                        onClick={() => {
+                            const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
+                            if (confirmDelete) {
+                            deleteItinerary(it.itinDbId);
+                            }
+                        }}
+                        >
+                        <MdDeleteForever size={20} />
+                    </button>
+
+                </div>
             </div>
         )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
 

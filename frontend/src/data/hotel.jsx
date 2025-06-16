@@ -6,11 +6,18 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrAfter); //FOR PLUGINS
 dayjs.extend(isSameOrBefore); //FOR PLUGINS
 
-export function newHotel(name, price) {
+export function newHotel(name, price, address, link, checkInDate, checkInTime, checkOutDate, checkOutTime, isConfirmed) {
     return {
         id: genId(),
-        name: name, 
-        price: price
+        name: name || "New Hotel", // default name if not provided
+        price: price || "$0", // default price if not provided
+        address,
+        link,
+        checkInDate,
+        checkInTime: checkInTime || "15:00", // default check-in time
+        checkOutDate,
+        checkOutTime: checkOutTime || "11:00", // default check-out time
+        isConfirmed: isConfirmed ?? false // default to false if not provided
     };
 }
 
@@ -45,7 +52,7 @@ export function deleteHotelFromArr(id, hotelArray) {
 }
 
 export function addHotelToArr(hotelArray) {
-    return [...hotelArray, newHotel("new", "$0")];
+    return [...hotelArray, newHotel()];
 }
 
 export function editHotelInArr(targetId, hotelArray, updatedHotel) {
@@ -53,18 +60,22 @@ export function editHotelInArr(targetId, hotelArray, updatedHotel) {
 }
 
 //functions dealinf with array of HotelGroups
+//hgArray means HOTEL GROUP ARRAY
 export function deleteHGFromArr(id, hgArray) {
     return hgArray.filter(h => h.id != id);
 }
 
 export function addHGToArr(hgArray) {
-    return [...hgArray, newHotelGroup("New Group", [newHotel("new", "$0")])];
+    return [...hgArray, newHotelGroup("New Group", [newHotel()])];
 }
 
 export function editHGInArr(targetId, hgArray, updatedHG) {
     return hgArray.map(h => h.id == targetId? updatedHG: h);
 }
 
+export function getAllConfirmedHotelsFromArr(hgArray) { //RETURNS ARRAY OF CONFIRMED HOTELS
+    return hgArray.map(hg => hg.hotels.find(h => h.isConfirmed));
+}
 //functions dealing with array of CONFIRMED (assuming no overlap)
 export function getHotelCheckInOutForDate(d, hotelArr) {
     const date = dayjs(d, 'DD-MM-YYYY');
