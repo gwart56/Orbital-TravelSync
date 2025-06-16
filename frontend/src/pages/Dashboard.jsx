@@ -4,15 +4,21 @@ import { useNavigate, Link} from 'react-router-dom';
 import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
 import { useState, useEffect } from "react";
 import { MdDeleteForever } from 'react-icons/md';
+import "./Dashboard.css";
 
 function DashboardNotLoggedIn() {
-    return (<>
-        <h1 className="text-primary" style={{margin: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
-        <h2>Log in to plan your next holiday!</h2>
-        <Link to="/login">Click here to log in!</Link>
-        <Link to="/signup">Don't have an account? Sign up here!</Link>
-    </>)
+    return (
+        <div className="dashboard-page">
+            <div className="dashboard-card">
+                <h1 className="text-primary">Welcome to TravelSync</h1>
+                <h2>Log in to plan your next holiday!</h2>
+                <Link to="/login">Click here to log in!</Link><br />
+                <Link to="/signup">Don't have an account? Sign up here!</Link>
+            </div>
+        </div>
+    );
 }
+
 
 function ItineraryLinks({userId, navigate}) {
     if (!userId) {
