@@ -11,11 +11,11 @@ export class Itinerary {
     startDate;
     hotelGrps;
 
-    constructor(name, dayArr, startDate, hotelGrps = []) { //(String, array of TravelDays)
+    constructor(name, dayArr, startDate, hotelGrps) { //(String, array of TravelDays)
         this.name = name;
         this.startDate = startDate;
         this.travelDays = [...dayArr];
-        this.hotelGrps = hotelGrps;
+        this.hotelGrps = hotelGrps || [];
         this.id = Itinerary.count;
         Itinerary.count++;
     }
@@ -29,18 +29,18 @@ export class Itinerary {
 
     addDay() {
         const newDayArr = addDayArray(this.travelDays);
-        return new Itinerary(this.name, newDayArr, this.startDate);
+        return new Itinerary(this.name, newDayArr, this.startDate, this.hotelGrps);
     }
 
     removeDay(id) {
         const newDayArr = deleteDayArray(this.travelDays, id);        
-        return new Itinerary(this.name, newDayArr, this.startDate);
+        return new Itinerary(this.name, newDayArr, this.startDate, this.hotelGrps);
     }
 
     setActivitiesOfDay(dayId, actArr) {
         const targetDay = this.travelDays.find(day => day.id === dayId);
         targetDay.activities = actArr;
-        return new Itinerary(this.name, this.travelDays, this.startDate);
+        return new Itinerary(this.name, this.travelDays, this.startDate, this.hotelGrps);
     }
 }
 
