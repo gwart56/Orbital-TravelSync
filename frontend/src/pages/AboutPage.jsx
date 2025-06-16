@@ -1,136 +1,102 @@
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import '../pages/AboutPage.css';
 
-function AboutPage()  {
+function AboutPage() {
   const navigate = useNavigate();
 
-  function handleClick() {
-    navigate('/dashboard');//send to dashboard
-  }
-
-  const backgroundStyle = {
-    backgroundImage: 'url("https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
-    backgroundAttachment: 'fixed',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    minHeight: '100vh',
+  const handleClick = () => {
+    navigate('/dashboard');
   };
 
-  //text-white bg-secondary bg-opacity-50 <---- for white text with transparent grey background
-
   return (
-    <div style={backgroundStyle}>
-    <Header />
-    <div className="container my-5">
-      {/* Hero Section */}
-      <div className="row text-center mb-5">
-        <div className="col" style={{marginTop: "50px"}}>
-          <h1 className="display-4 fw-bold text-primary">TravelSync</h1>
-          <p className="lead">Syncing Group Travel, One Trip At A Time</p>
+    <div className="about-background">
+      <Header />
+      
+      <div className="about-wrapper py-5">
+        {/* Hero Title and Tagline */}
+        <div className="text-center text-white mb-3 pt-4">
+          <h1 className="fw-bold display-4" style={{ color: '#007BFF' }}>TravelSync</h1>
+          <h5 className="text-light">Syncing Group Travel, One Trip At A Time</h5>
         </div>
-      </div>
 
-      {/* Mission Section */}
-      <div className="row mb-5">
-        <div className="col-md-8 mx-auto text-center">
-          <p className="fs-5 text-white bg-secondary bg-opacity-50">
-            Planning a trip with friends or family should be fun—not frustrating. At <span className="fw-bold">TravelSync</span>, 
-            we're on a mission to transform chaotic travel planning into a seamless, collaborative experience.
-          </p>
+        {/* Mission Statement */}
+        <div className="row justify-content-center mb-5">
+          <div className="col-md-8">
+            <p className="fs-5 text-white bg-dark bg-opacity-50 p-4 rounded shadow">
+              Planning a trip with friends or family should be fun—not frustrating.
+              At <strong>TravelSync</strong>, we're on a mission to transform chaotic travel planning into a seamless, collaborative experience.
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Why Section */}
-      <div className="row mb-5">
-        <div className="col">
-          <h2 className="text-center mb-4 text-white bg-secondary bg-opacity-50">Why We Built TravelSync</h2>
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <p>As travelers ourselves, we've felt the pain of:</p>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item">Juggling endless browser tabs for hotel prices</li>
-                <li className="list-group-item">Struggling to align schedules with friends</li>
-                <li className="list-group-item">Awkwardly splitting expenses after the trip</li>
+        {/* Pain Points Section */}
+        <div className="d-flex justify-content-center mt-2 mb-4">
+          <div className="card shadow-lg rounded-4 p-4 bg-light bg-opacity-75" style={{ maxWidth: '720px', width: '100%' }}>
+            <div className="card-body text-center">
+              <h4 className="fw-semibold mb-4">We've been there — planning travel can be a pain.</h4>
+
+              <ul className="list-group list-group-flush fs-5 mb-4">
+                <li className="list-group-item border-0 bg-transparent">🔍 Juggling endless tabs for hotel prices</li>
+                <li className="list-group-item border-0 bg-transparent">📅 Struggling to align schedules</li>
+                <li className="list-group-item border-0 bg-transparent">💸 Awkwardly splitting expenses</li>
               </ul>
-              <p className="mt-3">TravelSync solves these with:</p>
+
+              <p className="mb-3 fs-5">TravelSync makes it easier with:</p>
+
               <div className="d-flex flex-wrap justify-content-center gap-2">
-                <span className="badge bg-primary">Compare hotels</span>
-                <span className="badge bg-primary">Plan collaboratively</span>
-                <span className="badge bg-primary">Track expenses</span>
-                <span className="badge bg-primary">Visualize trips</span>
+                <span className="badge bg-primary fs-6 px-3 py-2">Compare hotels</span>
+                <span className="badge bg-primary fs-6 px-3 py-2">Plan collaboratively</span>
+                <span className="badge bg-primary fs-6 px-3 py-2">Track expenses</span>
+                <span className="badge bg-primary fs-6 px-3 py-2">Visualize trips</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Features Section */}
-      <div className="row mb-5">
-        <div className="col">
-          <h2 className="text-center mb-4 text-white bg-secondary bg-opacity-50">Our Core Features</h2>
+        {/* Core Features */}
+        <div className="mb-5">
+          <h2 className="text-center text-white bg-dark bg-opacity-50 py-2 rounded mb-4">Our Core Features</h2>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            <div className="col">
-              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
-                <div className="card-body">
-                  <h5 className="card-title">✅ Smart Hotel Booking</h5>
-                  <p className="card-text">Aggregate prices and locations from top sites</p>
+            {[
+              { title: 'Smart Hotel Booking', desc: 'Aggregate prices and locations from top sites' },
+              { title: 'Shared Itineraries', desc: 'Add activities and sync plans in real-time' },
+              { title: 'Expense Splitting', desc: 'Split costs fairly in any currency' },
+              { title: 'Interactive Maps', desc: 'See hotels and attractions visually' }
+            ].map((feature, i) => (
+              <div className="col" key={i}>
+                <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
+                  <div className="card-body">
+                    <h5 className="card-title">✅ {feature.title}</h5>
+                    <p className="card-text">{feature.desc}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col">
-              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
-                <div className="card-body">
-                  <h5 className="card-title">✅ Shared Itineraries</h5>
-                  <p className="card-text">Add activities and sync plans in real-time</p>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
-                <div className="card-body">
-                  <h5 className="card-title">✅ Expense Splitting</h5>
-                  <p className="card-text">Split costs fairly in any currency</p>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
-                <div className="card-body">
-                  <h5 className="card-title">✅ Interactive Maps</h5>
-                  <p className="card-text">See hotels and attractions visually</p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Team CTA */}
-      <div className="row text-center mb-4">
-        <div className="col">
-          <h2 className="text-white bg-secondary bg-opacity-50">Meet the Team</h2>
-          <p className="text-white bg-secondary bg-opacity-50">
-            We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips smoother. 
-            As part of our Orbital Project level Apollo 11, we aim to launch your travel plans to new heights.
+        {/* Team Section */}
+        <div className="text-center mb-5">
+          <h2 className="text-white bg-dark bg-opacity-50 py-2 rounded">Meet the Team</h2>
+          <p className="text-white bg-dark bg-opacity-50 p-3 rounded">
+            We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips smoother.
+            As part of our Orbital Project <em>Apollo 11</em>, we aim to launch your travel plans to new heights.
           </p>
         </div>
-      </div>
 
-      {/* Final CTA */}
-      <div className="row text-center">
-        <div className="col">
-          <button className="btn btn-primary btn-lg px-4" onClick={handleClick}>
+        {/* Final CTA */}
+        <div className="text-center">
+          <button className="btn btn-lg btn-outline-light px-5 py-2 fw-bold shadow" onClick={handleClick}>
             Start Planning Your Adventure
           </button>
-          <p className="mt-3 text-white bg-secondary bg-opacity-75">
+          <p className="mt-4 text-white bg-dark bg-opacity-75 p-3 rounded">
             Sync Your Plans. Travel in Sync.
           </p>
         </div>
       </div>
     </div>
-    </div>
   );
-};
+}
 
 export default AboutPage;

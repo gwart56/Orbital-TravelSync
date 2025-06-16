@@ -8,6 +8,7 @@ import { AuthContextProvider, useAuthContext } from './lib/AuthContext';
 import AboutPage from './pages/AboutPage';
 import ActivityPage from './pages/ActivityPage';
 import { HotelsPage } from './pages/HotelsPage';
+import ContactPage from './pages/ContactPage';
 
 function AppRoutes() {
 
@@ -22,6 +23,7 @@ function AppRoutes() {
             <Route path="/signup" element={!session ? <SignUpPage /> : <Navigate to="/dashboard" />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/dashboard" element={<Dashboard />}/>
+            <Route path="/contact" element={<ContactPage/>} />
 
             {/* Protected Route */}
             <Route path="/activities/:id" element={session ? <ActivityPage /> : <Navigate to="/dashboard" />}/>
