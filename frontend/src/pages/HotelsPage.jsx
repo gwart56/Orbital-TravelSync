@@ -153,6 +153,7 @@ export function HotelsPage() {
     const saveToDB = async (itin) => {
             try {
                 await updateItineraryById(itinDbId, itin);
+                console.log(itin);
             } catch (err) {
                 console.error('Failed to update Itinerary...', err);
             }
