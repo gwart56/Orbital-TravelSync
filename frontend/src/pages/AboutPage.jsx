@@ -24,7 +24,7 @@ function AboutPage() {
         <div className="row justify-content-center mb-5">
           <div className="col-md-8">
             <p className="fs-5 text-white bg-dark bg-opacity-50 p-4 rounded shadow">
-              Planning a trip with friends or family should be fun—not frustrating.
+              Planning a trip with friends or family should be fun - not frustrating.
               At <strong>TravelSync</strong>, we're on a mission to transform chaotic travel planning into a seamless, collaborative experience.
             </p>
           </div>
@@ -34,7 +34,7 @@ function AboutPage() {
         <div className="d-flex justify-content-center mt-2 mb-4">
           <div className="card shadow-lg rounded-4 p-4 bg-light bg-opacity-75" style={{ maxWidth: '720px', width: '100%' }}>
             <div className="card-body text-center">
-              <h4 className="fw-semibold mb-4">We've been there — planning travel can be a pain.</h4>
+              <h4 className="fw-semibold mb-4">We've been there - planning travel can be a pain.</h4>
 
               <ul className="list-group list-group-flush fs-5 mb-4">
                 <li className="list-group-item border-0 bg-transparent">🔍 Juggling endless tabs for hotel prices</li>
@@ -56,44 +56,69 @@ function AboutPage() {
 
         {/* Core Features */}
         <div className="mb-5">
-          <h2 className="text-center text-white bg-dark bg-opacity-50 py-2 rounded mb-4">Our Core Features</h2>
+          <h2 className="text-white text-center mx-auto mb-4 px-4 py-2 rounded-3 bg-dark bg-opacity-50 d-inline-block">
+            Our Core Features
+          </h2>
+
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             {[
-              { title: 'Smart Hotel Booking', desc: 'Aggregate prices and locations from top sites' },
-              { title: 'Shared Itineraries', desc: 'Add activities and sync plans in real-time' },
-              { title: 'Expense Splitting', desc: 'Split costs fairly in any currency' },
-              { title: 'Interactive Maps', desc: 'See hotels and attractions visually' }
+              { title: 'Smart Hotel Booking', desc: 'Aggregate prices and locations from top sites', color: '#2ECC71' },
+              { title: 'Shared Itineraries', desc: 'Add activities and sync plans in real-time', color: '#3498DB' },
+              { title: 'Expense Splitting', desc: 'Split costs fairly in any currency', color: '#F1C40F' },
+              { title: 'Interactive Maps', desc: 'See hotels and attractions visually', color: '#9B59B6' }
             ].map((feature, i) => (
               <div className="col" key={i}>
-                <div className="card h-100 shadow-sm bg-info bg-opacity-75 text-white">
-                  <div className="card-body">
-                    <h5 className="card-title">✅ {feature.title}</h5>
-                    <p className="card-text">{feature.desc}</p>
-                  </div>
+                <div
+                  className="glass-card text-white p-4 h-100 d-flex flex-column justify-content-center align-items-start rounded-4 shadow"
+                  style={{
+                    borderLeft: `6px solid ${feature.color}`,
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(6px)'
+                  }}
+                >
+                  <h5 className="fw-bold mb-2" style={{ color: feature.color }}>
+                    ✅ {feature.title}
+                  </h5>
+                  <p className="mb-0 text-white">{feature.desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Team Section */}
-        <div className="text-center mb-5">
-          <h2 className="text-white bg-dark bg-opacity-50 py-2 rounded">Meet the Team</h2>
-          <p className="text-white bg-dark bg-opacity-50 p-3 rounded">
-            We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips smoother.
-            As part of our Orbital Project <em>Apollo 11</em>, we aim to launch your travel plans to new heights.
-          </p>
-        </div>
 
-        {/* Final CTA */}
-        <div className="text-center">
-          <button className="btn btn-lg btn-outline-light px-5 py-2 fw-bold shadow" onClick={handleClick}>
-            Start Planning Your Adventure
-          </button>
-          <p className="mt-4 text-white bg-dark bg-opacity-75 p-3 rounded">
-            Sync Your Plans. Travel in Sync.
-          </p>
-        </div>
+
+        {/* Team Section */}
+<div className="text-center mb-5">
+  <h2 className="text-white bg-dark bg-opacity-50 px-4 py-2 rounded d-inline-block">
+    Meet the Team
+  </h2>
+  <p className="text-white bg-dark bg-opacity-50 px-4 py-3 rounded d-inline-block mt-3">
+    We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips <strong>smoother</strong>. 
+    We aim to launch your travel plans to <strong>new heights</strong>.
+  </p>
+</div>
+
+{/* Final CTA */}
+<div className="text-center">
+  <button
+    className="btn btn-lg fw-bold shadow mx-auto d-block"
+    style={{ backgroundColor: "#90ee90", color: "#000", border: "none" }}
+    onClick={handleClick}
+  >
+    Start Planning Your Adventure
+  </button>
+
+  <p
+    className="text-white bg-dark bg-opacity-75 px-4 py-2 rounded mx-auto d-inline-block"
+    style={{ marginTop: "3rem" }} // Pushes the slogan down
+  >
+    Sync Your Plans. Travel in Sync.
+  </p>
+</div>
+
+
+
       </div>
     </div>
   );
