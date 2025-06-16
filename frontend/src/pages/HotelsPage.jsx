@@ -52,6 +52,16 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
         setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
+    const setStartHG = (newStartDate) => {
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, startDate: newStartDate} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
+    }
+
+    const setEndHG = (newEndDate) => {
+        const newHotelGrps = itin.hotelGrps.map(hg => hg.id == hgId ? {...hg, endDate: newEndDate} : hg);
+        setItin(prev => setItinHotels(prev, newHotelGrps));
+    }
+
     const hotelsElements = hotels
         .map(h => (
         <div>
@@ -67,7 +77,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     return (
         <>
             <div className="m-5 border rounded p-3">               
-                <HGInfo hg={hotelGrp} renameHG={renameHG}/>
+                <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                 {confirmedHotel ? (
                     <ConfirmedHotelGroup //THIS CONTAINER ONLY APPEARS WHEN THERS CONFIRMED HOTEL
                         confirmedHotel={confirmedHotel}

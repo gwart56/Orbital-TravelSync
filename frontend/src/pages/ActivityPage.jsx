@@ -8,7 +8,7 @@ import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLo
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { defConfirmedHotelArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { defConfirmedHotelArr, getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
@@ -59,7 +59,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 //each TravelDayContent contains Day No., Date, ActivityContent (LIGHT GREEN REGION)
 function TravelDayContent({dayArr, itin, setItin}) {
   const travelDays = dayArr;
-  const confirmedHotelsArr = defConfirmedHotelArr; //just for testing remove later
+  const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps); //just for testing remove later
 
   function handleAdd() {
     setItin(itin.addDay());

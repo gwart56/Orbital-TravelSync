@@ -21,11 +21,13 @@ export function newHotel(name, price, address, link, checkInDate, checkInTime, c
     };
 }
 
-export function newHotelGroup(name, hotels) {
+export function newHotelGroup(name, hotels, startDate, endDate) {
     return {
         id: genId(),
         name: name, 
-        hotels: hotels
+        hotels: hotels,
+        startDate: startDate || dayjs().format('DD-MM-YYYY'),
+        endDate: endDate || dayjs().format('DD-MM-YYYY'),
     };
 }
 
