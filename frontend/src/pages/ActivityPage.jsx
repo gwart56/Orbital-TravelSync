@@ -8,6 +8,7 @@ import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLo
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
+import { defConfirmedHotelArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
@@ -58,6 +59,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 //each TravelDayContent contains Day No., Date, ActivityContent (LIGHT GREEN REGION)
 function TravelDayContent({dayArr, itin, setItin}) {
   const travelDays = dayArr;
+  const confirmedHotelsArr = defConfirmedHotelArr; //just for testing remove later
 
   function handleAdd() {
     setItin(itin.addDay());
@@ -67,25 +69,46 @@ function TravelDayContent({dayArr, itin, setItin}) {
     setItin(itin.removeDay(id));
   }
 
+
   let totalNumDays = 0;
   let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
   const dayElements = [...travelDays]
-    .map(d => 
-      (<div className="travel-day-container" key={d.id}>
+    .map(d => {
+      latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
+      const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
+      const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
+      const checkInHotel = checkIns.length==0? undefined : checkIns[0];
+      const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
+
+      return ( //i lazy to make container component
+      <div className="travel-day-container" key={d.id}>
         <h2>
           <span>Day {totalNumDays++ + 1}</span>
           <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
         </h2>
         <h5>
-          Date: {latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY')} 
-        </h5> 
+          Date: {latestdate} 
+        </h5>
+        {/* if no check in hotel, then display current hotel */
+        !checkInHotel && !checkOutHotel && (<h5>
+          {/* Hotel That Night: {!confirmedHotel ? confirmedHotel.name : "No Hotel Confirmed"} */}
+          Hotel That Night: {confirmedHotel?.name || 'No Hotel Confirmed'} 
+        </h5>)} 
+        {/* if no check out hotel, dont display*/
+        checkOutHotel && <h5>
+          Check Out Hotel at {checkOutHotel?.checkOutTime} : {checkOutHotel?.name || 'Not Checking out any Hotel'}
+        </h5> }
+        {/* if no check in hotel, dont display*/
+        checkInHotel && <h5>
+          Check In Hotel at {checkInHotel?.checkInTime} : {checkInHotel?.name || 'Not Checking in any Hotel'} 
+        </h5>}
         <ActivityContent
           activityArr={d.activities}
           dayId={d.id}
           itin={itin}
           setItin={setItin}
         />
-      </div>)
+      </div>);}
     );
 
   return (
