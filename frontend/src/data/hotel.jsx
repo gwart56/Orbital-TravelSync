@@ -25,7 +25,7 @@ export function newHotelGroup(name, hotels, startDate, endDate) {
     return {
         id: genId(),
         name: name, 
-        hotels: hotels,
+        hotels: hotels || [],
         startDate: startDate || dayjs().format('DD-MM-YYYY'),
         endDate: endDate || dayjs().format('DD-MM-YYYY'),
     };
@@ -76,7 +76,11 @@ export function editHGInArr(targetId, hgArray, updatedHG) {
 }
 
 export function getAllConfirmedHotelsFromArr(hgArray) { //RETURNS ARRAY OF CONFIRMED HOTELS
-    return hgArray.map(hg => hg.hotels.find(h => h.isConfirmed));
+    return hgArray.map(hg => {
+        const hotel = hg.hotels.find(h => h.isConfirmed);
+        return hotel? {...hotel, checkInDate: hg.startDate, checkOutDate: hg.endDate} : undefined;
+    })
+    .filter(hotel => hotel !== undefined); // filter out those without confirmed;
 }
 //functions dealing with array of CONFIRMED (assuming no overlap)
 export function getHotelCheckInOutForDate(d, hotelArr) {
