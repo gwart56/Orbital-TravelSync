@@ -59,7 +59,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 //each TravelDayContent contains Day No., Date, ActivityContent (LIGHT GREEN REGION)
 function TravelDayContent({dayArr, itin, setItin}) {
   const travelDays = dayArr;
-  const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps); //just for testing remove later
+  const confirmedHotelsArr = defConfirmedHotelArr; //just for testing remove later
 
   function handleAdd() {
     setItin(itin.addDay());
