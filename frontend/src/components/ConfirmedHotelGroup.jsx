@@ -1,13 +1,3 @@
-import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import ItineraryInfo from "../components/ItineraryInfo";
-import { useNavigate, useParams } from "react-router-dom";
-import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
-import HotelContainer from "../components/HotelContainer";
-import { addHGToArr, addHotelToArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
-import { setItinHotels } from "../data/activity";
-import HGInfo from "../components/HotelGroupInfo";
-
 export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setConfirmedHotel}){
     return (
         <div className="d-flex flex-column gap-2">

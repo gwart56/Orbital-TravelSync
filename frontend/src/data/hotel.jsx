@@ -11,7 +11,7 @@ export function newHotel(name, price, address, link, checkInDate, checkInTime, c
         id: genId(),
         name: name || "New Hotel", // default name if not provided
         price: price || "$0", // default price if not provided
-        address,
+        address: address || "(No Address)", // default address if not provided
         link,
         checkInDate,
         checkInTime: checkInTime || "15:00", // default check-in time
