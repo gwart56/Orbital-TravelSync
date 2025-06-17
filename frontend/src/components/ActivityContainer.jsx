@@ -1,10 +1,13 @@
 // import './ActivityContainer.css';
 import { MdDeleteForever } from "react-icons/md";
 import { useState } from 'react';
+import LocationPicker from "./LocationPicker";
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit }) {
   const { id, name, time, locName, locAddress } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
+  const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
+  const [isPickingLocation, setIsPickingLocation] = useState(false);
 
   function saveActivity(event) {
     event.preventDefault();
@@ -12,6 +15,15 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
     const valuesArray = Array.from(formData.values());
     setIsEditing(false);
     handleSave(id, valuesArray);
+  }
+
+  function handleLocationSave(newLocation) {
+    if (!newLocation) {
+      return;
+    }
+    console.log(newLocation);
+    setLocation(newLocation);
+    setIsPickingLocation(false);
   }
 
   const labelStyle = { minWidth: "100px", display: "inline-block" };
@@ -33,12 +45,12 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
 
         <div className="mb-2 d-flex align-items-start">
             <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
-            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locName}>{locName}</span>
+            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locName}>{location.locName}</span>
         </div>
 
         <div className="mb-3 d-flex align-items-start">
             <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
-            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locAddress}>{locAddress}</span>
+            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locAddress}>{location.locAddress}</span>
         </div>
 
           <div className="d-flex gap-2 justify-content-end">
@@ -75,22 +87,41 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               className="form-control form-control-sm"
               type="text"
               name="locName"
-              defaultValue={locName}
+              value={location.locName}
+              readOnly
               required
               placeholder="e.g. McDonald's"
             />
           </div>
+          
           <div className="mb-3 d-flex align-items-center">
             <strong style={labelStyle}>Address:</strong>
             <input
               className="form-control form-control-sm"
               type="text"
               name="locAddress"
-              defaultValue={locAddress}
+              value={location.locAddress}
+              readOnly
               required
               placeholder="e.g. 123 Normal Rd"
             />
           </div>
+          {isPickingLocation ? (
+            <LocationPicker
+              onSave={(loc) => handleLocationSave(loc)}
+              onClose={() => setIsPickingLocation(false)}
+              location={location}
+              setLocation={setLocation}
+            />
+          ) : (
+            <button
+                type="button"
+                className="btn btn-outline-primary btn-sm ms-2"
+                onClick={() => setIsPickingLocation(true)}
+              >
+                Pick Location
+          </button>
+          )}
           <div className="d-flex gap-2 justify-content-end">
             <button type="submit" className="btn btn-success btn-sm">Save</button>
             <button type="button" className="btn btn-secondary btn-sm" onClick={() => setIsEditing(false)}>Cancel</button>
