@@ -62,7 +62,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
   getAllConfirmedHotelsFromArr(itin.hotelGrps) ; //just for testing remove later
-  console.log(confirmedHotelsArr);
+  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   function handleAdd() {
     setItin(itin.addDay());
@@ -83,6 +83,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
       latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
+      console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
 
