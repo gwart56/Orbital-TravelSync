@@ -61,7 +61,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
   const travelDays = dayArr;
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
-  getAllConfirmedHotelsFromArr(itin.hotelGrps) ; //just for testing remove later
+  getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
   console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   function handleAdd() {

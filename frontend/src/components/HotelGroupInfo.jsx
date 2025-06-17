@@ -6,7 +6,7 @@ import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
 
 //may not use
-function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate }){
+function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confirmedHotel}){
   const [editing, setEditing] = useState(false);
   
   const handleSave = () => {
@@ -16,7 +16,14 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate }){
 
   return (
     <>
-      {!editing ? (
+      {//THIS IS SO THAT YOU CANNOT EDIT START AND END DATES WHEN YOU CONFIRM A HOTEL
+      confirmedHotel?( 
+        <>
+          <h3>START DATE: {hg.startDate} </h3>
+          {/* <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3> */}
+        </>
+      )
+      :!editing? (
         <>
           <h3>START DATE: {hg.startDate}
           <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
@@ -40,7 +47,7 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate }){
   );
 }
 
-function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate }){
+function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHotel }){
   const [editing, setEditing] = useState(false);
 
   const handleSave = () => {
@@ -50,7 +57,14 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate }){
 
   return (
     <>
-      {!editing ? (
+      {confirmedHotel?(
+        <>
+          <h3>END DATE: {hg.endDate} </h3>
+          {/* <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3> */}
+        </>
+      )
+
+      :!editing ? (
         <>
           <h3>END DATE: {hg.endDate}
           <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
@@ -74,7 +88,7 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate }){
   );
 }
 
-function HGDateRangePicker({hg, setEndHG, setStartHG }) {
+function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel }) {
 
   const [startDate, setNewStartDate] = useState(dayjs(hg.startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
   
@@ -89,11 +103,11 @@ function HGDateRangePicker({hg, setEndHG, setStartHG }) {
     // console.log(startDate)
     // console.log(endDate)
     // console.log(dayjs(startDate).isAfter(dayjs(endDate)));
-    if (startDate && endDate && dayjs(startDate).isAfter(dayjs(endDate))) {
-      setNewEndDate(dayjs(startDate, 'YYYY-MM-DD')); // Auto-correct
-      setEndHG(dayjs(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+    if (startDate && endDate && dayjs(startDate).isSameOrAfter(dayjs(endDate))) {
+      setNewEndDate(dayjs(startDate, 'YYYY-MM-DD').add(1, 'day')); // Auto-correct
+      setEndHG(dayjs(startDate, 'YYYY-MM-DD').add(1, 'day').format('DD-MM-YYYY'));
     }
-  }, [startDate]);
+  }, [startDate, endDate]);
 
   return (<>
       <HGStartDateInput
@@ -101,12 +115,14 @@ function HGDateRangePicker({hg, setEndHG, setStartHG }) {
         setStartHG={setStartHG}
         newStartDate={startDate}
         setNewStartDate={setNewStartDate}
+        confirmedHotel={confirmedHotel}
       />
       <HGEndDateInput
         hg={hg}
         setEndHG={setEndHG}
         newEndDate={endDate}
         setNewEndDate={setNewEndDate}
+        confirmedHotel={confirmedHotel}
       />
   </>);
 }
@@ -144,7 +160,7 @@ function HGNameInput({ hg, renameHG }){
   );
 }
 
-export default function HGInfo({ hg, setEndHG, renameHG, setStartHG }) {
+export default function HGInfo({ hg, setEndHG, renameHG, setStartHG, confirmedHotel }) {
   const [editing, setEditing] = useState(false);
 
 //   const handleSave = () => {
@@ -162,6 +178,7 @@ export default function HGInfo({ hg, setEndHG, renameHG, setStartHG }) {
         hg={hg}
         setEndHG={setEndHG}
         setStartHG={setStartHG}
+        confirmedHotel={confirmedHotel}
       />
     </>
   );

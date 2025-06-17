@@ -4,7 +4,7 @@ import ItineraryInfo from "../components/ItineraryInfo";
 import { useNavigate, useParams } from "react-router-dom";
 import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
 import HotelContainer from "../components/HotelContainer";
-import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, editHotelInArr } from "../data/hotel";
+import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, doesHGOverlap, editHotelInArr, getAllConfirmedHotelsFromArr } from "../data/hotel";
 import { setItinHotels } from "../data/activity";
 import HGInfo from "../components/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
@@ -21,8 +21,18 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     
     const [confirmedHotel, setConfirmedHotel] = useState(getConfirmedHotel);
     const handleConfirmClick = (targetHotel) => {
+        //TODO --- MAKE THIS MORE EFFICIENT (NEXT TIME DO)
+        //THIS MAKES SURES THERE IS NO OVERLAPPING CHECKIN CHECKOUT DATES FOR CONFIRMED HOTEL
+        const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps);
+        if (doesHGOverlap(hotelGrp, confirmedHotelsArr)) {
+            // console.log(confirmedHotelsArr);
+            // alert('WARNING: Hotel check in and check out date overlaps with other confirmed hotel(s)')
+            return;
+        }
+        
         // Mark hotel as confirmed in the data
         const updatedHotel = { ...targetHotel, isConfirmed: true };
+
         updateHotel(targetHotel.id, updatedHotel);
         // Set this hotel as confirmed for display
         setConfirmedHotel(updatedHotel);
@@ -77,15 +87,18 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     return (
         <>
             <div className="m-5 border rounded p-3">               
-                <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                 {confirmedHotel ? (
+                    <>
+                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG} confirmedHotel={confirmedHotel}/>
                     <ConfirmedHotelGroup //THIS CONTAINER ONLY APPEARS WHEN THERS CONFIRMED HOTEL
                         confirmedHotel={confirmedHotel}
                         updateHotel={updateHotel}
                         setConfirmedHotel={setConfirmedHotel}
                     />
+                    </>
                 ) : (//THIS IS FOR UNCONFIRMED HOTELS, 
                 <> 
+                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                     {hotelsElements}
                     <button className='btn btn-primary m-3' onClick={addNewHotel}>Add New Hotel To Group</button>
                     <button className='btn btn-danger m-3' onClick={deleteHG}>Delete Hotel Group</button>

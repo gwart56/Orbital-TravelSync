@@ -27,7 +27,7 @@ export function newHotelGroup(name, hotels, startDate, endDate) {
         name: name, 
         hotels: hotels || [],
         startDate: startDate || dayjs().format('DD-MM-YYYY'),
-        endDate: endDate || dayjs().format('DD-MM-YYYY'),
+        endDate: endDate || dayjs().add(1,'day').format('DD-MM-YYYY'),
     };
 }
 
@@ -95,4 +95,24 @@ export function getHotelForDate(date, hotelArr) {
     return dayjs(date, 'DD-MM-YYYY').isSameOrAfter(dayjs(hotel.checkInDate,'DD-MM-YYYY')) 
         && dayjs(date, 'DD-MM-YYYY').isSameOrBefore(dayjs(hotel.checkOutDate, 'DD-MM-YYYY'));
   });
+}
+
+export function doesHGOverlap(hg, hotelArr) {
+    const newCheckIn = dayjs(hg.startDate, 'DD-MM-YYYY');
+    const newCheckOut = dayjs(hg.endDate, 'DD-MM-YYYY');
+
+    return hotelArr.some(existingHotel => {
+        const existingCheckIn = dayjs(existingHotel.checkInDate, 'DD-MM-YYYY');
+        const existingCheckOut = dayjs(existingHotel.checkOutDate, 'DD-MM-YYYY');
+        // Check if ranges has no overlap
+        const noOverlap =
+            newCheckOut.isSameOrBefore(existingCheckIn) || newCheckIn.isSameOrAfter(existingCheckOut);
+        if (!noOverlap) {
+            console.log("AHHHH",existingHotel);
+            alert(`Error: Cannot confirm this hotel. There is an overlap wit ${existingHotel.name}, 
+                which has a Check-In date: ${existingCheckIn.format('DD-MM-YYYY')} 
+                and Check-Out date: ${existingCheckOut.format('DD-MM-YYYY')}`);
+        }
+        return !noOverlap;
+    });
 }
