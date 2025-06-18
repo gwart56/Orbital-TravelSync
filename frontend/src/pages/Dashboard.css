@@ -1,4 +1,4 @@
-/* ───────── Dashboard full-bleed background ───────── */
+/* ───────── Dashboard Background ───────── */
 .dashboard-page {
   position: relative;
   left: 50%;
@@ -6,50 +6,115 @@
   margin-left: -50vw;
   margin-right: -50vw;
   width: 100vw;
-
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 40px 20px;
   overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .dashboard-page::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url("https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop");
   background-size: cover;
   background-position: center;
   z-index: -1;
+  filter: brightness(0.75);
 }
 
-/* ───────── Translucent Card ───────── */
+/* ───────── Card ───────── */
 .dashboard-card {
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background-color: rgba(255, 255, 255, 0.92);
+  padding: 50px;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
   max-width: 600px;
   width: 100%;
   text-align: center;
-  color: #333;
+  color: #222;
 }
 
-.dashboard-card h1,
+.dashboard-card h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0077cc;
+  margin-bottom: 10px;
+}
+
 .dashboard-card h2 {
+  font-size: 1.3rem;
   margin-bottom: 20px;
 }
 
 .dashboard-card a {
   display: inline-block;
-  margin: 10px;
+  margin: 12px 8px;
+  padding: 10px 20px;
   font-weight: bold;
-  color: #0077cc;
+  color: #fff;
+  background-color: #0077cc;
+  border-radius: 6px;
   text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
 .dashboard-card a:hover {
-  text-decoration: underline;
+  background-color: #005fa3;
+}
+
+/* ───────── Itinerary Section ───────── */
+.itins-container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  margin: auto;
+  margin-bottom: 40px;
+}
+
+.itin-link-container {
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 15px 25px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+}
+
+/* ───────── Buttons ───────── */
+.itin-button {
+  background-color: #28a745 !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+}
+
+.delete-act-butt {
+  background-color: #dc3545 !important;
+  color: white !important;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+button.btn-primary {
+  background-color: #0077cc !important;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #005fa3 !important;
 }

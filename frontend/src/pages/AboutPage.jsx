@@ -89,35 +89,29 @@ function AboutPage() {
 
 
         {/* Team Section */}
-<div className="text-center mb-5">
-  <h2 className="text-white bg-dark bg-opacity-50 px-4 py-2 rounded d-inline-block">
-    Meet the Team
-  </h2>
-  <p className="text-white bg-dark bg-opacity-50 px-4 py-3 rounded d-inline-block mt-3">
-    We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips <strong>smoother</strong>. 
-    We aim to launch your travel plans to <strong>new heights</strong>.
-  </p>
-</div>
+        <div className="text-center mb-5">
+          <h2 className="text-white bg-dark bg-opacity-50 px-4 py-2 rounded d-inline-block">
+            Meet the Team
+          </h2>
+          <p className="text-white bg-dark bg-opacity-50 px-4 py-3 rounded d-inline-block mt-3">
+            We're <strong>TravelSync</strong>, a team of developers and travel enthusiasts building tools to make group trips <strong>smoother</strong>. 
+            We aim to launch your travel plans to <strong>new heights</strong>.
+          </p>
+        </div>
 
-{/* Final CTA */}
-<div className="text-center">
-  <button
-    className="btn btn-lg fw-bold shadow mx-auto d-block"
-    style={{ backgroundColor: "#90ee90", color: "#000", border: "none" }}
-    onClick={handleClick}
-  >
-    Start Planning Your Adventure
-  </button>
+        {/* Final CTA */}
+        <div className="text-center">
+          <button
+            className="cta-glass-button shadow-lg mx-auto d-block"
+            onClick={handleClick}
+          >
+            🚀 Start Planning Your Adventure!
+          </button>
 
-  <p
-    className="text-white bg-dark bg-opacity-75 px-4 py-2 rounded mx-auto d-inline-block"
-    style={{ marginTop: "3rem" }} // Pushes the slogan down
-  >
-    Sync Your Plans. Travel in Sync.
-  </p>
-</div>
-
-
+          <p className="cta-slogan mx-auto">
+            ✨ Sync Your Plans. Travel in Sync. ✨
+          </p>
+        </div>
 
       </div>
     </div>
