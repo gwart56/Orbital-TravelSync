@@ -8,6 +8,7 @@ import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, doesHGO
 import { setItinHotels } from "../data/activity";
 import HGInfo from "../components/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
+import { AutoSaveButton } from "../components/AutoSaver";
 
 function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
@@ -182,6 +183,8 @@ export function HotelsPage() {
                 <>
                     <ItineraryInfo itin={itin} setItin={setItin} />
                     <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>To Activities</button>
+                    <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
+                    <AutoSaveButton itin={itin} saveToDB={saveToDB} />
                     <HotelGroupsContent itin={itin} setItin={setItin} />
                     <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
                     <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>

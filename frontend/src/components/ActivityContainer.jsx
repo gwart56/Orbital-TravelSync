@@ -88,7 +88,9 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               type="text"
               name="locName"
               value={location.locName}
-              readOnly
+              onChange={(e) =>
+                setLocation((prev) => ({ ...prev, locName: e.target.value }))
+              }
               required
               placeholder="e.g. McDonald's"
             />
@@ -101,7 +103,9 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               type="text"
               name="locAddress"
               value={location.locAddress}
-              readOnly
+              onChange={(e) =>
+                setLocation((prev) => ({ ...prev, locAddress: e.target.value }))
+              }
               required
               placeholder="e.g. 123 Normal Rd"
             />
