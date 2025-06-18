@@ -109,7 +109,7 @@ export function doesHGOverlap(hg, hotelArr) {
             newCheckOut.isSameOrBefore(existingCheckIn) || newCheckIn.isSameOrAfter(existingCheckOut);
         if (!noOverlap) {
             console.log("AHHHH",existingHotel);
-            alert(`Error: Cannot confirm this hotel. There is an overlap wit ${existingHotel.name}, 
+            alert(`Error: Cannot confirm this hotel. There is an overlap with ${existingHotel.name}, 
                 which has a Check-In date: ${existingCheckIn.format('DD-MM-YYYY')} 
                 and Check-Out date: ${existingCheckOut.format('DD-MM-YYYY')}`);
         }
