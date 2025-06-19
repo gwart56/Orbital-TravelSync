@@ -1,0 +1,38 @@
+/* Fullscreen override wrapper */
+.login-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  background: white;
+  z-index: 0;
+}
+
+/* Left: Sign-up form */
+.login-form-container {
+  flex: 1;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1;
+  background-color: white;
+}
+
+/* Right: Full-height image */
+.login-image-container {
+  flex: 1;
+  height: 100%;
+}
+
+.login-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}

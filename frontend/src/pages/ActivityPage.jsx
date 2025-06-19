@@ -9,9 +9,10 @@ import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { defConfirmedHotelArr, getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { AutoSaveButton } from '../components/AutoSaver';
 
 
-//each ActivityContent contains multiple ActivityContainers in a day (BEIGE REGION)
+//each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
 function ActivityContent({activityArr, dayId, itin, setItin}) {
   const activities = activityArr;
 
@@ -56,7 +57,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   );
 }
 
-//each TravelDayContent contains Day No., Date, ActivityContent (LIGHT GREEN REGION)
+//each TravelDayContent contains Day No., Date, ActivityContent 
 function TravelDayContent({dayArr, itin, setItin}) {
   const travelDays = dayArr;
   const confirmedHotelsArr = 
@@ -154,9 +155,10 @@ function ActivityPage() {
     ,[itinDbId]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
-  const saveToDB = async (itin) => {
+  const saveToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
     try {
       await updateItineraryById(itinDbId, itin);
+      console.log('SAVED TO DB!');
     } catch (err) {
       console.error('Failed to update Itinerary...', err);
     }
@@ -168,13 +170,14 @@ function ActivityPage() {
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
-                <ItineraryInfo
+                <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
                   setItin={setItin}
                 />
                 <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>To Hotel Comparisons</button>
                 <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-                <TravelDayContent 
+                <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+                <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                   dayArr={itin.travelDays}
                   itin={itin}
                   setItin={setItin}

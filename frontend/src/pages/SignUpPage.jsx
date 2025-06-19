@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from "../lib/AuthContext";
-import './LoginPage.css';
+import './SignUpPage.css';
 
 function SignUpContent() {
     const [errorMsg, setError] = useState(''); //initialise to no errors
@@ -111,18 +111,20 @@ function SignUpContent() {
 }
 
 export default function SignUpPage() {
-    return (<>
-        <Header />
-        <div className="login-container">
-            <div className="login-image-container">
-                <img 
-                    style={{backgroundAttachment: "fixed"}}
-                    src="https://images.unsplash.com/photo-1625472331999-03e8bd352473?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                    alt="kamikochi scenery"
-                    className="login-image"
-                />
+    return (
+        <div className="login-fullscreen-wrapper">
+            <Header />
+            <div className="login-container">
+                <div className="login-image-container">
+                    <img 
+                        style={{ backgroundAttachment: "fixed" }}
+                        src="https://121clicks.com/wp-content/uploads/2024/09/best-top-travel-landscape-photography-20.jpg" 
+                        alt="travel landscape scenery"
+                        className="login-image"
+                    />
+                </div>
+                <SignUpContent />
             </div>
-            <SignUpContent /> {/*class: login-form-container*/}
         </div>
-    </>)
+    );
 }

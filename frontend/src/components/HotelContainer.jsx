@@ -1,7 +1,10 @@
 import { useState } from "react";
+import LocationPicker from "./LocationPicker";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [location, setLocation] = useState( hotel.address );
+  const [isPickingLocation, setIsPickingLocation] = useState(false);
   
   const handleEditClick = () => {
     setIsEditing(true);
@@ -22,6 +25,15 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
     onSave(updatedHotel);
     setIsEditing(false);
   };
+
+   function handleLocationSave(newLocation) { //returns {locName, locAddress}
+    if (!newLocation) {
+      return;
+    }
+    console.log(newLocation);
+    setLocation(newLocation.locAddress);
+    setIsPickingLocation(false);
+  }
 
   return (
     <div className="container border rounded p-3 my-3">
@@ -50,26 +62,6 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             />
           </div>
 
-          <div className="mb-2">
-            <strong>Address: </strong>
-            <input
-              type="text"
-              name="address"
-              defaultValue={hotel.address}
-              className="form-control"
-            />
-          </div>
-
-          <div className="mb-3">
-            <strong>Link: </strong>
-            <input
-              type="url"
-              name="link"
-              defaultValue={hotel.link}
-              className="form-control"
-            />
-          </div>
-
           <div className="mb-3">
             <strong>Check-in Time: </strong>
             <input
@@ -89,6 +81,43 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               className="form-control d-inline w-auto"
             />
           </div>
+
+          <div className="mb-3">
+            <strong>Link: </strong>
+            <input
+              type="url"
+              name="link"
+              defaultValue={hotel.link}
+              className="form-control"
+            />
+          </div>
+
+          <div className="mb-2">
+            <strong>Address: </strong>
+            <input
+              type="text"
+              name="address"
+              value={location}
+              readOnly
+              className="form-control"
+            />
+          </div>
+
+          {isPickingLocation ? (
+            <LocationPicker
+              onSave={(loc) => handleLocationSave(loc)}
+              onClose={() => setIsPickingLocation(false)}
+              location={location}
+              setLocation={setLocation}
+            />) : (
+              <button
+              type="button"
+              className="btn btn-outline-primary btn-sm ms-2 m-3"
+              onClick={() => setIsPickingLocation(true)}
+          >
+                Pick Location
+          </button>
+            )}
 
           <div className="d-flex gap-2 justify-content-center">
             <button type="submit" className="btn btn-success me-2">

@@ -155,8 +155,10 @@ function DashboardContent() {
     }
 
     return (<>
-        <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync, {userName}</h1>
-        <h2 style={{margin: "20px"}}>My Itineraries</h2>
+        <h1 className="text-primary" style={{ marginTop: "90px", fontWeight: "700" }}>
+        ✈️ Welcome to TravelSync, {userName}
+        </h1>
+        <h2 style={{ margin: "20px", fontWeight: "600", color: "#444" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
         <button className="btn btn-danger" onClick={handleClick}>Log Out</button>
         <button className="btn btn-outline-danger" onClick={handleDeleteAccount}>

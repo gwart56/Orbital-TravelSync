@@ -9,6 +9,8 @@ import AboutPage from './pages/AboutPage';
 import ActivityPage from './pages/ActivityPage';
 import { HotelsPage } from './pages/HotelsPage';
 import ContactPage from './pages/ContactPage';
+import MapPage from './pages/MapPage';
+import LocationPicker from './components/LocationPicker';
 
 function AppRoutes() {
 
@@ -24,6 +26,7 @@ function AppRoutes() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/dashboard" element={<Dashboard />}/>
             <Route path="/contact" element={<ContactPage/>} />
+            <Route path="/map" element={<LocationPicker />}/>
 
             {/* Protected Route */}
             <Route path="/activities/:id" element={session ? <ActivityPage /> : <Navigate to="/dashboard" />}/>
