@@ -38,7 +38,10 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
       geocoder.current.geocode({ location: latLng }, (results, status) => {
       if (status === "OK" && results[0]) {
           const address = results[0].formatted_address;
-          const name = results[0].address_components?.[0]?.short_name || "Dropped Pin";
+          // const components = results[0]?.address_components || [];
+          // const premiseComponent = components.find(c => c.types.includes("premise"));
+          // const name = premiseComponent?.long_name || "Dropped Pin";
+          const name = "Dropped Pin";
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
@@ -74,7 +77,18 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     if (!isLoaded) return <div>Loading Map...</div>;
 
     return (
-      <div className="p-2 m-3 bg-light rounded">
+      <div className="p-2 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
+        position:'fixed',
+        top: '10vh',
+        left: '10vw',
+        width: '80vw',
+        height: '80vh',
+        backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        zIndex: 1050 
+        }}>
         <div className=" -lg" role="document" onClick={onClose}>
           <div className="" onClick={e => e.stopPropagation()}>
             <div className="">
@@ -91,6 +105,13 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                       type="text"
                       className="form-control mb-3"
                       placeholder="Search location"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();     // Prevents form submit
+                          e.stopPropagation();    // Stops the event from bubbling
+                          // handleSave();
+                          }
+                      }}
                   />
                   </Autocomplete>
               </div>
@@ -114,7 +135,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
               </GoogleMap>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-primary" onClick={handleSave}>Save Location</button>
+              <button type="button" className="btn btn-success" onClick={handleSave}><strong>Save Location</strong></button>
               <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
             </div>
           </div>

@@ -50,7 +50,7 @@ export class TravelDay {
     activities;
 
     constructor(date, activityArr) {
-        this.activities = [...activityArr];
+        this.activities = activityArr? [...activityArr] : [];
         this.id = TravelDay.count;
         TravelDay.count++;
     }
@@ -184,6 +184,19 @@ export function updateItinName(itin, newName) {
 export function setItinHotels(itin, hotelArray) {//NOTE HOTEL REFERS TO HOTEL GROUPS HERE
     const newItin = new Itinerary(itin.name, itin.travelDays, itin.startDate, hotelArray);
     newItin.id = itin.id;
+    return newItin;
+}
+
+export function createNewItin(name, startDate, numDays) {
+    const dayArr = [];
+    for (let i = 0; i < numDays; i++) {
+        if (i == 0) {
+            dayArr.push(new TravelDay(0, defActivities)); //might change later, just for testing
+        } else {
+            dayArr.push(new TravelDay());
+        }
+    }
+    const newItin = new Itinerary(name, dayArr, startDate, []);
     return newItin;
 }
 
