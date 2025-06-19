@@ -77,12 +77,12 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     if (!isLoaded) return <div>Loading Map...</div>;
 
     return (
-      <div className="p-2 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
+      <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
         top: '10vh',
         left: '10vw',
         width: '80vw',
-        height: '80vh',
+        height: '85vh',
         backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
         // display: 'flex',
         // justifyContent: 'center',
@@ -135,8 +135,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
               </GoogleMap>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-success" onClick={handleSave}><strong>Save Location</strong></button>
-              <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
+              <button type="button" className="btn btn-success m-2" onClick={handleSave}><strong>Save Location</strong></button>
+              <button type="button" className="btn btn-secondary m-2" onClick={onClose}>Cancel</button>
             </div>
           </div>
         </div>
