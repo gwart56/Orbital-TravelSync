@@ -84,8 +84,13 @@ function ItineraryLinks({userId, navigate}) {
             </div>
             )
 
-        : itinsArray.map(it => (
-            <div className="d-flex justify-content-center" key={it.itinDbId}>
+        : itinsArray.map((it, index) => (
+            <div
+            className="d-flex justify-content-center fade-in"
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+            key={it.itinDbId}
+            >
+
                 <div
                     className="itin-link-container d-flex align-items-center flex-wrap gap-3 clickable-card"
                     onClick={() => goToActivityPage(it.itinDbId)}
