@@ -177,12 +177,21 @@
 }
 
 
-.itin-detail.date,
-.itin-detail.days {
+.itin-detail.date {
   flex-shrink: 0;
   padding-left: 40px;
   padding-right: 40px;
 }
+
+.itin-detail.days {
+  flex-shrink: 0;
+  width: 170px; /* 👈 fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* or center */
+}
+
+
 
 @keyframes fadeInUp {
   from {

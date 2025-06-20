@@ -45,6 +45,8 @@
   padding: 20px;
   margin: 20px auto;
   max-width: 800px;
+  width: 100%;
+  min-width: 600px; /* Prevents container from shrinking too small */
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
@@ -118,4 +120,114 @@
   background-color: #65e295;
   box-shadow: 0 0 10px #65e295, 0 0 20px rgba(101, 226, 149, 0.4);
   transform: translateY(-3px);
+}
+
+.empty-activity-message {
+  font-size: 1.6rem; /* Adjust as needed: try 1.8rem for larger */
+  font-weight: 600;
+  color: #333 !important; /* Dark grey */
+  text-align: center;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1) !important;
+  padding: 20px;
+}
+
+.empty-itinerary-box {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border-radius: 16px !important;
+  padding: 30px !important;
+  margin: 30px auto !important;
+  max-width: 800px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+  width: 100% !important;
+  border-left: none !important;
+}
+
+.empty-itinerary-message {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #000000 !important;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: none !important;
+}
+
+.empty-itinerary-box {
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Container for the day header */
+.day-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Large blue “Day X” label */
+.day-label {
+  color: #3498db; /* softer sky blue */
+  font-size: 2.8rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* stronger, smoother shadow */
+}
+
+/* DELETE BUTTON: Top right of day header */
+.delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #dc3545;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #e14a59;
+  transform: translateY(-2px);
+}
+
+/* Smaller subtext like date / hotel lines */
+.day-subtext {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #333;
+  margin: 8px 0;
+  text-shadow: none;
+}
+
+.new-activity-butt {
+  background-color: #28a745;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  min-width: 180px;
+  text-align: center;
+}
+
+.new-activity-butt:hover {
+  background-color: #34c759;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
