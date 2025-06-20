@@ -25,11 +25,33 @@ export function AutoSaveButton({itin, saveToDB}) {
     return (
         <>
         <button 
-            className={`btn btn-${autoSave?'success':'danger'}`}
-            onClick={() => setAutoSave(prev => !prev)} //toggles autosave
-        >
-            {autoSave?'AUTOSAVE: ON': 'AUTOSAVE: OFF'}   
+            className={`btn btn-${autoSave ? 'success' : 'danger'}`}
+            onClick={() => setAutoSave(prev => !prev)}
+            style={{
+                fontWeight: 600,
+                padding: "10px 20px",
+                fontSize: "1rem",
+                borderRadius: "12px",
+                minWidth: "160px",
+                textAlign: "center",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                transform: "translateY(0)",
+                lineHeight: "1.4", // helps match the height better
+            }}
+            onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
+                e.currentTarget.style.transform = "translateY(-3px)";
+            }}
+            onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+                e.currentTarget.style.transform = "translateY(0)";
+            }}
+            >
+            {autoSave ? '💾 AUTOSAVE: ON' : '💾 AUTOSAVE: OFF'}
         </button>
+
+
         {successfulMsg && ( //DISPLAY SUCCESS MSG
                     <div className="alert alert-success mt-3 w-200" role="alert">
                         {successfulMsg}

@@ -172,28 +172,31 @@ function ActivityPage() {
     return (
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
-            <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to ✈️TravelSync!</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
                   setItin={setItin}
                 />
-                <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>To Hotel Comparisons</button>
-                <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-                <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
-                <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
-                  dayArr={itin.travelDays}
-                  itin={itin}
-                  setItin={setItin}
-                /> 
+                <div className="activity-page-top-buttons">
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
+                  <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
+                  <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+                  <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
+                    dayArr={itin.travelDays}
+                    itin={itin}
+                    setItin={setItin}
+                    
+                  /> 
+                </div>
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
             <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save</button>
             <div style={{height: "20px"}}/>
             <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
             <div style={{height: "20px"}}/>
-            <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
+            {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );
