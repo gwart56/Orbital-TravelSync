@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LocationPicker from "./LocationPicker";
+import HotelPicker from "./HotelPicker";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -106,7 +107,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           </div>
 
           {isPickingLocation ? (
-            <LocationPicker
+            <HotelPicker
               onSave={(loc) => handleLocationSave(loc)}
               onClose={() => setIsPickingLocation(false)}
               location={location}
