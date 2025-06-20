@@ -178,6 +178,7 @@ function DashboardContent() {
 export default function Dashboard(){
     const {session} = useAuthContext();
     const user = session?.user;
+    console.log("Confirmed at:", session?.user?.email_confirmed_at);
     return (
         <>
             <Header />
