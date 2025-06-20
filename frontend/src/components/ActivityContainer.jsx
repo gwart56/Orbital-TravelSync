@@ -55,7 +55,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
 
           <div className="d-flex gap-2 justify-content-end">
             <button className="btn btn-secondary btn-sm" onClick={() => setIsEditing(true)}>Edit</button>
-            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(id)}><MdDeleteForever /></button>
+            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(id)}><span>Delete </span> <MdDeleteForever /></button>
           </div>
         </>
       ) : (

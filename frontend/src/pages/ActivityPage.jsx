@@ -97,7 +97,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
       <div className="travel-day-container" key={d.id}>
         <h2>
           <span>Day {totalNumDays++ + 1}</span>
-          <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><MdDeleteForever /></button>
+          <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><span>Delete </span> <MdDeleteForever /></button>
         </h2>
         <h5>
           Date: {latestdate} 

@@ -99,6 +99,7 @@ function ItineraryLinks({userId, navigate}) {
                             }
                         }}
                         >
+                        <span>Delete </span> 
                         <MdDeleteForever size={20} />
                     </button>
                     </div>
