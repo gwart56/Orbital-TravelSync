@@ -6,6 +6,19 @@
   text-align: center;
 }
 
+.pac-container { /*THIS IS VERY IMPORTANT!!!!!!! FOR AUTOCOMPLETE DROPDOWN MENU */
+  z-index: 9999;
+}
+
+.pac-item {
+  font-size: 14px;
+  padding: 10px;
+}
+
+.pac-item:hover {
+  background-color: #eee;
+}
+
 /* Optional: prevent horizontal scrollbars */
 body {
   margin: 0;

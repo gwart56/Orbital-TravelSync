@@ -1,8 +1,8 @@
 import { supabase } from "./supabaseClient";
-import { defaultItin, Itinerary } from "../data/activity";
+import { createNewItin, defaultItin, Itinerary } from "../data/activity";
 
-export async function addItineraryForUser(userId) {
-    const plainItin = JSON.parse(JSON.stringify(defaultItin)); // convert class to plain object
+export async function addItineraryForUser(userId, name, startDate, numDays) {
+    const plainItin = JSON.parse(JSON.stringify(createNewItin(name, startDate, numDays))); // convert class to plain object
 
     const { data, error } = await supabase
     .from('itineraries')

@@ -1,10 +1,12 @@
 import Header from "../components/Header";
+import dayjs from "dayjs";
 import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
 import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
 import { useState, useEffect } from "react";
 import { MdDeleteForever } from 'react-icons/md';
 import "./Dashboard.css";
+import ItineraryModal from "../components/ItineraryModal";
 
 function DashboardNotLoggedIn() {
     return (
@@ -25,15 +27,19 @@ function ItineraryLinks({userId, navigate}) {
         return (<h3>Error: No user</h3>);
     }
     const [itinsArray, setItins] = useState(null); //***NOTE THE ITINSARRAY HERE 
+    const [isModalOpen, setIsModalOpen] = useState(false);
     // IS IN FORM [..., {
         // itinDbId: *itin supabase id*, 
         // itin: *ItineraryClassObj*
         // dateCreated: *date created*
     //}] ***jus for my own ref
 
-    const addNewItinerary = async () => {
+    const addNewItinerary = async ({name, startDate, numDays}) => {
         try {
-            const newItin = await addItineraryForUser(userId);
+            const newItin = await addItineraryForUser(userId, 
+                name, 
+                dayjs(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY'),  //format the startDate
+                numDays);
             console.log('successfully created new itinerary');
             console.log(newItin);
             goToActivityPage(newItin.id);
@@ -101,9 +107,13 @@ function ItineraryLinks({userId, navigate}) {
             <div className="itins-container">
                 {itinsElements}
             </div>
-            <button className="btn btn-primary btn-lg px-4 mt-4 mb-4" onClick={addNewItinerary}>
+            <button className="btn btn-primary btn-lg px-4 mt-4 mb-4" onClick={() => setIsModalOpen(true)}>
                 Create New Itinerary
             </button>
+            {isModalOpen && <ItineraryModal 
+                onCreate={addNewItinerary} 
+                onClose={() => setIsModalOpen(false)}
+                />}
         </div>
     );
 }
@@ -170,6 +180,7 @@ function DashboardContent() {
 export default function Dashboard(){
     const {session} = useAuthContext();
     const user = session?.user;
+    console.log("Confirmed at:", session?.user?.email_confirmed_at);
     return (
         <>
             <Header />

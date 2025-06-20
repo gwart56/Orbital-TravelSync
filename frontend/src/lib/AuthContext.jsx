@@ -9,16 +9,28 @@ export function AuthContextProvider({children}) {
 
     const signUpNewUser = async(email, pw, name) => {
         const { data, error } = await supabase.auth.signUp({ //handles sign up
-                email: email,
-                password: pw,
-                options: { data: { name: name } }, //send xtra info about the name
-            });
+            email: email,
+            password: pw,
+            options: { data: { name: name } }, //send xtra info about the name
+        });
 
-            if (error) {
-                console.error('error: ', error.message);
-                return {success: false, error: error.message}; //returns object which contains the error
-            }
-            return {success: true, data};
+        if (error) {
+            console.error('error: ', error.message);
+            return {success: false, error: error.message}; //returns object which contains the error
+        }
+
+        const user = data.user;
+        
+        // If identities is empty, the user already exists (confirmed or not)
+        if (user?.identities?.length === 0) {
+            return {
+                success: false,
+                error: "Email already registered. Try logging in instead.",
+            };
+        }
+
+        // console.log("SIGN UP DATA",data.user);
+        return {success: true, data};
     }
 
     const signInUser = async(email, pw) => {

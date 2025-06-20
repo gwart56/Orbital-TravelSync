@@ -98,7 +98,9 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="text"
               name="address"
               value={location}
-              readOnly
+              onChange={(e) =>
+                setLocation(e.target.value)
+              }
               className="form-control"
             />
           </div>
