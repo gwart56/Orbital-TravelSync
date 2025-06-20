@@ -187,7 +187,7 @@ export function HotelsPage() {
     
 
     return (
-        <div className="background-image">
+        <div className="hotel-background-image">
             <Header />
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>TravelSync</h1>
             {itin? (
