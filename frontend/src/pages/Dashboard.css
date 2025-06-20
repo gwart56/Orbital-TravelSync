@@ -103,7 +103,7 @@
 }
 
 /* ───────── Dashboard Background ───────── */
-.dashboard-background {
+/* .dashboard-background {
   position: fixed;
   top: 0;
   left: 0;
@@ -113,6 +113,26 @@
   background-size: cover;
   background-position: center;
   z-index: -1;
+} */
+
+.dashboard-background {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 0 5vw;
+  overflow-x: hidden;
 }
 
 /* ───────── Clickable Itinerary Card ───────── */
