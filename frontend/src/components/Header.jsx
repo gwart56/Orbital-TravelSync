@@ -31,6 +31,7 @@ export default function Header() {
         <Link to="/dashboard" className="fs-4 fw-bold text-decoration-none text-primary">
             ✈️TravelSync
         </Link>
+        
         <nav className="d-flex gap-3">
             <Link className="text-decoration-none fw-medium text-dark nav-link-hover mx-2" to="/dashboard">
                 Home
@@ -53,15 +54,7 @@ export default function Header() {
             console.log('Searching...');
           }}
         >
-          <input
-            type="text"
-            placeholder="Search"
-            className="form-control form-control-sm rounded-pill me-2"
-            style={{ maxWidth: '200px' }}
-          />
-          <button type="submit" className="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
-            <FaSearch />
-          </button>
+
         </form>
         {user && (
         <button

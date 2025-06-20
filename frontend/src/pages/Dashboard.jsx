@@ -77,34 +77,44 @@ function ItineraryLinks({userId, navigate}) {
 
 
     const itinsElements = itinsArray? 
-        itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
+        itinsArray.length === 0 ? (
+            <div className="empty-itin-message">
+                <h3>🗺️ No trips planned - let's change that!</h3>
+                <p className="text-muted">Click the button below to create your first itinerary.</p>
+            </div>
+            )
+
         : itinsArray.map(it => (
             <div className="d-flex justify-content-center" key={it.itinDbId}>
-                <div className="itin-link-container d-flex align-items-center flex-wrap gap-3">
-                    <span><strong>Itinerary Name:</strong> {it.itin.name}</span>
-                    {/* <span className="m-3">Created: {it.dateCreated}</span> */}
-                    <span><strong>Itinerary Date:</strong> {it.itin.startDate}</span>
-                    <span><strong>No. of Days:</strong> {it.itin.travelDays.length}</span>
+                <div
+                    className="itin-link-container d-flex align-items-center flex-wrap gap-3 clickable-card"
+                    onClick={() => goToActivityPage(it.itinDbId)}
+                >
+                    <div className="itin-detail name"><h4><strong>🌍</strong> {it.itin.name}</h4></div>
+                    <div className="itin-detail date"><h4><strong>📅</strong> {it.itin.startDate}</h4></div>
+                    <div className="itin-detail days"><h4><strong>🕒</strong> {it.itin.travelDays.length} days</h4></div>
 
-                    <div className="d-flex gap-2">
-                    <button className="itin-button btn btn-success" onClick={() => goToActivityPage(it.itinDbId)}>
-                        Edit
-                    </button>
-                    <button
-                        className="delete-act-butt btn btn-danger align-items-center"
-                        onClick={() => {
+
+                    <div
+                    className="d-flex gap-2"
+                    onClick={(e) => e.stopPropagation()} // allow delete without triggering edit
+                    >
+                        <button
+                            className="delete-act-butt btn btn-danger align-items-center"
+                            onClick={() => {
                             const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
                             if (confirmDelete) {
-                            deleteItinerary(it.itinDbId);
+                                deleteItinerary(it.itinDbId);
                             }
-                        }}
+                            }}
                         >
-                        <span>Delete </span> 
-                        <MdDeleteForever size={20} />
-                    </button>
+                            <span>Delete </span> 
+                            <MdDeleteForever size={20} />
+                        </button>
                     </div>
                 </div>
             </div>
+
         )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
 
     return (
@@ -169,17 +179,17 @@ function DashboardContent() {
         }
     }
 
-    return (<>
+    return (<div className="dashboard-background">
         <h1 className="text-primary" style={{ marginTop: "90px", fontWeight: "700" }}>
         ✈️ Welcome to TravelSync, {userName}
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "600", color: "#444" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
-        <button className="btn btn-outline-danger mx-2" onClick={handleClick}>Log Out</button>
+        <button className="btn btn-danger mx-2" onClick={handleClick}>Log Out</button>
         <button className="btn btn-danger mx-2" onClick={handleDeleteAccount}>
             Delete Account
         </button>
-    </>)
+    </div>)
 }
 
 export default function Dashboard(){
