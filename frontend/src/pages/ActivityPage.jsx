@@ -170,7 +170,7 @@ function ActivityPage() {
   }
 
     return (
-        <div className="">
+        <div className="background-image d-flex flex-column align-items-center">
             <Header />
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
@@ -193,12 +193,6 @@ function ActivityPage() {
             <div style={{height: "20px"}}/>
             <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
             <div style={{height: "20px"}}/>
-            {/*buttons below just for testing*/}
-            {/* <div style={{height: "50px"}}/> 
-            <button className='btn btn-primary' onClick={()=>saveToLocal(itin)}>Save To Local Storage</button>
-            <div style={{height: "20px"}}/> 
-            <button className='btn btn-primary' onClick={()=>localStorage.removeItem('itinLocal')}>Clear Local Storage</button>
-            <div style={{height: "20px"}}/>  */}
             <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
             <div style={{height: "50px"}}/>
         </div>

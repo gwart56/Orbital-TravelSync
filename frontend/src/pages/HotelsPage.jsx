@@ -9,6 +9,7 @@ import { setItinHotels } from "../data/activity";
 import HGInfo from "../components/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
 import { AutoSaveButton } from "../components/AutoSaver";
+import "./HotelsPage.css";
 
 function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
@@ -186,7 +187,7 @@ export function HotelsPage() {
     
 
     return (
-        <>
+        <div className="background-image">
             <Header />
             <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>TravelSync</h1>
             {itin? (
@@ -201,6 +202,6 @@ export function HotelsPage() {
                 </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}
             
-        </>
+        </div>
     );
 }
