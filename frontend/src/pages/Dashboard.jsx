@@ -185,10 +185,13 @@ function DashboardContent() {
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "600", color: "#444" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
-        <button className="btn btn-danger mx-2" onClick={handleClick}>Log Out</button>
-        <button className="btn btn-danger mx-2" onClick={handleDeleteAccount}>
-            Delete Account
-        </button>
+        <div className="d-flex mb-5">
+            <button className="btn btn-danger m-3" onClick={handleClick}>Log Out</button>
+            <button className="btn btn-danger m-3" onClick={handleDeleteAccount}>
+                Delete Account
+            </button>
+        </div>
+        
     </div>)
 }
 
