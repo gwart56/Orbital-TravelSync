@@ -23,7 +23,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     const geocoder = useRef(null);        // Ref for geocoder instance
 
     const { isLoaded, loadError } = useJsApiLoader({// loads api
-      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, //***CHANGE THIS LINE WHEN GO BACK TO VERCEL
+      googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, //*** USE THIS LINE WHEN USING NPM RUN DEV
+      // googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY,
       libraries: libraries
     });
 
@@ -135,7 +136,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
               </GoogleMap>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-success m-2" onClick={handleSave}><strong>Save Location</strong></button>
+              <button type="button" className="btn btn-success m-2" onClick={handleSave}><strong>Choose Location</strong></button>
               <button type="button" className="btn btn-secondary m-2" onClick={onClose}>Cancel</button>
             </div>
           </div>

@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+//THIS PAGE MAY OR MAY NOT BE USED. WIP
+import { useState, useRef } from "react";
 import {
   GoogleMap,
   Marker,

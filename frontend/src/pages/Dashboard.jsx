@@ -79,8 +79,8 @@ function ItineraryLinks({userId, navigate}) {
     const itinsElements = itinsArray? 
         itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
         : itinsArray.map(it => (
-            <div className="d-flex justify-content-center">
-                <div key={it.itinDbId} className="itin-link-container d-flex align-items-center flex-wrap">
+            <div className="d-flex justify-content-center" key={it.itinDbId}>
+                <div className="itin-link-container d-flex align-items-center flex-wrap">
                     <span className="m-3">Created: {it.dateCreated}</span>
                     <span>Itinerary Date: {it.itin.startDate}</span>
                     <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
