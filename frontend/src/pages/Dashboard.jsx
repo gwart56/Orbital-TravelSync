@@ -11,8 +11,8 @@ import ItineraryModal from "../components/ItineraryModal";
 function DashboardNotLoggedIn() {
     return (
         <div className="dashboard-page">
-            <div className="dashboard-card">
-                <h1 className="text-primary">Welcome to TravelSync</h1>
+            <div className="dashboard-card fade-in">
+                <h1 className="text-primary">Welcome to ✈️TravelSync!</h1>
                 <h2>Log in to plan your next holiday!</h2>
                 <Link to="/login">Click here to log in!</Link><br />
                 <Link to="/signup">Don't have an account? Sign up here!</Link>
@@ -196,7 +196,7 @@ function DashboardContent() {
 
     return (<div className="dashboard-background">
         <h1 className="text-primary" style={{ marginTop: "90px", fontWeight: "700" }}>
-        ✈️ Welcome to TravelSync, {userName}
+        Welcome to ✈️TravelSync, {userName}
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "800", color: "#444", fontSize: "2.5rem" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
