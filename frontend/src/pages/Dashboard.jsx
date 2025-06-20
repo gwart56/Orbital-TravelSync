@@ -61,15 +61,25 @@ function ItineraryLinks({userId, navigate}) {
     useEffect(() => {
         const fetchItins = async () => {
             try {
-                const loadedItins = await loadAllItineraryForUser(userId); //wait to get itin class obj by id from supabase
-                setItins(loadedItins);
-            } catch (err) {
+                const loadedItins = await loadAllItineraryForUser(userId);
+
+                // Sort by startDate (assuming format is DD-MM-YYYY)
+                const sorted = loadedItins.sort((a, b) => {
+                    const dateA = dayjs(a.itin.startDate, 'DD-MM-YYYY');
+                    const dateB = dayjs(b.itin.startDate, 'DD-MM-YYYY');
+                    return dateA - dateB; // ascending (earliest first)
+                    // return dateB - dateA; // descending (latest first)
+                });
+
+                setItins(sorted);
+                } catch (err) {
                 console.error("failed to load itins", err);
             }
-        }
+        };
+
         fetchItins();
-    }
-    , []);
+    }, []);
+
 
     const goToActivityPage = (itinDbId) => {
         navigate(`/activities/${itinDbId}`);

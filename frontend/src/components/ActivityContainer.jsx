@@ -123,7 +123,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
                 className="btn btn-outline-primary btn-sm ms-2"
                 onClick={() => setIsPickingLocation(true)}
               >
-                Pick Location
+                Choose Address On Map
           </button>
           )}
           <div className="d-flex gap-2 justify-content-end">

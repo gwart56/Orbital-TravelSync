@@ -163,9 +163,19 @@
 }
 
 .itin-detail.name {
-  flex-grow: 2;
+  flex: 1 1 0;
   min-width: 0;
+  max-width: 400px; /* or whatever max width you want */
+  overflow: hidden;
 }
+
+.itin-detail.name h4 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 
 .itin-detail.date,
 .itin-detail.days {
