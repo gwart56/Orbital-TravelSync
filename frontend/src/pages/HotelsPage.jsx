@@ -73,7 +73,12 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
         setItin(prev => setItinHotels(prev, newHotelGrps));
     }
 
-    const hotelsElements = hotels
+    const hotelsElements = hotels.length==0
+        ? (<div className="activity-container border rounded p-3 my-3"
+            style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
+            <h3>No Hotels in this Hotel Group. Please Click "Add New Hotel To Group" to add new ones.</h3>
+            </div>)
+        :hotels
         .map(h => (
         <div>
             <HotelContainer
@@ -112,7 +117,12 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
 
 function HotelGroupsContent({itin, setItin}) {
     const hotelGroupsArr = itin.hotelGrps;
-    const hotelGrpsElements = hotelGroupsArr.map(hg => (
+    const hotelGrpsElements = hotelGroupsArr.length==0
+        ? (<div className="activity-container border rounded p-3 my-3"
+            style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
+            <h3>No Hotel Groups. Please Click "Add New Hotel Group" to add new ones.</h3>
+            </div>)
+        :hotelGroupsArr.map(hg => (
         <div className="hg-content" key={hg.id}>
             <HotelGrpContent
                 hotelGrp={hg}

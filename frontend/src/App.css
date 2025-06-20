@@ -7,7 +7,7 @@
 }
 
 .pac-container { /*THIS IS VERY IMPORTANT!!!!!!! FOR AUTOCOMPLETE DROPDOWN MENU */
-  z-index: 9999;
+  z-index: 9999 !important;
 }
 
 .pac-item {

@@ -79,7 +79,12 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
   let totalNumDays = 0;
   let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
-  const dayElements = [...travelDays]
+  const dayElements = travelDays.length==0
+  ? (<div className="activity-container border rounded p-3 my-3"
+    style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
+      <h3>No Days planned in this Itinerary. Please Click "Add New Day" to add new ones.</h3>
+    </div>)
+  :[...travelDays]
     .map(d => {
       latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);

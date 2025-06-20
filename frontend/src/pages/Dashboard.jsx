@@ -80,14 +80,18 @@ function ItineraryLinks({userId, navigate}) {
         itinsArray.length==0 ? (<h3>No Itineraries</h3>) //if no itineraries...
         : itinsArray.map(it => (
             <div className="d-flex justify-content-center" key={it.itinDbId}>
-                <div className="itin-link-container d-flex align-items-center flex-wrap">
-                    <span className="m-3">Created: {it.dateCreated}</span>
-                    <span>Itinerary Date: {it.itin.startDate}</span>
-                    <button className="itin-button btn btn-success m-3" onClick={() => goToActivityPage(it.itinDbId)}>
-                        {it.itin.name}
+                <div className="itin-link-container d-flex align-items-center flex-wrap gap-3">
+                    <span><strong>Itinerary Name:</strong> {it.itin.name}</span>
+                    {/* <span className="m-3">Created: {it.dateCreated}</span> */}
+                    <span><strong>Itinerary Date:</strong> {it.itin.startDate}</span>
+                    <span><strong>No. of Days:</strong> {it.itin.travelDays.length}</span>
+
+                    <div className="d-flex gap-2">
+                    <button className="itin-button btn btn-success" onClick={() => goToActivityPage(it.itinDbId)}>
+                        Edit
                     </button>
                     <button
-                        className="delete-act-butt btn btn-danger d-flex align-items-center gap-1"
+                        className="delete-act-butt btn btn-danger align-items-center"
                         onClick={() => {
                             const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
                             if (confirmDelete) {
@@ -97,7 +101,7 @@ function ItineraryLinks({userId, navigate}) {
                         >
                         <MdDeleteForever size={20} />
                     </button>
-
+                    </div>
                 </div>
             </div>
         )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
@@ -170,8 +174,8 @@ function DashboardContent() {
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "600", color: "#444" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
-        <button className="btn btn-danger" onClick={handleClick}>Log Out</button>
-        <button className="btn btn-outline-danger" onClick={handleDeleteAccount}>
+        <button className="btn btn-outline-danger mx-2" onClick={handleClick}>Log Out</button>
+        <button className="btn btn-danger mx-2" onClick={handleDeleteAccount}>
             Delete Account
         </button>
     </>)
