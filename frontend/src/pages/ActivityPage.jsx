@@ -143,7 +143,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
     );
 
   return (
-    <div className="day-content p-5">
+    <div className="day-content p-2">
       {dayElements}
       <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
     </div>
