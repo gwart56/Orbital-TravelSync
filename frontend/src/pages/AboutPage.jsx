@@ -15,13 +15,13 @@ function AboutPage() {
       
       <div className="about-wrapper py-5">
         {/* Hero Title and Tagline */}
-        <div className="text-center text-white mb-3 pt-4">
+        <div className="text-center text-white mb-3 pt-4 fade-in-up">
           <h1 className="fw-bold display-4" style={{ color: '#007BFF' }}>TravelSync</h1>
           <h5 className="text-light">Syncing Group Travel, One Trip At A Time</h5>
         </div>
 
         {/* Mission Statement */}
-        <div className="row justify-content-center mb-5">
+        <div className="row justify-content-center mb-5 fade-in-up">
           <div className="col-md-8">
             <p className="fs-5 text-white bg-dark bg-opacity-50 p-4 rounded shadow">
               Planning a trip with friends or family should be fun - not frustrating.
@@ -31,7 +31,7 @@ function AboutPage() {
         </div>
 
         {/* Pain Points Section */}
-        <div className="d-flex justify-content-center mt-2 mb-4">
+        <div className="d-flex justify-content-center mt-2 mb-4 fade-in-up">
           <div className="card shadow-lg rounded-4 p-4 bg-light bg-opacity-75" style={{ maxWidth: '720px', width: '100%' }}>
             <div className="card-body text-center">
               <h4 className="fw-semibold mb-4">We've been there - planning travel can be a pain.</h4>

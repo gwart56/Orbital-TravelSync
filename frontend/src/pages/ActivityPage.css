@@ -27,15 +27,22 @@
   text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
 }
 
+
+
 /* Card Styling */
 .travel-day-container {
   background-color: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   padding: 30px;
   margin: 30px auto;
-  max-width: 900px;
+  max-width: 1000px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   animation: fadeInUp 0.4s ease-in-out;
+}
+
+.travel-day-container h2 {
+  color: black;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0);
 }
 
 .activity-container {
@@ -44,7 +51,7 @@
   border-radius: 12px;
   padding: 20px;
   margin: 20px auto;
-  max-width: 800px;
+  max-width: 1000px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 

@@ -122,7 +122,7 @@ function ItineraryLinks({userId, navigate}) {
             <div className="itins-container">
                 {itinsElements}
             </div>
-            <button className="btn btn-primary btn-lg px-4 mt-4 mb-4" onClick={() => setIsModalOpen(true)}>
+            <button className="btn btn-primary btn-lg px-4 mt-4 mb-4 fade-in-up" onClick={() => setIsModalOpen(true)}>
                 Create New Itinerary
             </button>
             {isModalOpen && <ItineraryModal 

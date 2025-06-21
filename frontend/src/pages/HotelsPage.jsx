@@ -93,7 +93,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
 
     return (
         <>
-            <div className="m-5 border rounded p-3">               
+            <div className="hg-container">               
                 {confirmedHotel ? (
                     <>
                     <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG} confirmedHotel={confirmedHotel}/>
@@ -197,7 +197,7 @@ export function HotelsPage() {
                     <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
                     <AutoSaveButton itin={itin} saveToDB={saveToDB} />
                     <HotelGroupsContent itin={itin} setItin={setItin} />
-                    <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
+                    <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
                     <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
                 </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}

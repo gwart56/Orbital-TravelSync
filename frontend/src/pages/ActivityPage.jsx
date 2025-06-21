@@ -181,6 +181,7 @@ function ActivityPage() {
                 />
                 <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>To Hotel Comparisons</button>
                 <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
+                <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
                 <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
                 <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                   dayArr={itin.travelDays}
@@ -189,7 +190,7 @@ function ActivityPage() {
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
-            <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save To Supabase</button>
+            <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
             <div style={{height: "20px"}}/>
             <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
             <div style={{height: "20px"}}/>

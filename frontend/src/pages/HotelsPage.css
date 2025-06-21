@@ -19,23 +19,28 @@
 }
 
 /* Make top text readable */
-.background-image h1,
-.background-image h2,
-.background-image h3,
+.hotel-background-image h1,
+.hotel-background-image h2,
+.hotel-background-image h3,
 .itin-title {
   color: #fff;
   text-shadow: 1px 1px 6px rgba(0,0,0,0.8);
 }
 
 /* Card Styling */
-.travel-day-container {
-  background-color: rgba(255, 255, 255, 0.95);
+.hg-container {
+  background-color: rgba(255, 255, 255, 0.98);
   border-radius: 16px;
   padding: 30px;
   margin: 30px auto;
   max-width: 900px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   animation: fadeInUp 0.4s ease-in-out;
+}
+
+.hg-container h3 {
+  color: black;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0);
 }
 
 .activity-container {
