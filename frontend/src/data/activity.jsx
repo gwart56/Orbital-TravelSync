@@ -156,15 +156,15 @@ export function deleteDayArray(arr, id) {
 }
 
 //ITIN FUNCTIONS
-export function loadItinFromLocal() {
-    const saved = localStorage.getItem("itinLocal");
-    if (saved) {
-        const parsed = JSON.parse(saved);
-        const itinerary = Itinerary.fromJSON(parsed);
-        return itinerary;
-    }
-    return defaultItin;
-}
+// export function loadItinFromLocal() {
+//     const saved = localStorage.getItem("itinLocal");
+//     if (saved) {
+//         const parsed = JSON.parse(saved);
+//         const itinerary = Itinerary.fromJSON(parsed);
+//         return itinerary;
+//     }
+//     return defaultItin;
+// }
 
 export function saveToLocal(itin) {
     console.log("auto-saved itinerary to localStorage");
@@ -190,11 +190,7 @@ export function setItinHotels(itin, hotelArray) {//NOTE HOTEL REFERS TO HOTEL GR
 export function createNewItin(name, startDate, numDays) {
     const dayArr = [];
     for (let i = 0; i < numDays; i++) {
-        if (i == 0) {
-            dayArr.push(new TravelDay(0, defActivities)); //might change later, just for testing
-        } else {
             dayArr.push(new TravelDay());
-        }
     }
     const newItin = new Itinerary(name, dayArr, startDate, []);
     return newItin;
@@ -202,15 +198,15 @@ export function createNewItin(name, startDate, numDays) {
 
 
 //----------------example values-----------------
-let defActivities = [
-    new Activity("Lunch at macs", "12:00", "McDonalds", "address road 12345"),
-    new Activity("RoundOne", "08:00", "RoundOne", "address road 12345"),   
-    new Activity("Dinner", "15:00", "Sushi Place", "address road 12345"),
-    new Activity(["Supper", "20:00", "FamilyMart", "address road 12345"])
-];
+// let defActivities = [
+//     new Activity("Lunch at macs", "12:00", "McDonalds", "address road 12345"),
+//     new Activity("RoundOne", "08:00", "RoundOne", "address road 12345"),   
+//     new Activity("Dinner", "15:00", "Sushi Place", "address road 12345"),
+//     new Activity(["Supper", "20:00", "FamilyMart", "address road 12345"])
+// ];
 
-let defTravelDays = [new TravelDay(
-    dayjs().format('DD-MM-YYYY')
-    , defActivities)];
+// let defTravelDays = [new TravelDay(
+//     dayjs().format('DD-MM-YYYY')
+//     , defActivities)];
 
-export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'), []);
+// export let defaultItin = new Itinerary("Example Itinerary - Japan Trip", defTravelDays, dayjs().format('DD-MM-YYYY'), []);

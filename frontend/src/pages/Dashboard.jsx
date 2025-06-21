@@ -106,7 +106,7 @@ function ItineraryLinks({userId, navigate}) {
                     onClick={() => goToActivityPage(it.itinDbId)}
                 >
                     <div className="itin-detail name"><h4><strong>🌍</strong> {it.itin.name}</h4></div>
-                    <div className="itin-detail date"><h4><strong>📅</strong> {it.itin.startDate}</h4></div>
+                    <div className="itin-detail date"><h4><strong>📅</strong> {dayjs(it.itin.startDate, "DD-MM-YYYY").format("D MMMM YYYY")}</h4></div>
                     <div className="itin-detail days"><h4><strong>🕒</strong> {it.itin.travelDays.length} days</h4></div>
 
 
@@ -196,7 +196,7 @@ function DashboardContent() {
 
     return (<div className="dashboard-background">
         <h1 className="text-primary" style={{ marginTop: "90px", fontWeight: "700" }}>
-        Welcome to ✈️TravelSync, {userName}
+        Welcome to ✈️TravelSync, {userName}!
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "800", color: "#444", fontSize: "2.5rem" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>

@@ -16,7 +16,7 @@ function AboutPage() {
       <div className="about-wrapper py-5">
         {/* Hero Title and Tagline */}
         <div className="text-center text-white mb-3 pt-4 fade-in-up">
-          <h1 className="fw-bold display-4" style={{ color: '#007BFF' }}>TravelSync</h1>
+          <h1 className="fw-bold display-4" style={{ color: '#007BFF' }}>✈️TravelSync</h1>
           <h5 className="text-light">Syncing Group Travel, One Trip At A Time</h5>
         </div>
 

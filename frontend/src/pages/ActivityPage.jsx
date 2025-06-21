@@ -4,11 +4,11 @@ import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
 import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, loadItinFromLocal, saveToLocal} from '../data/activity';
+import {addActivityArray, editActivityArray, deleteActivityArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { defConfirmedHotelArr, getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 import { AutoSaveButton } from '../components/AutoSaver';
 
 
