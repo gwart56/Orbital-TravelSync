@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { updateItinName, updateItinStartDate } from '../data/activity';
 import { FaEdit } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
+import "./ItineraryInfo.css";
+import dayjs from 'dayjs';
 
 function ItineraryDateInput({ itin, setItin }){
   const [editing, setEditing] = useState(false);
@@ -15,22 +17,20 @@ function ItineraryDateInput({ itin, setItin }){
   return (
     <>
       {!editing ? (
-        <>
-          <h3>START DATE: {itin.startDate}
-          <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
-        </>
+        <h3 onClick={() => setEditing(true)} style={{ cursor: 'pointer' }} className="start-date">
+          📆 Adventure Begins: {dayjs(itin.startDate, "DD-MM-YYYY").format("D MMMM YYYY")}
+        </h3>
       ) : (
-        <>
-          <h3>START DATE: 
-            <input
-              type="date"
-              value={newStartDate}
-              onChange={(e) => setNewStartDate(e.target.value)}
-            />
-            <button className="btn btn-light" onClick={handleSave}>Save</button>
-            <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
-          </h3>
-        </>
+        <h3>
+          📆 Adventure Begins: 
+          <input
+            type="date"
+            value={newStartDate}
+            onChange={(e) => setNewStartDate(e.target.value)}
+          />
+          <button className="btn btn-light" onClick={handleSave}>Save</button>
+          <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
+        </h3>
       )}
     </>
   );
@@ -48,23 +48,21 @@ function ItineraryNameInput({ itin, setItin }){
   return (
     <>
       {!editing ? (
-        <>
-          <h2>NAME: {itin.name}
-          <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h2>
-        </>
+        <h1 onClick={() => setEditing(true)} className="trip-title">
+          {itin.name}
+        </h1>
       ) : (
-        <>
-          <h2>NAME: 
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <button className="btn btn-light" onClick={handleSave}>Save</button>
-            <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
-          </h2>
-        </>
+        <h2>
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
+          <button className="btn btn-light" onClick={handleSave}>Save</button>
+          <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
+        </h2>
       )}
+
     </>
   );
 }

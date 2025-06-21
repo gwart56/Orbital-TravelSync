@@ -11,8 +11,8 @@ import ItineraryModal from "../components/ItineraryModal";
 function DashboardNotLoggedIn() {
     return (
         <div className="dashboard-page">
-            <div className="dashboard-card">
-                <h1 className="text-primary">Welcome to TravelSync</h1>
+            <div className="dashboard-card fade-in">
+                <h1 className="text-primary">Welcome to ✈️TravelSync!</h1>
                 <h2>Log in to plan your next holiday!</h2>
                 <Link to="/login">Click here to log in!</Link><br />
                 <Link to="/signup">Don't have an account? Sign up here!</Link>
@@ -61,15 +61,25 @@ function ItineraryLinks({userId, navigate}) {
     useEffect(() => {
         const fetchItins = async () => {
             try {
-                const loadedItins = await loadAllItineraryForUser(userId); //wait to get itin class obj by id from supabase
-                setItins(loadedItins);
-            } catch (err) {
+                const loadedItins = await loadAllItineraryForUser(userId);
+
+                // Sort by startDate (assuming format is DD-MM-YYYY)
+                const sorted = loadedItins.sort((a, b) => {
+                    const dateA = dayjs(a.itin.startDate, 'DD-MM-YYYY');
+                    const dateB = dayjs(b.itin.startDate, 'DD-MM-YYYY');
+                    return dateA - dateB; // ascending (earliest first)
+                    // return dateB - dateA; // descending (latest first)
+                });
+
+                setItins(sorted);
+                } catch (err) {
                 console.error("failed to load itins", err);
             }
-        }
+        };
+
         fetchItins();
-    }
-    , []);
+    }, []);
+
 
     const goToActivityPage = (itinDbId) => {
         navigate(`/activities/${itinDbId}`);
@@ -84,8 +94,13 @@ function ItineraryLinks({userId, navigate}) {
             </div>
             )
 
-        : itinsArray.map(it => (
-            <div className="d-flex justify-content-center" key={it.itinDbId}>
+        : itinsArray.map((it, index) => (
+            <div
+            className="d-flex justify-content-center fade-in"
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
+            key={it.itinDbId}
+            >
+
                 <div
                     className="itin-link-container d-flex align-items-center flex-wrap gap-3 clickable-card"
                     onClick={() => goToActivityPage(it.itinDbId)}
@@ -181,9 +196,9 @@ function DashboardContent() {
 
     return (<div className="dashboard-background">
         <h1 className="text-primary" style={{ marginTop: "90px", fontWeight: "700" }}>
-        ✈️ Welcome to TravelSync, {userName}
+        Welcome to ✈️TravelSync, {userName}
         </h1>
-        <h2 style={{ margin: "20px", fontWeight: "600", color: "#444" }}>My Itineraries</h2>
+        <h2 style={{ margin: "20px", fontWeight: "800", color: "#444", fontSize: "2.5rem" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
         <div className="d-flex mb-5">
             <button className="btn btn-danger m-3" onClick={handleClick}>Log Out</button>

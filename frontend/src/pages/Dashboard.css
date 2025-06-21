@@ -31,10 +31,12 @@
   padding: 50px;
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
+  max-width: 610px;
   width: 100%;
   text-align: center;
   color: #222;
+  animation: fadeInUp 0.5s ease-in-out;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .dashboard-card h1 {
@@ -58,12 +60,16 @@
   background-color: #0077cc;
   border-radius: 6px;
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dashboard-card a:hover {
   background-color: #005fa3;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+  filter: brightness(1.1);
+  transform: translateY(-3px);
 }
+
 
 /* ───────── Itinerary Section ───────── */
 .itins-container {
@@ -108,18 +114,6 @@
 }
 
 /* ───────── Dashboard Background ───────── */
-/* .dashboard-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjB3YWxscGFwZXJ8ZW58MHx8MHx8fDA%3D");
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-} */
-
 .dashboard-background {
   position: relative;
   left: 50%;
@@ -185,13 +179,47 @@
 }
 
 .itin-detail.name {
-  flex-grow: 2;
+  flex: 1 1 0;
   min-width: 0;
+  max-width: 400px; /* or whatever max width you want */
+  overflow: hidden;
 }
 
-.itin-detail.date,
-.itin-detail.days {
+.itin-detail.name h4 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+
+.itin-detail.date {
   flex-shrink: 0;
   padding-left: 40px;
   padding-right: 40px;
+}
+
+.itin-detail.days {
+  flex-shrink: 0;
+  width: 170px; /* 👈 fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* or center */
+}
+
+
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.5s ease-in-out;
 }

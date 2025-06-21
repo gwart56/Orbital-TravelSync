@@ -37,7 +37,8 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   const activityElements = activities.length==0
   ? (<div className="activity-container border rounded p-3 my-3"
     style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
-      <h3>No Activities on this Day. Please Click "Add Activity" to add new ones.</h3>
+      <h3 className="empty-activity-message">Looks like this day’s still empty... 😴<br/>
+      Time to add some plans 📝!</h3>
     </div>)
   :[...activities]
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
@@ -51,7 +52,10 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
       />);
   return (
     <div className = "activity-grid js-activity-grid">
-      <button className="new-activity-butt btn btn-success" onClick={handleAdd}>Add Activity</button>
+      <button className="new-activity-butt btn btn-success" onClick={handleAdd}>
+        Add Activity
+      </button>
+
       {activityElements}
     </div>
   );
@@ -80,10 +84,12 @@ function TravelDayContent({dayArr, itin, setItin}) {
   let totalNumDays = 0;
   let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
   const dayElements = travelDays.length==0
-  ? (<div className="activity-container border rounded p-3 my-3"
-    style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
-      <h3>No Days planned in this Itinerary. Please Click "Add New Day" to add new ones.</h3>
-    </div>)
+  ? (<div className="activity-container empty-itinerary-box">
+      <h3 className="empty-itinerary-message">
+        No travel days yet 🧭<br />Let's start your journey - click "Add New Day"!
+      </h3>
+    </div>
+    )
   :[...travelDays]
     .map(d => {
       latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
@@ -95,39 +101,52 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
       return ( //i lazy to make container component
       <div className="travel-day-container" key={d.id}>
-        <h2>
-          <span>Day {totalNumDays++ + 1}</span>
-          <button className="delete-act-butt btn btn-danger mb-3 m-2" onClick={() => {handleDelete(d.id)}}><span>Delete </span> <MdDeleteForever /></button>
-        </h2>
-        <h5>
-          Date: {latestdate} 
+        <div className="day-header">
+          <span className="day-label">Day {totalNumDays++ + 1}</span>
+          <button className="delete-btn delete-btn-top" onClick={() => handleDelete(d.id)}>
+            <span>Delete</span> <MdDeleteForever />
+          </button>
+        </div>
+
+
+
+        <h5 className="day-subtext">
+          📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
         </h5>
-        {/* if no check in hotel, then display current hotel */
-        !checkInHotel && !checkOutHotel && (<h5>
-          {/* Hotel That Night: {!confirmedHotel ? confirmedHotel.name : "No Hotel Confirmed"} */}
-          Hotel That Night: {confirmedHotel?.name || 'No Hotel Confirmed'} 
-        </h5>)} 
-        {/* if no check out hotel, dont display*/
-        checkOutHotel && <h5>
-          Check Out Hotel at {checkOutHotel?.checkOutTime} : {checkOutHotel?.name || 'Not Checking out any Hotel'}
-        </h5> }
-        {/* if no check in hotel, dont display*/
-        checkInHotel && <h5>
-          Check In Hotel at {checkInHotel?.checkInTime} : {checkInHotel?.name || 'Not Checking in any Hotel'} 
-        </h5>}
+
+        {!checkInHotel && !checkOutHotel && (
+          <h5 className="day-subtext">
+            {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
+          </h5>
+        )}
+
+        {checkOutHotel && (
+          <h5 className="day-subtext">
+            🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
+          </h5>
+        )}
+
+        {checkInHotel && (
+          <h5 className="day-subtext">
+            🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
+          </h5>
+        )}
+
+
         <ActivityContent
           activityArr={d.activities}
           dayId={d.id}
           itin={itin}
           setItin={setItin}
         />
-      </div>);}
+      </div>
+      );}
     );
 
   return (
-    <div className="day-content p-5">
+    <div className="day-content p-2">
       {dayElements}
-      <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
+      <button className="add-new-day-btn themed-button" onClick={handleAdd}>Add New Day</button>
     </div>
   );
 }
@@ -172,17 +191,20 @@ function ActivityPage() {
     return (
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
-            <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to TravelSync</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to ✈️TravelSync!</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
                   setItin={setItin}
                 />
-                <button className='btn btn-secondary m-3' onClick={()=>navigate(`/hotels/${itinDbId}`)}>To Hotel Comparisons</button>
-                <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-                <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
-                <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+
+                <div className="activity-page-top-buttons">
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
+                  <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
+                  <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+                </div>
+
                 <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                   dayArr={itin.travelDays}
                   itin={itin}
@@ -190,12 +212,13 @@ function ActivityPage() {
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
-            <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
-            <div style={{height: "20px"}}/>
-            <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-            <div style={{height: "20px"}}/>
-            <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button>
-            <div style={{height: "50px"}}/>
+              <div className="button-row">
+                <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
+                <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button>
+              </div>
+            {/* <div style={{height: "20px"}}/> */}
+            {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}
+            {/* <div style={{height: "50px"}}/> */}
         </div>
     );
 }

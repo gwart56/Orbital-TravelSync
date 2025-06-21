@@ -132,7 +132,7 @@ export function deleteActivityArray(arr, id) {
 }
 
 export function addActivityArray(arr) {
-    const newArr = [...arr, new Activity("(new activity)","00:00","","")];
+    const newArr = [...arr, new Activity("","","","")];
     return newArr;
 }
 
@@ -140,13 +140,13 @@ export function addActivityArray(arr) {
 export function addDayArray(arr) {
     const arrLen = arr.length;
     if (arrLen == 0) {
-        return [new TravelDay(new dayjs().format('DD-MM-YYYY'), [new Activity("(new activity)","00:00","","")])];
+        return [new TravelDay(new dayjs().format('DD-MM-YYYY'), [new Activity("","","","")])];
     }
     arr = sortDates(arr); //sort the dates
 
     const latestdate = arr[arrLen - 1].date; //get last date
     const newdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY'); //add one date
-    const newArr = [...arr, new TravelDay(newdate, [new Activity("(new activity)","00:00","","")])]; 
+    const newArr = [...arr, new TravelDay(newdate, [new Activity("","","","")])]; 
     return newArr;
 }
 
