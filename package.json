@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "dev:frontend": "cd frontend && vite",
-    "dev:backend": "cd backend && vercel dev"
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2"
-  }
-}
