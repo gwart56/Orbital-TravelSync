@@ -116,21 +116,22 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
         {!checkInHotel && !checkOutHotel && (
           <h5 className="day-subtext">
-            🏨 Hotel That Night: {confirmedHotel?.name || 'No Hotel Confirmed'}
+            {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
           </h5>
         )}
 
         {checkOutHotel && (
           <h5 className="day-subtext">
-            ⬅️ Check Out Hotel at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
+            🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
           </h5>
         )}
 
         {checkInHotel && (
           <h5 className="day-subtext">
-            ➡️ Check In Hotel at {checkInHotel?.checkInTime}: {checkInHotel?.name}
+            🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
           </h5>
         )}
+
 
         <ActivityContent
           activityArr={d.activities}
