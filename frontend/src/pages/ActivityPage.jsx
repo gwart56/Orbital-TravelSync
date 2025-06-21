@@ -145,7 +145,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
   return (
     <div className="day-content p-2">
       {dayElements}
-      <button className="btn btn-success" onClick={handleAdd}>Add New Day</button>
+      <button className="add-new-day-btn themed-button" onClick={handleAdd}>Add New Day</button>
     </div>
   );
 }
@@ -211,12 +211,13 @@ function ActivityPage() {
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
-            <button className='btn btn-primary m-3' onClick={()=>saveToDB(itin)}>Save</button>
-            <div style={{height: "20px"}}/>
-            <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-            <div style={{height: "20px"}}/>
+              <div className="button-row">
+                <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
+                <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button>
+              </div>
+            {/* <div style={{height: "20px"}}/> */}
             {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}
-            <div style={{height: "50px"}}/>
+            {/* <div style={{height: "50px"}}/> */}
         </div>
     );
 }

@@ -232,3 +232,48 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
+
+.themed-button {
+  padding: 12px 24px;
+  margin: 12px auto;
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  text-align: center;
+  max-width: 200px;
+}
+
+/* Individual variants */
+.add-new-day-btn {
+  background-color: rgba(40, 167, 69, 0.85); /* green with transparency */
+}
+
+.save-btn {
+  background-color: #007bff; /* blue with transparency */
+}
+
+.back-btn {
+  background-color: #28a745; /* gray with transparency */
+}
+
+/* Hover effect */
+.themed-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  cursor: pointer;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;        /* spacing between buttons */
+  margin-top: 24px;
+  flex-wrap: wrap;  /* allows stacking on small screens */
+}

@@ -1,4 +1,4 @@
-// import './ActivityContainer.css';
+import './ActivityContainer.css';
 import { MdDeleteForever } from "react-icons/md";
 import { useState } from 'react';
 import LocationPicker from "./LocationPicker";
@@ -34,29 +34,54 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
       {!isEditing ? (
         <>
         <div className="mb-2 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Activity:</strong>
-            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={name}>{name}</span>
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Activity:</strong>
+          <span className={name ? "" : "text-placeholder"} title={name}>
+            {name || "Untitled Activity"}
+          </span>
         </div>
 
         <div className="mb-2 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Time:</strong>
-            <span>{time}</span>
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Time:</strong>
+          <span className={time ? "" : "text-placeholder"}>
+            {time || "Not set"}
+          </span>
         </div>
 
         <div className="mb-2 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
-            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locName}>{location.locName}</span>
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
+          <span
+            className={`text-truncate ${location.locName ? "" : "text-placeholder"}`}
+            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
+            title={location.locName}
+          >
+            {location.locName || "No location yet"}
+          </span>
         </div>
 
         <div className="mb-3 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
-            <span className="text-truncate" style={{ overflow: "hidden", whiteSpace: "nowrap" }} title={locAddress}>{location.locAddress}</span>
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
+          <span
+            className={`text-truncate ${location.locAddress ? "" : "text-placeholder"}`}
+            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
+            title={location.locAddress}
+          >
+            {location.locAddress || "Select on map or enter manually"}
+          </span>
         </div>
 
-          <div className="d-flex gap-2 justify-content-end">
-            <button className="btn btn-secondary btn-sm" onClick={() => setIsEditing(true)}>Edit</button>
-            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(id)}><span>Delete </span> <MdDeleteForever /></button>
-          </div>
+        <div className="activity-button-row">
+          <button className="activity-container-btn edit-btn" onClick={() => setIsEditing(true)}>
+            ✏️ Edit
+          </button>
+          <button className="activity-container-btn activity-delete-btn" onClick={() => handleDelete(id)}>
+            <MdDeleteForever className="delete-icon" />
+            Delete
+          </button>
+
+
+
+        </div>
+
         </>
       ) : (
         <form onSubmit={saveActivity}>
@@ -92,7 +117,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
                 setLocation((prev) => ({ ...prev, locName: e.target.value }))
               }
               required
-              placeholder="e.g. McDonald's"
+              placeholder="e.g. ABC Mart"
             />
           </div>
           
