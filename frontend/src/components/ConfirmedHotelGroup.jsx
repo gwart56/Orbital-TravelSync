@@ -38,7 +38,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                 <span
                     className={`text-truncate ${!confirmedHotel.address ? 'fst-italic text-muted' : ''}`}
                     style={{
-                    maxWidth: "400px",
+                    maxWidth: "700px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap"
