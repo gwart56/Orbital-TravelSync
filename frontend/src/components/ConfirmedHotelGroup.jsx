@@ -12,74 +12,73 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap"
                 }}
-                title={confirmedHotel.name}
             >
                 {confirmedHotel.name}
             </span>
             </div>
 
             <div className="d-flex align-items-center">
-            <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-            <span
-                className="text-truncate"
-                style={{
-                maxWidth: "100px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-                }}
-                title={confirmedHotel.price}
-            >
-                {confirmedHotel.price}
-            </span>
-            </div>
-            
-            <div className="d-flex align-items-center">
-            <strong className="me-1" style={{ minWidth: "50px" }}>Address:</strong>
-            <span
-                className="text-truncate"
-                style={{
-                maxWidth: "400px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-                }}
-                title={confirmedHotel.address}
-            >
-                {confirmedHotel.address}
-            </span>
+                <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+                <span
+                    className={`text-truncate ${!confirmedHotel.price ? 'fst-italic text-muted' : ''}`}
+                    style={{
+                    maxWidth: "150px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                    }}
+                    title={confirmedHotel.price || '-'}
+                >
+                    {confirmedHotel.price || '-'}
+                </span>
             </div>
 
             <div className="d-flex align-items-center">
-            <strong className="me-1" style={{ minWidth: "50px" }}>Check-in Time:</strong>
-            <span
-                className="text-truncate"
-                style={{
-                maxWidth: "100px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-                }}
-                title={confirmedHotel.checkInTime}
-            >
-                {confirmedHotel.checkInTime}
-            </span>
+                <strong className="me-1" style={{ minWidth: "50px" }}>Address:</strong>
+                <span
+                    className={`text-truncate ${!confirmedHotel.address ? 'fst-italic text-muted' : ''}`}
+                    style={{
+                    maxWidth: "400px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                    }}
+                    title={confirmedHotel.address || '-'}
+                >
+                    {confirmedHotel.address || '-'}
+                </span>
             </div>
 
             <div className="d-flex align-items-center">
-            <strong className="me-1" style={{ minWidth: "50px" }}>Check-out Time:</strong>
-            <span
-                className="text-truncate"
-                style={{
-                maxWidth: "100px",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-                }}
-                title={confirmedHotel.checkOutTime}
-            >
-                {confirmedHotel.checkOutTime}
-            </span>
+                <strong className="me-1" style={{ minWidth: "50px" }}>Check-in Time:</strong>
+                <span
+                    className="text-truncate"
+                    style={{
+                    maxWidth: "100px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                    }}
+                    title={confirmedHotel.checkInTime}
+                >
+                    {confirmedHotel.checkInTime}
+                </span>
+            </div>
+
+            <div className="d-flex align-items-center">
+                <strong className="me-1" style={{ minWidth: "50px" }}>Check-out Time:</strong>
+                <span
+                    className="text-truncate"
+                    style={{
+                    maxWidth: "100px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                    }}
+                    title={confirmedHotel.checkOutTime}
+                >
+                    {confirmedHotel.checkOutTime}
+                </span>
             </div>
 
             {/* TODO: add an edit button and also allow user to view previous hotels*/}

@@ -35,11 +35,13 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   }
 
   const activityElements = activities.length==0
-  ? (<div className="activity-container border rounded p-3 my-3"
-    style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
-      <h3 className="empty-activity-message">Looks like this day’s still empty... 😴<br/>
-      Time to add some plans 📝!</h3>
-    </div>)
+  ? (<div className="empty-activity-box text-center p-4 my-4 rounded shadow-sm fade-in">
+      <div className="emoji mb-2" style={{ fontSize: "2rem" }}>😴</div>
+      <h4 className="mb-2 fw-semibold">This day’s still empty</h4>
+      <p className="mb-3 text-muted">Let’s add some fun plans to your itinerary 📝</p>
+    </div>
+
+    )
   :[...activities]
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
     .map((a) => 
@@ -53,7 +55,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   return (
     <div className = "activity-grid js-activity-grid">
       <button className="new-activity-butt btn btn-success" onClick={handleAdd}>
-        Add Activity
+        + Add Activity
       </button>
 
       {activityElements}
@@ -84,10 +86,14 @@ function TravelDayContent({dayArr, itin, setItin}) {
   let totalNumDays = 0;
   let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
   const dayElements = travelDays.length==0
-  ? (<div className="activity-container empty-itinerary-box">
-      <h3 className="empty-itinerary-message">
-        No travel days yet 🧭<br />Let's start your journey - click "Add New Day"!
-      </h3>
+  ? (
+    <div className="empty-itinerary-warning text-center">
+      <h4>
+        🧭 No Travel Days Yet
+      </h4>
+      <p>
+        Let’s start your journey - click <strong>"Add New Day"</strong> to begin planning!
+      </p>
     </div>
     )
   :[...travelDays]
@@ -146,7 +152,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
   return (
     <div className="day-content p-2">
       {dayElements}
-      <button className="add-new-day-btn themed-button" onClick={handleAdd}>Add New Day</button>
+      <button className="add-new-day-btn themed-button" onClick={handleAdd}>+ Add New Day</button>
     </div>
   );
 }
@@ -191,7 +197,7 @@ function ActivityPage() {
     return (
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
-            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>Welcome to ✈️TravelSync!</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN

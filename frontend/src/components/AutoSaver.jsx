@@ -23,40 +23,64 @@ export function AutoSaveButton({itin, saveToDB}) {
     }, [itin, autoSave]);
 
     return (
-        <>
+        <div style={{ position: "relative", display: "inline-block" }}>
         <button 
-            className={`btn btn-${autoSave ? 'success' : 'danger'}`}
             onClick={() => setAutoSave(prev => !prev)}
             style={{
-                fontWeight: 600,
-                padding: "10px 20px",
-                fontSize: "1rem",
-                borderRadius: "12px",
-                minWidth: "160px",
-                textAlign: "center",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease",
-                transform: "translateY(0)",
-                lineHeight: "1.4", // helps match the height better
+            fontWeight: 600,
+            padding: "10px 20px",
+            fontSize: "1rem",
+            borderRadius: "12px",
+            minWidth: "160px",
+            textAlign: "center",
+            border: "none",
+            backgroundColor: autoSave ? "#2e8b57" : "#e74c3c",
+            color: "#fff",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            transition: "all 0.3s ease",
+            transform: "translateY(0)",
+            lineHeight: "1.4"
             }}
             onMouseEnter={e => {
-                e.currentTarget.style.boxShadow = "0 0 10px rgba(0,0,0,0.2)";
-                e.currentTarget.style.transform = "translateY(-3px)";
+            e.currentTarget.style.backgroundColor = autoSave ? "#3cb371" : "#ff6f61";
+            e.currentTarget.style.boxShadow = autoSave
+                ? "0 0 10px #3cb371, 0 0 20px rgba(60, 179, 113, 0.4)"
+                : "0 0 10px #ff6f61, 0 0 20px rgba(255, 111, 97, 0.4)";
+            e.currentTarget.style.transform = "translateY(-3px)";
             }}
             onMouseLeave={e => {
-                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-                e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.backgroundColor = autoSave ? "#2e8b57" : "#e74c3c";
+            e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+            e.currentTarget.style.transform = "translateY(0)";
             }}
-            >
+        >
             {autoSave ? '💾 AUTOSAVE: ON' : '💾 AUTOSAVE: OFF'}
         </button>
 
-
-        {successfulMsg && ( //DISPLAY SUCCESS MSG
-                    <div className="alert alert-success mt-3 w-200" role="alert">
-                        {successfulMsg}
-                    </div>
-                    )}
-        </>
+        {successfulMsg && (
+            <div
+            role="alert"
+            style={{
+                position: "absolute",
+                top: "50%",
+                left: "calc(100% + 12px)", // position beside the button
+                transform: "translateY(-50%)",
+                padding: "10px 16px",
+                borderRadius: "10px",
+                backgroundColor: "#d4edda",
+                color: "#155724",
+                boxShadow: "0 0 10px rgba(72, 180, 97, 0.4)",
+                whiteSpace: "nowrap",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontWeight: 500,
+                zIndex: 10
+            }}
+            >
+            ✅ {successfulMsg}
+            </div>
+        )}
+        </div>
     );
 }

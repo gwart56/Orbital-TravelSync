@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { updateItinName, updateItinStartDate } from '../data/activity';
 import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
+import './HotelGroupInfo.css';
 
 //may not use
 function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confirmedHotel}){
@@ -19,18 +20,19 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confi
       {//THIS IS SO THAT YOU CANNOT EDIT START AND END DATES WHEN YOU CONFIRM A HOTEL
       confirmedHotel?( 
         <>
-          <h3>START DATE: {hg.startDate} </h3>
+          <h3>🟢 Check-in: {dayjs(hg.startDate, 'DD-MM-YYYY').format('D MMMM YYYY')} </h3>
           {/* <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3> */}
         </>
       )
       :!editing? (
         <>
-          <h3>START DATE: {hg.startDate}
-          <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
+          <h3 className="editable-start-date" onClick={() => setEditing(true)}>
+            🟢 Check-in: {dayjs(hg.startDate, 'DD-MM-YYYY').format('D MMMM YYYY')}
+          </h3>
         </>
       ) : (
         <>
-          <h3>START DATE: 
+          <h3>🟢 Check-in Date: 
             <input
               type="date"
               value={newStartDate}
@@ -59,19 +61,20 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHote
     <>
       {confirmedHotel?(
         <>
-          <h3>END DATE: {hg.endDate} </h3>
+          <h3>🔴 Check-out: {dayjs(hg.endDate, 'DD-MM-YYYY').format('D MMMM YYYY')} </h3>
           {/* <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3> */}
         </>
       )
 
       :!editing ? (
         <>
-          <h3>END DATE: {hg.endDate}
-          <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
+          <h3 className="editable-end-date" onClick={() => setEditing(true)}>
+            🔴 Check-out: {dayjs(hg.endDate, 'DD-MM-YYYY').format('D MMMM YYYY')}
+          </h3>
         </>
       ) : (
         <>
-          <h3>END DATE: 
+          <h3>🔴 Check-out Date: 
             <input
               type="date"
               value={newEndDate}
@@ -139,47 +142,49 @@ function HGNameInput({ hg, renameHG }){
   return (
     <>
       {!editing ? (
-        <>
-          <h3>NAME: {hg.name}
-          <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3>
-        </>
+        <h3 
+          className="editable-name"
+          onClick={() => setEditing(true)}
+        >
+          {hg.name}
+          <MdEdit className="edit-icon" />
+        </h3>
       ) : (
-        <>
-          <h3>NAME: 
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-            />
-            <button className="btn btn-light" onClick={handleSave}>Save</button>
-            <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
-          </h3>
-        </>
+        <h3>
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSave();
+              if (e.key === 'Escape') setEditing(false);
+            }}
+            style={{ marginRight: '8px' }}
+          />
+          <button className="btn btn-sm btn-light" onClick={handleSave}>Save</button>
+          <button className="btn btn-sm btn-light" onClick={() => setEditing(false)}>Cancel</button>
+        </h3>
       )}
     </>
   );
 }
 
 export default function HGInfo({ hg, setEndHG, renameHG, setStartHG, confirmedHotel }) {
-  const [editing, setEditing] = useState(false);
-
-//   const handleSave = () => {
-//     setItin(updateItinStartDate(itin, newStartDate));
-//     setEditing(false);
-//   };
-
   return (
-    <>
-      <HGNameInput
-        hg={hg}
-        renameHG={renameHG}
-      />
-      <HGDateRangePicker
-        hg={hg}
-        setEndHG={setEndHG}
-        setStartHG={setStartHG}
-        confirmedHotel={confirmedHotel}
-      />
-    </>
+    <div>
+      <div>
+        <HGNameInput hg={hg} renameHG={renameHG} />
+      </div>
+      <div>
+        <HGDateRangePicker
+          hg={hg}
+          setEndHG={setEndHG}
+          setStartHG={setStartHG}
+          confirmedHotel={confirmedHotel}
+        />
+      </div>
+    </div>
   );
 }
+

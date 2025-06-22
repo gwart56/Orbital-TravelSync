@@ -23,20 +23,23 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     
     const [confirmedHotel, setConfirmedHotel] = useState(getConfirmedHotel);
     const handleConfirmClick = (targetHotel) => {
-        //TODO --- MAKE THIS MORE EFFICIENT (NEXT TIME DO)
-        //THIS MAKES SURES THERE IS NO OVERLAPPING CHECKIN CHECKOUT DATES FOR CONFIRMED HOTEL
-        const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps);
-        if (doesHGOverlap(hotelGrp, confirmedHotelsArr)) {
-            // console.log(confirmedHotelsArr);
-            // alert('WARNING: Hotel check in and check out date overlaps with other confirmed hotel(s)')
+        // Guard clause for missing hotel name
+        if (!targetHotel.name || targetHotel.name.trim() === '') {
+            alert("Hotel name is required before confirming.");
             return;
         }
-        
-        // Mark hotel as confirmed in the data
+
+        // TODO: Prevent overlapping check-in/check-out
+        // const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps);
+        // if (doesHGOverlap(hotelGrp, confirmedHotelsArr)) {
+        //     // alert('WARNING: Hotel check-in and check-out date overlaps with other confirmed hotel(s)')
+        //     return;
+        // }
+
+        // Mark as confirmed
         const updatedHotel = { ...targetHotel, isConfirmed: true };
 
         updateHotel(targetHotel.id, updatedHotel);
-        // Set this hotel as confirmed for display
         setConfirmedHotel(updatedHotel);
     }
 
@@ -75,10 +78,14 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     }
 
     const hotelsElements = hotels.length==0
-        ? (<div className="activity-container border rounded p-3 my-3"
-            style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
-            <h3>No Hotels in this Hotel Group. Please Click "Add New Hotel To Group" to add new ones.</h3>
-            </div>)
+        ? (
+            <div className="no-hotels-warning text-center fade-in">
+            <h4>🏨 No Hotels in this Hotel Group</h4>
+            <p>
+                Please click <strong>"Add New Hotel To Group"</strong> below to add new ones.
+            </p>
+            </div>
+)
         :hotels
         .map(h => (
         <div>
@@ -107,7 +114,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
                 <> 
                     <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                     {hotelsElements}
-                    <button className='btn btn-primary m-3' onClick={addNewHotel}>Add New Hotel To Group</button>
+                    <button className='btn btn-primary m-3' onClick={addNewHotel}>+ Add New Hotel</button>
                     <button className='btn btn-danger m-3' onClick={deleteHG}>Delete Hotel Group</button>
                 </>
                 )} 
@@ -119,10 +126,14 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
 function HotelGroupsContent({itin, setItin}) {
     const hotelGroupsArr = itin.hotelGrps;
     const hotelGrpsElements = hotelGroupsArr.length==0
-        ? (<div className="activity-container border rounded p-3 my-3"
-            style={{ maxWidth: "600px", margin: "0 auto", width: "100%" }}>
-            <h3>No Hotel Groups. Please Click "Add New Hotel Group" to add new ones.</h3>
-            </div>)
+        ? (
+            <div className="hotel-group-warning text-center fade-in">
+                <h4>🏨 No Hotel Groups Found</h4>
+                <p>
+                    Get started by clicking <strong>"Add New Hotel Group"</strong> below to begin planning your stay!
+                </p>
+            </div>
+)
         :hotelGroupsArr.map(hg => (
         <div className="hg-content" key={hg.id}>
             <HotelGrpContent
@@ -153,7 +164,7 @@ function HotelGroupsContent({itin, setItin}) {
     return (
         <div className="hg-content container">
             {hotelGrpsElements}
-            <button className='btn btn-primary m-3' onClick={addNewHG}>Add New Hotel Group</button>
+            <button className='btn btn-primary m-3' onClick={addNewHG}>+ Add New Hotel Group</button>
         </div>);
 }
 
@@ -189,16 +200,29 @@ export function HotelsPage() {
     return (
         <div className="hotel-background-image">
             <Header />
-            <h1 className="text-primary" style={{margin: "20px", marginTop:"80px"}}>TravelSync</h1>
+            <h1 className="text-primary" style={{ margin: "20px", marginTop: "80px", marginBottom: "40px" }}>
+                ✈️TravelSync
+            </h1>
+
             {itin? (
                 <>
                     <ItineraryInfo itin={itin} setItin={setItin} />
-                    <button className='btn btn-secondary m-3' onClick={()=>navigate(`/activities/${itinDbId}`)}>To Activities</button>
-                    <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
-                    <AutoSaveButton itin={itin} saveToDB={saveToDB} />
+
+                    <div className="custom-button-group">
+                        <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
+                            🎯 To Activities
+                        </button>
+                        <button className="custom-nav-btn hotels-home-btn" onClick={() => navigate('/')}>
+                            🏡 Back To Home
+                        </button>
+                        <AutoSaveButton itin={itin} saveToDB={saveToDB} />
+                    </div>
+
                     <HotelGroupsContent itin={itin} setItin={setItin} />
-                    <button className='btn btn-success m-3' onClick={()=>saveToDB(itin)}>Save</button>
-                    <button className='btn btn-secondary m-3' onClick={()=>navigate('/')}>Back To Home</button>
+                    <div className="custom-button-wrapper">
+                        <button className='back-btn themed-button' onClick={()=>navigate('/')}>🏡 Back To Home</button>
+                        <button className='save-btn themed-button' onClick={()=>saveToDB(itin)}>💾 Save</button>
+                    </div>
                 </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}
             

@@ -47,6 +47,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="text"
               name="name"
               defaultValue={hotel.name}
+              placeholder="e.g. Marina Bay Sands"
               className="form-control d-inline w-auto"
               required
             />
@@ -58,8 +59,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="text"
               name="price"
               defaultValue={hotel.price}
+              placeholder="e.g. $200"
               className="form-control d-inline w-auto"
-              required
             />
           </div>
 
@@ -67,8 +68,9 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             <strong>Check-in Time: </strong>
             <input
               type="time"
-              name="checkInTime" 
+              name="checkInTime"
               defaultValue={hotel.checkInTime}
+              placeholder="e.g. 15:00"
               className="form-control d-inline w-auto"
             />
           </div>
@@ -79,6 +81,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="time"
               name="checkOutTime"
               defaultValue={hotel.checkOutTime}
+              placeholder="e.g. 12:00"
               className="form-control d-inline w-auto"
             />
           </div>
@@ -89,19 +92,19 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="url"
               name="link"
               defaultValue={hotel.link}
+              placeholder="e.g. https://hotelwebsite.com"
               className="form-control"
             />
           </div>
 
           <div className="mb-2">
-            <strong>Address: </strong>
+            <strong>Address</strong> <span className="fst-italic">(Choose on map or enter manually)</span><strong>:</strong>
             <input
               type="text"
               name="address"
               value={location}
-              onChange={(e) =>
-                setLocation(e.target.value)
-              }
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. 10 Bayfront Ave, Singapore"
               className="form-control"
             />
           </div>
@@ -112,14 +115,15 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               onClose={() => setIsPickingLocation(false)}
               location={location}
               setLocation={setLocation}
-            />) : (
-              <button
+            />
+          ) : (
+            <button
               type="button"
               className="btn btn-outline-primary btn-sm ms-2 m-3"
               onClick={() => setIsPickingLocation(true)}
-          >
-                Pick Location
-          </button>
+            >
+              Choose On Map
+            </button>
             )}
 
           <div className="d-flex gap-2 justify-content-center">
@@ -142,75 +146,107 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
         {/* Name label + value */}
         <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
           <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
-          <span className="text-truncate" style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.name}>
-            {hotel.name}
+          <span
+            className={`text-truncate ${!hotel.name ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "200px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.name || '-'}
+          >
+            {hotel.name || '-'}
           </span>
         </div>
 
         {/* Price label + value */}
         <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
           <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-          <span className="text-truncate" style={{ maxWidth: "100px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={hotel.price}>
-            {hotel.price}
+          <span
+            className={`text-truncate ${!hotel.price ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.price || '-'}
+          >
+            {hotel.price || '-'}
           </span>
         </div>
 
         {/* Address label + value */}
-        <div className="d-flex align-items-start flex-wrap" style={{ minWidth: "0", flex: "2 1 0" }}>
+        <div
+          className="d-flex align-items-start"
+          style={{ minWidth: "0", flex: "2 1 0" }}
+        >
           <strong className="me-1">Address:</strong>
-          <span style={{ wordBreak: "break-word", maxWidth: "300px" }}>
-            {hotel.address}
+          <span
+            className={!hotel.address ? 'fst-italic text-muted' : ''}
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "inline-block",
+              minWidth: 0,
+              maxWidth: "100%"
+            }}
+            title={hotel.address} // Optional: shows full address on hover
+          >
+            {hotel.address || '-'}
           </span>
         </div>
 
         {/* Buttons */}
-<div className="d-grid mt-2"
-     style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", maxWidth: "320px" }}>
-  
-  {/* Top Left: Visit Site */}
-  <button
-    type="button"
-    className={`btn btn-md text-truncate ${hotel.link ? 'btn-info text-white' : 'btn-outline-primary'}`}
-    style={{
-      maxWidth: "100%",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap",
-    }}
-    onClick={() => {
-      if (hotel.link) {
-        window.open(hotel.link, "_blank", "noopener,noreferrer");
-      }
-    }}
-    title={hotel.link || "No link available"}
-    disabled={!hotel.link}
-  >
-    🔗 Visit
-  </button>
+        <div className="d-grid mt-2"
+            style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", maxWidth: "320px" }}>
+          
+          {/* Top Left: Visit Site */}
+          <button
+            type="button"
+            className={`btn btn-md text-truncate ${hotel.link ? 'btn-info text-white' : 'btn-outline-primary'}`}
+            style={{
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+            onClick={() => {
+              if (hotel.link) {
+                window.open(hotel.link, "_blank", "noopener,noreferrer");
+              }
+            }}
+            title={hotel.link || "No link available"}
+            disabled={!hotel.link}
+          >
+            🔗 Visit
+          </button>
 
-  {/* Top Right: Edit */}
-  <button className="btn btn-primary btn-md" onClick={handleEditClick}>
-    ✏️ Edit
-  </button>
+          {/* Top Right: Edit */}
+          <button className="btn btn-primary btn-md" onClick={handleEditClick}>
+            ✏️ Edit
+          </button>
 
-  {/* Bottom Left: Choose Hotel */}
-  <button className="btn btn-success btn-md" onClick={() => onConfirm(hotel)}>
-    ✅ Choose
-  </button>
+          {/* Bottom Left: Choose Hotel */}
+          <button className="btn btn-success btn-md" onClick={() => onConfirm(hotel)}>
+            ✅ Choose
+          </button>
 
-  {/* Bottom Right: Delete */}
-  <button
-    className="btn btn-danger btn-md"
-    onClick={() => {
-      const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
-      if (confirmed) {
-        onDelete(hotel.id);
-      }
-    }}
-  >
-    🗑️ Delete
-  </button>
-</div>
+          {/* Bottom Right: Delete */}
+          <button
+            className="btn btn-danger btn-md"
+            onClick={() => {
+              const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
+              if (confirmed) {
+                onDelete(hotel.id);
+              }
+            }}
+          >
+            🗑️ Delete
+          </button>
+        </div>
       </div>
 
             </>
