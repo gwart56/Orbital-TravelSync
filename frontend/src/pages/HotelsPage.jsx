@@ -10,6 +10,7 @@ import HGInfo from "../components/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
 import { AutoSaveButton } from "../components/AutoSaver";
 import "./HotelsPage.css";
+import dayjs from "dayjs";
 
 function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
@@ -22,6 +23,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
     }
     
     const [confirmedHotel, setConfirmedHotel] = useState(getConfirmedHotel);
+
     const handleConfirmClick = (targetHotel) => {
         // Guard clause for missing hotel name
         if (!targetHotel.name || targetHotel.name.trim() === '') {
@@ -29,12 +31,21 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
             return;
         }
 
-        // TODO: Prevent overlapping check-in/check-out
-        // const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps);
-        // if (doesHGOverlap(hotelGrp, confirmedHotelsArr)) {
-        //     // alert('WARNING: Hotel check-in and check-out date overlaps with other confirmed hotel(s)')
-        //     return;
-        // }
+        // Check if hotel's check-in date is before Hotel Group's start date
+        if (itin.startDate && hotelGrp.startDate) {
+            const itinStartDate = dayjs(itin.startDate, 'DD-MM-YYYY');
+            const groupStartDate = dayjs(hotelGrp.startDate, 'DD-MM-YYYY');
+            if (groupStartDate.isBefore(itinStartDate)) {
+                alert("Hotel check-in date cannot be earlier than the travel start date.");
+                return;
+            }
+        }
+
+        // Prevent overlapping check-in/check-out
+        const confirmedHotelsArr = getAllConfirmedHotelsFromArr(itin.hotelGrps);
+        if (doesHGOverlap(hotelGrp, confirmedHotelsArr)) {
+            return;
+        }
 
         // Mark as confirmed
         const updatedHotel = { ...targetHotel, isConfirmed: true };
