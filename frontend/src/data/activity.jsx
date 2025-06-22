@@ -28,7 +28,8 @@ export class Itinerary {
     }
 
     addDay() {
-        const newDayArr = addDayArray(this.travelDays);
+        const dayArr = this.travelDays
+        const newDayArr = insertDayIntoArray(dayArr, dayArr.length);
         return new Itinerary(this.name, newDayArr, this.startDate, this.hotelGrps);
     }
 
@@ -49,7 +50,7 @@ export class TravelDay {
     id;
     activities;
 
-    constructor(date, activityArr) {
+    constructor(activityArr) {
         this.activities = activityArr? [...activityArr] : [];
         this.id = TravelDay.count;
         TravelDay.count++;
@@ -155,6 +156,19 @@ export function deleteDayArray(arr, id) {
     return arr;
 }
 
+export function insertDayIntoArray(dayArr, index) {
+    const newDayArr = [...dayArr];
+    newDayArr.splice(index, 0, new TravelDay([new Activity("","","","")]))
+    return newDayArr;
+}
+
+export function reorderDayArray(arr, fromIndex, toIndex) {
+  const newArr = [...arr];
+  const [movedDay] = newArr.splice(fromIndex, 1);
+  newArr.splice(toIndex, 0, movedDay);
+  return newArr;
+}
+
 //ITIN FUNCTIONS
 // export function loadItinFromLocal() {
 //     const saved = localStorage.getItem("itinLocal");
@@ -187,6 +201,12 @@ export function setItinHotels(itin, hotelArray) {//NOTE HOTEL REFERS TO HOTEL GR
     return newItin;
 }
 
+export function setItinDays(itin, newDayArr) {
+    const newItin = new Itinerary(itin.name, newDayArr, itin.startDate, itin.hotelGrps);
+    newItin.id = itin.id;
+    return newItin;
+}
+
 export function createNewItin(name, startDate, numDays) {
     const dayArr = [];
     for (let i = 0; i < numDays; i++) {
@@ -195,6 +215,11 @@ export function createNewItin(name, startDate, numDays) {
     const newItin = new Itinerary(name, dayArr, startDate, []);
     return newItin;
 }
+
+
+//NOTE ABOUT TRAVELDAYS ARRAY IN ITIN:
+//THEY ARE ORDERED BY INDEX. SO DAY 1 IS AT INDEX 0, DAY 2 IS AT INDEX 1....
+
 
 
 //----------------example values-----------------

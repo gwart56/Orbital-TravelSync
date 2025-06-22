@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
 import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray} from '../data/activity';
+import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -75,6 +75,11 @@ function TravelDayContent({dayArr, itin, setItin}) {
     setItin(itin.addDay());
   }
 
+  function handleInsert(i) {
+    const newDayArr = insertDayIntoArray(dayArr, i);
+    setItin(setItinDays(itin, newDayArr));
+  }
+
   function handleDelete(id) {
       const confirmDelete = window.confirm("Are you sure you want to delete this day?");
       if (confirmDelete) {
@@ -82,9 +87,6 @@ function TravelDayContent({dayArr, itin, setItin}) {
       }
   }
 
-
-  let totalNumDays = 0;
-  let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
   const dayElements = travelDays.length==0
   ? (
     <div className="empty-itinerary-warning text-center">
@@ -97,8 +99,8 @@ function TravelDayContent({dayArr, itin, setItin}) {
     </div>
     )
   :[...travelDays]
-    .map(d => {
-      latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
+    .map((d, index) => {
+      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
       console.log("THAT DAY HOTEL", confirmedHotel);
@@ -106,46 +108,49 @@ function TravelDayContent({dayArr, itin, setItin}) {
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
 
       return ( //i lazy to make container component
-      <div className="travel-day-container" key={d.id}>
-        <div className="day-header">
-          <span className="day-label">Day {totalNumDays++ + 1}</span>
-          <button className="delete-btn delete-btn-top" onClick={() => handleDelete(d.id)}>
-            <span>Delete</span> <MdDeleteForever />
-          </button>
+      <>
+        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
+        <div className="travel-day-container" key={d.id}>
+          <div className="day-header">
+            <span className="day-label">Day {index + 1}</span>
+            <button className="delete-btn delete-btn-top" onClick={() => handleDelete(d.id)}>
+              <span>Delete</span> <MdDeleteForever />
+            </button>
+          </div>
+
+
+
+          <h5 className="day-subtext">
+            📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+          </h5>
+
+          {!checkInHotel && !checkOutHotel && (
+            <h5 className="day-subtext">
+              {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
+            </h5>
+          )}
+
+          {checkOutHotel && (
+            <h5 className="day-subtext">
+              🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
+            </h5>
+          )}
+
+          {checkInHotel && (
+            <h5 className="day-subtext">
+              🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
+            </h5>
+          )}
+
+
+          <ActivityContent
+            activityArr={d.activities}
+            dayId={d.id}
+            itin={itin}
+            setItin={setItin}
+          />
         </div>
-
-
-
-        <h5 className="day-subtext">
-          📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
-        </h5>
-
-        {!checkInHotel && !checkOutHotel && (
-          <h5 className="day-subtext">
-            {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
-          </h5>
-        )}
-
-        {checkOutHotel && (
-          <h5 className="day-subtext">
-            🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
-          </h5>
-        )}
-
-        {checkInHotel && (
-          <h5 className="day-subtext">
-            🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
-          </h5>
-        )}
-
-
-        <ActivityContent
-          activityArr={d.activities}
-          dayId={d.id}
-          itin={itin}
-          setItin={setItin}
-        />
-      </div>
+      </>
       );}
     );
 
