@@ -89,7 +89,7 @@ function ItineraryLinks({userId, navigate}) {
     const itinsElements = itinsArray? 
         itinsArray.length === 0 ? (
             <div className="empty-itin-message">
-                <h3>🗺️ No trips planned - let's change that!</h3>
+                <h3>🗺️ No trips planned - Let's change that!</h3>
                 <p className="text-muted">Click the button below to create your first itinerary.</p>
             </div>
             )
