@@ -163,10 +163,16 @@ export function insertDayIntoArray(dayArr, index) {
 }
 
 export function reorderDayArray(arr, fromIndex, toIndex) {
-  const newArr = [...arr];
-  const [movedDay] = newArr.splice(fromIndex, 1);
-  newArr.splice(toIndex, 0, movedDay);
-  return newArr;
+    const newArr = [...arr];
+    const [movedDay] = newArr.splice(fromIndex, 1);
+    newArr.splice(toIndex, 0, movedDay);
+    return newArr;
+}
+
+export function swapDaysInArray(arr, index1, index2) {
+    const newArr = [...arr];
+    [newArr[index1], newArr[index2]] = [newArr[index2], newArr[index1]];
+    return newArr;
 }
 
 //ITIN FUNCTIONS

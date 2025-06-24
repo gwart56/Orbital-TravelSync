@@ -103,7 +103,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               type="time"
               name="time"
               defaultValue={time}
-              required
             />
           </div>
           <div className="mb-2 d-flex align-items-center">
@@ -116,7 +115,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               onChange={(e) =>
                 setLocation((prev) => ({ ...prev, locName: e.target.value }))
               }
-              required
               placeholder="e.g. ABC Mart"
             />
           </div>
@@ -131,7 +129,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               onChange={(e) =>
                 setLocation((prev) => ({ ...prev, locAddress: e.target.value }))
               }
-              required
               placeholder="e.g. 123 Normal Rd"
             />
           </div>

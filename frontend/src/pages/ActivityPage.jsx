@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
 import ActivityContainer from '../components/ActivityContainer';
 import Header from '../components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays} from '../data/activity';
+import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -65,6 +65,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
 function TravelDayContent({dayArr, itin, setItin}) {
+  const [swapSelections, setSwapSelections] = useState({});
   const travelDays = dayArr;
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
@@ -79,6 +80,13 @@ function TravelDayContent({dayArr, itin, setItin}) {
     const newDayArr = insertDayIntoArray(dayArr, i);
     setItin(setItinDays(itin, newDayArr));
   }
+
+  function handleSwap(index1, index2) {
+    if (index1 === index2 || index1 == null || index2 == null) return;
+    const newDayArr = swapDaysInArray(dayArr, index1, index2);
+    setItin(setItinDays(itin, newDayArr));
+  }
+
 
   function handleDelete(id) {
       const confirmDelete = window.confirm("Are you sure you want to delete this day?");
@@ -141,6 +149,40 @@ function TravelDayContent({dayArr, itin, setItin}) {
               🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
             </h5>
           )}
+
+          <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+            <label htmlFor={`swap-select-${index}`} className="">Swap Day with:</label>
+            <select
+              id={`swap-select-${index}`}
+              className="form-select form-select-sm"
+              value={swapSelections[index] ?? ""}
+              style={{ maxWidth: "200px" }}
+              onChange={(e) => {
+                if (e.target.value === "") { //checks if user selected a day
+                  setSwapSelections({});
+                  return;
+                }
+                const targetIndex = parseInt(e.target.value);
+                setSwapSelections({[index]: targetIndex });
+              }}
+            >
+              <option value="">Select Day</option>
+              {travelDays.map((_, i) => (
+                i !== index && <option key={i} value={i}>Day {i + 1}</option>
+              ))}
+            </select>
+
+            <button
+              className="btn btn-outline-primary btn-sm m-2"
+              disabled={swapSelections[index] == null}
+              onClick={() => {
+                handleSwap(index, swapSelections[index]);
+                setSwapSelections({}); // clear after swapping
+              }}
+            >
+              Swap Days
+            </button>
+          </div>
 
 
           <ActivityContent
