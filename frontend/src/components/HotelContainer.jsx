@@ -21,7 +21,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
         address: formData.get("address"),
         link: formData.get("link"),
         checkInTime: formData.get("checkInTime"),
-        checkOutTime: formData.get("checkOutTime")
+        checkOutTime: formData.get("checkOutTime"),
+        rating: formData.get("rating")
     };
     onSave(updatedHotel);
     setIsEditing(false);
@@ -60,6 +61,17 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               name="price"
               defaultValue={hotel.price}
               placeholder="e.g. $200"
+              className="form-control d-inline w-auto"
+            />
+          </div>
+
+          <div className="mb-3">
+            <strong>Rating: </strong>
+            <input
+              type="text"
+              name="rating"
+              defaultValue={hotel.rating}
+              placeholder="e.g. 4.8 stars"
               className="form-control d-inline w-auto"
             />
           </div>
@@ -144,7 +156,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
 
       <div className="d-flex align-items-center gap-3 flex-wrap">
         {/* Name label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "2 1 0" }}>
           <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
           <span
             className={`text-truncate ${!hotel.name ? 'fst-italic text-muted' : ''}`}
@@ -156,24 +168,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.name || '-'}
           >
-            {hotel.name || '-'}
-          </span>
-        </div>
-
-        {/* Price label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
-          <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-          <span
-            className={`text-truncate ${!hotel.price ? 'fst-italic text-muted' : ''}`}
-            style={{
-              maxWidth: "120px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap"
-            }}
-            title={hotel.price || '-'}
-          >
-            {hotel.price || '-'}
+            {hotel.name || 'Untitled Hotel'}
           </span>
         </div>
 
@@ -195,7 +190,41 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.address} // Optional: shows full address on hover
           >
-            {hotel.address || '-'}
+            {hotel.address || 'No Address'}
+          </span>
+        </div>
+
+        {/* Rating label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Rating:</strong>
+          <span
+            className={`text-truncate ${!hotel.rating ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.rating || '-'}
+          >
+            {hotel.rating || '-'}
+          </span>
+        </div>
+
+        {/* Price label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+          <span
+            className={`text-truncate ${!hotel.price ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.price || '-'}
+          >
+            {hotel.price || '-'}
           </span>
         </div>
 

@@ -6,15 +6,16 @@ export function AutoSaveButton({itin, saveToDB}) {
 
     useEffect( () => {
         if (autoSave) {
+        setSuccessful('Auto-Saving...'); //shows timeout msg
         const timer = setTimeout(() => {
             saveToDB(itin);
-            setSuccessful('AUTO-SAVED!');
+            setSuccessful('✅ AUTO-SAVED!');
             // Clear success message after 2 seconds
-            const successTimer = setTimeout(() => setSuccessful(''), 2000);
+            const successTimer = setTimeout(() => setSuccessful(''), 1000);
 
             // Cleanup: Clear successTimer if effect re-runs before 2s
             return () => clearTimeout(successTimer);
-        }, 2000); //only run saveToDB after 2s without any edits (can change duration next time see how)
+        }, 1000); //only run saveToDB after 2s without any edits (can change duration next time see how)
 
         return () => clearTimeout(timer); //clear timer
         //this is a cleanup function which runs when useEffect is triggered again
@@ -78,7 +79,7 @@ export function AutoSaveButton({itin, saveToDB}) {
                 zIndex: 10
             }}
             >
-            ✅ {successfulMsg}
+            {successfulMsg}
             </div>
         )}
         </div>

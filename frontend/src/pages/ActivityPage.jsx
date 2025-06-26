@@ -151,7 +151,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
           )}
 
           <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
-            <label htmlFor={`swap-select-${index}`} className="">Swap Day with:</label>
+            <label htmlFor={`swap-select-${index}`} className="">🔁 Swap Day with:</label>
             <select
               id={`swap-select-${index}`}
               className="form-select form-select-sm"
