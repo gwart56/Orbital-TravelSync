@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { GoogleMap, useJsApiLoader, Marker, Autocomplete } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader, Marker, Autocomplete, InfoWindow } from "@react-google-maps/api";
 
 const containerStyle = {
     width: "100%",
@@ -12,7 +12,14 @@ const libraries = ["places"]; //for libs
 export default function LocationPicker({ initialPosition, onClose, onSave }) {
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
+    const [latLng, setLatLng] = useState(centerDefault);
     const [location, setLocation] = useState(null);
+    const [activityType, setActivityType] = useState('');
+    const [nearbyActivities, setNearbyActivities] = useState([]);
+    const [selectedAct, setSelectedAct] = useState(null);
+    const [actDetails, setActDetails] = useState(null);
+    const placesServiceDivRef = useRef(null);
+
 
     //AutoComp => for search bar
     //geocoder => for pin -> address
@@ -21,6 +28,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     const autocompleteRef = useRef(null); // Ref for Autocomplete instance
     const inputRef = useRef(null);         // Ref for input element
     const geocoder = useRef(null);        // Ref for geocoder instance
+    const mapRef = useRef(null);
 
     const { isLoaded, loadError } = useJsApiLoader({// loads api
       googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY, //*** USE THIS LINE WHEN USING NPM RUN DEV
@@ -67,7 +75,54 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
       }
     };
 
+    const fetchNearbyActivities = () => { //uses Places API to get nearby places
+        if (activityType == "") return;
+        try {
+            console.log("TRYING TO FETCH " + activityType);
+            if (!isLoaded || !mapRef.current) return;
 
+            const service = new window.google.maps.places.PlacesService(mapRef.current);
+            const request = {
+            location: new window.google.maps.LatLng(latLng.lat, latLng.lng),
+            radius: 1000,
+            type: activityType,
+            };
+
+            service.nearbySearch(request, (results, status) => {
+                if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                    const topResults = results.slice(0, 8); // e.g., max 8 results
+                    setNearbyResults(topResults);
+                } else {
+                    console.error("PlacesService nearbySearch failed:", status);
+                    setNearbyActivities([]);
+                }
+            });
+        } catch (err) {
+            console.error("fetchNearbyAct error:", err);
+        }
+    };
+
+    //------------------------------------------------------HANDLES CLICKING ON ACT MARKER
+    const handleActClick = (act) => {//handles when u click act marker
+        setSelectedAct(act);
+        const service = new window.google.maps.places.PlacesService(placesServiceDivRef.current);
+
+        const request = {
+            placeId: act.place_id,
+            fields: ['name', 'website', 'url', 'formatted_address'],
+        };
+
+        service.getDetails(request, (place, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            setActDetails(place);
+            } else {
+            console.warn("getDetails failed:", status);
+            setActDetails(null);
+            }
+        });
+    };
+
+    //------------------------------------------------------HANDLES SAVE
     const handleSave = () => {
       onSave( location );
       onClose();
@@ -80,7 +135,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '10vh',
+        top: '5vh',
         left: '10vw',
         width: '80vw',
         height: '85vh',
@@ -97,6 +152,37 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
             </div>
             <div className="-body">
               <div className="mb-3">
+                  <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+                    <label htmlFor={`type-select`} className="">🔍 Search Nearby Activities:</label>
+                        <select
+                          id={`type-select`}
+                          className="form-select form-select-sm"
+                          value={activityType ?? "None"}
+                          style={{ maxWidth: "200px" }}
+                          onChange={(e) => {
+                            if (e.target.value === "") { //checks if user selected a day
+                              setActivityType('');
+                              return;
+                            }
+                            setActivityType(e.target.value);
+                          }}
+                        >
+                          <option value="">Select Type</option>
+                          <option value="tourist_attraction">Tourist Attractions</option>
+                          <option value="restaurant">Restaurants</option>
+                          <option value="park">Parks</option>
+                        </select>
+                        <button
+                      className="btn btn-outline-primary btn-sm m-2"
+                      disabled={activityType == ""}
+                      onClick={() => {
+                        fetchNearbyActivities()
+                        setActivityType(''); // clear after swapping
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
                   <Autocomplete
                       onLoad={(ref) => (autocompleteRef.current = ref)}
                       onPlaceChanged={handlePlaceChanged}
@@ -116,13 +202,18 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                   />
                   </Autocomplete>
               </div>
+              <div ref={placesServiceDivRef} style={{ display: 'none' }} 
+                // HIDDEN DIV FOR DISPLAYING PLACES SERVICE
+              /> 
               <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={mapCenter}
+                onLoad={map => { mapRef.current = map; }}
                 zoom={15}
                 onClick={e => {
                   setMarkerPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                   updateAddressFromCoords({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                  setLatLng({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                 }}
               >
                 <Marker
@@ -131,8 +222,50 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                   onDragEnd={e => {
                     setMarkerPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                     updateAddressFromCoords({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                    setLatLng({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                   }}
                 />
+                {nearbyActivities.map(act => ( //generates all nearby act as markers
+                    <Marker
+                        key={act.place_id}
+                        position={{
+                        lat: act.geometry.location.lat(),
+                        lng: act.geometry.location.lng()
+                        }}
+                        icon={{
+                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // different icon for acts
+                        }}
+                        title={act.name}
+                        onClick={() => {handleActClick(act);}}
+                    />
+                    ))
+                }
+                {actDetails && (
+                    <InfoWindow
+                        position={{
+                        lat: selectedAct.geometry.location.lat(),
+                        lng: selectedAct.geometry.location.lng()
+                        }}
+                        onCloseClick={() => {
+                        setSelectedAct(null);
+                        setActDetails(null);
+                        }}
+                    >
+                        <div style={{ maxWidth: "250px" }}>
+                            <h6>{actDetails.name}</h6>
+                            <p style={{ fontSize: "12px" }}>{actDetails.formatted_address}</p>
+                            {actDetails.website ? (
+                                <a href={actDetails.website} target="_blank" rel="noopener noreferrer">
+                                    Visit Website
+                                </a>
+                            ) : (
+                                <a href={actDetails.url} target="_blank" rel="noopener noreferrer">
+                                    View on Google Maps
+                                </a>
+                            )}
+                        </div>
+                    </InfoWindow>
+                  )}
               </GoogleMap>
             </div>
             <div className="modal-footer">

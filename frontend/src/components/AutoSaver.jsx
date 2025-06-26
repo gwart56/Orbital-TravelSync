@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function AutoSaveButton({itin, saveToDB}) {   
-    const [autoSave, setAutoSave] = useState(true); // start with no autosave
+    const [autoSave, setAutoSave] = useState(false); // start with no autosave
     const [successfulMsg, setSuccessful] = useState('');
 
     useEffect( () => {

@@ -202,7 +202,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                         url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // different icon for hotels
                         }}
                         title={hotel.name}
-                        onClick={() => {handleHotelClick(hotel); console.log("LOADING INFOWINDOW")}}
+                        onClick={() => {handleHotelClick(hotel);}}
                     />
                     ))
                 }
