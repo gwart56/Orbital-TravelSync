@@ -94,7 +94,7 @@ export function getHotelCheckInOutForDate(d, hotelArr) {
 export function getHotelForDate(date, hotelArr) {
   return hotelArr.find(hotel => {
     return dayjs(date, 'DD-MM-YYYY').isSameOrAfter(dayjs(hotel.checkInDate,'DD-MM-YYYY')) 
-        && dayjs(date, 'DD-MM-YYYY').isSameOrBefore(dayjs(hotel.checkOutDate, 'DD-MM-YYYY'));
+        && dayjs(date, 'DD-MM-YYYY').isBefore(dayjs(hotel.checkOutDate, 'DD-MM-YYYY'));
   });
 }
 

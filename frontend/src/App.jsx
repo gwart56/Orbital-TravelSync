@@ -11,6 +11,7 @@ import { HotelsPage } from './pages/HotelsPage';
 import ContactPage from './pages/ContactPage';
 import MapPage from './pages/MapPage';
 import LocationPicker from './components/LocationPicker';
+import { SummaryPage } from './pages/SummaryPage';
 
 function AppRoutes() {
 
@@ -31,7 +32,8 @@ function AppRoutes() {
             {/* Protected Route */}
             <Route path="/activities/:id" element={session ? <ActivityPage /> : <Navigate to="/dashboard" />}/>
             <Route path="/hotels/:id" element={session ? <HotelsPage /> : <Navigate to="/dashboard" />}/>
-
+            <Route path="/summary/:id" element={session ? <SummaryPage /> : <Navigate to="/dashboard" />}/>
+            
             {/* Default route */}
             <Route path="*" element={<Navigate to={session ? "/dashboard" : "/login"} />} />
           </Routes>

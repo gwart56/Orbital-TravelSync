@@ -302,3 +302,45 @@
   margin-top: 24px;
   flex-wrap: wrap;  /* allows stacking on small screens */
 }
+
+/*FOR SUMMARY PAGE----------------------------------------------------------------*/
+.activity-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto;
+  max-width: 800px;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.activity-time {
+  flex: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+}
+
+.activity-name {
+  flex: 5;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.travel-day-container-sum {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 30px;
+  margin: 30px auto;
+  min-width: 800px;
+  max-width: 1400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 0.4s ease-in-out;
+  display:flex;
+  flex-direction: row;
+}

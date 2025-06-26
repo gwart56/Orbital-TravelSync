@@ -90,7 +90,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
 
             service.nearbySearch(request, (results, status) => {
                 if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    const topResults = results.slice(0, 8); // e.g., max 8 results
+                    const topResults = results.slice(0, 10); // e.g., max 10 results
                     setNearbyResults(topResults);
                 } else {
                     console.error("PlacesService nearbySearch failed:", status);
