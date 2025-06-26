@@ -90,8 +90,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
 
             service.nearbySearch(request, (results, status) => {
                 if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                    const topResults = results.slice(0, 10); // e.g., max 10 results
-                    setNearbyResults(topResults);
+                    const topResults = results.slice(0, 12); // e.g., max 12 results
+                    setNearbyActivities(topResults);
                 } else {
                     console.error("PlacesService nearbySearch failed:", status);
                     setNearbyActivities([]);
@@ -176,6 +176,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                       className="btn btn-outline-primary btn-sm m-2"
                       disabled={activityType == ""}
                       onClick={() => {
+                        setNearbyActivities([]);
                         fetchNearbyActivities()
                         setActivityType(''); // clear after swapping
                       }}
