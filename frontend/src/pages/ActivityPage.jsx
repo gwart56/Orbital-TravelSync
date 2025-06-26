@@ -111,7 +111,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
       const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
-      console.log("THAT DAY HOTEL", confirmedHotel);
+      // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
 
