@@ -10,10 +10,12 @@ import HGInfo from "../components/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
 import { AutoSaveButton } from "../components/AutoSaver";
 import "./HotelsPage.css";
+import HotelComparator from "../components/HotelComparator";
 
 function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
     const hgName = hotelGrp?.name;
+    const [isComparingLocations, setIsComparingLocations] = useState(false);
 
     const getConfirmedHotel = () => {
         //THIS RETURNS THE CONFIRMED HOTEL IN A HOTEL GROUP (ASSUMES ONLY 1 CONFIRMED HOTEL)
@@ -88,7 +90,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
 )
         :hotels
         .map(h => (
-        <div>
+        <div key={h.id}>
             <HotelContainer
                 key={h.id}
                 hotel={h}
@@ -114,7 +116,16 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
                 <> 
                     <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                     {hotelsElements}
+                    {isComparingLocations && <HotelComparator
+                        key={`hotel-comparator-${hgId}`} // <-- helps force full remount
+                        comparedHotels={hotels}
+                        onClose={() => setIsComparingLocations(false)}
+                    />}
                     <button className='btn btn-primary m-3' onClick={addNewHotel}>+ Add New Hotel</button>
+                    <button className='btn btn-success m-3' 
+                        onClick={()=>{setIsComparingLocations(true)}}
+                        disabled={hotels.length<=0}
+                        >Compare Locations</button>
                     <button className='btn btn-danger m-3' onClick={deleteHG}>Delete Hotel Group</button>
                 </>
                 )} 

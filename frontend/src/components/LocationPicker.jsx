@@ -47,10 +47,10 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
       geocoder.current.geocode({ location: latLng }, (results, status) => {
       if (status === "OK" && results[0]) {
           const address = results[0].formatted_address;
-          // const components = results[0]?.address_components || [];
-          // const premiseComponent = components.find(c => c.types.includes("premise"));
-          // const name = premiseComponent?.long_name || "Dropped Pin";
-          const name = "Dropped Pin";
+          const components = results[0]?.address_components || [];
+          const premiseComponent = components.find(c => c.types.includes("premise"));
+          const name = premiseComponent?.long_name || "Dropped Pin";
+          // const name = "Dropped Pin";
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }

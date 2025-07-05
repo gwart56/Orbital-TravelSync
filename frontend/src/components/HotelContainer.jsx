@@ -6,6 +6,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
+  const [latLng, setLatLng] = useState(null);
   
   const handleEditClick = () => {
     setIsEditing(true);
@@ -22,18 +23,20 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
         link: formData.get("link"),
         checkInTime: formData.get("checkInTime"),
         checkOutTime: formData.get("checkOutTime"),
-        rating: formData.get("rating")
+        rating: formData.get("rating"),
+        latLng: latLng
     };
     onSave(updatedHotel);
     setIsEditing(false);
   };
 
-   function handleLocationSave(newLocation) { //returns {locName, locAddress}
+   function handleLocationSave(newLocation, pos) { //returns {locName, locAddress}
     if (!newLocation) {
       return;
     }
     console.log(newLocation);
     setLocation(newLocation.locAddress);
+    setLatLng(pos);
     setIsPickingLocation(false);
   }
 
@@ -115,7 +118,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="text"
               name="address"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) => {setLocation(e.target.value); setLatLng(null);}}
               placeholder="e.g. 10 Bayfront Ave, Singapore"
               className="form-control"
             />
@@ -123,10 +126,9 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
 
           {isPickingLocation ? (
             <HotelPicker
-              onSave={(loc) => handleLocationSave(loc)}
+              onSave={(loc, pos) => handleLocationSave(loc, pos)}
               onClose={() => setIsPickingLocation(false)}
-              location={location}
-              setLocation={setLocation}
+              initialPosition={hotel.latLng}
             />
           ) : (
             <button

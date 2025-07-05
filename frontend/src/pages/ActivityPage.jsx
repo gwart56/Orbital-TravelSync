@@ -116,7 +116,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
 
       return ( //i lazy to make container component
-      <>
+      <div key={d.id}>
         <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
         <div className="travel-day-container" key={d.id}>
           <div className="day-header">
@@ -192,7 +192,7 @@ function TravelDayContent({dayArr, itin, setItin}) {
             setItin={setItin}
           />
         </div>
-      </>
+      </div>
       );}
     );
 
