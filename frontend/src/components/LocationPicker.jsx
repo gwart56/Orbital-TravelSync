@@ -138,7 +138,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
         top: '5vh',
         left: '10vw',
         width: '80vw',
-        height: '85vh',
+        maxHeight: '85vh',
         backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
         // display: 'flex',
         // justifyContent: 'center',

@@ -103,10 +103,10 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '10vh',
+        top: '5%',
         left: '10vw',
         width: '80vw',
-        height: '85vh',
+        maxHeight: '90vh',
         backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
         // display: 'flex',
         // justifyContent: 'center',
@@ -118,6 +118,7 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
             <div className="">
               <h5 className="">Compare Locations<button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
             </div>
+            <h6>Note: Hotel with manually inputed address may not appear here</h6>
             <div className="-body">
               <div className="mb-3">
                   <Autocomplete
