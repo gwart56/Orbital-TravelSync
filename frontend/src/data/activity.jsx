@@ -1,3 +1,5 @@
+//TODO!!! -- THIS IS OUTDATED, IMPLEMENT CORRECT DATA STRUCTURES
+
 import dayjs from "dayjs";
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import { sortDates } from "../utils/dates";
