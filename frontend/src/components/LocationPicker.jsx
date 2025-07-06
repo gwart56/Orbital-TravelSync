@@ -198,7 +198,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                           e.preventDefault();     // Prevents form submit
                           e.stopPropagation();    // Stops the event from bubbling
                           // handleSave();
-                          }
+                        }
                       }}
                   />
                   </Autocomplete>
@@ -244,8 +244,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                 {actDetails && (
                     <InfoWindow
                         position={{
-                        lat: selectedAct.geometry.location.lat(),
-                        lng: selectedAct.geometry.location.lng()
+                          lat: selectedAct.geometry.location.lat(),
+                          lng: selectedAct.geometry.location.lng()
                         }}
                         onCloseClick={() => {
                         setSelectedAct(null);

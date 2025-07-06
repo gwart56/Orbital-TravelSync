@@ -30,7 +30,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
     setIsEditing(false);
   };
 
-   function handleLocationSave(newLocation, pos) { //returns {locName, locAddress}
+   function handleLocationSave(newLocation, pos) { //args: {locName, locAddress} , {lat, lng}
     if (!newLocation) {
       return;
     }

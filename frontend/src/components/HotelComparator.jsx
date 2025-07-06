@@ -116,7 +116,7 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
         <div className=" -lg" role="document" onClick={onClose}>
           <div className="" onClick={e => e.stopPropagation()}>
             <div className="">
-              <h5 className="">Edit Location <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
+              <h5 className="">Compare Locations<button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
             </div>
             <div className="-body">
               <div className="mb-3">

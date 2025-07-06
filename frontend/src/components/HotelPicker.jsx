@@ -12,11 +12,12 @@ const libraries = ["places"]; //for libs
 export default function HotelPicker({ initialPosition, onClose, onSave }) {
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
-    const [latLng, setLatLng] = useState({lat: null, lng: null});
+    const [latLng, setLatLng] = useState(initialPosition || centerDefault);
     const [location, setLocation] = useState(null);
-    const [nearbyHotels, setNearbyHotels] = useState([]);
-    const [selectedHotel, setSelectedHotel] = useState(null);
-    const [hotelDetails, setHotelDetails] = useState(null);
+    const [hotelType, setHotelType] = useState('');
+    const [nearbyHotels, setNearbyHotels] = useState([]); //This is for NearbyHotels
+    const [selectedHotel, setSelectedHotel] = useState(null); //This for the chosen NearbyHotel marker
+    const [hotelDetails, setHotelDetails] = useState(null); //This is for the Info Window to display details
 
 
     //AutoComp => for search bar
@@ -76,16 +77,17 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
       }
     };
 
-    const fetchNearbyHotels = (location) => { //uses Places API to get nearby places
+    const fetchNearbyHotels = () => { //uses Places API to get nearby places
+        if (hotelType == "") return;
         try {
             console.log("TRYING TO FETCH HOTELS");
             if (!isLoaded || !mapRef.current) return;
 
             const service = new window.google.maps.places.PlacesService(mapRef.current);
             const request = {
-            location: new window.google.maps.LatLng(location.lat, location.lng),
+            location: new window.google.maps.LatLng(latLng.lat, latLng.lng),
             radius: 1000,
-            type: 'lodging',
+            type: hotelType,
             };
 
             service.nearbySearch(request, (results, status) => {
@@ -161,7 +163,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '10vh',
+        top: '5vh',
         left: '10vw',
         width: '80vw',
         height: '85vh',
@@ -170,7 +172,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
         // justifyContent: 'center',
         // alignItems: 'center',
         zIndex: 1050 
-        }}>
+      }}>
         <div className=" -lg" role="document" onClick={onClose}>
           <div className="" onClick={e => e.stopPropagation()}>
             <div className="">
@@ -178,6 +180,38 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
             </div>
             <div className="-body">
               <div className="mb-3">
+                  <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+                    <label htmlFor={`type-select`} className="">🏨 Search Nearby Hotels:</label>
+                        <select
+                          id={`type-select`}
+                          className="form-select form-select-sm"
+                          value={hotelType ?? "None"}
+                          style={{ maxWidth: "200px" }}
+                          onChange={(e) => {
+                            if (e.target.value === "") { //checks if user selected a day
+                              setHotelType('');
+                              return;
+                            }
+                            setHotelType(e.target.value);
+                          }}
+                        >
+                          <option value="">Select Type</option>
+                          <option value="lodging">All Lodging</option>
+                          <option value="hotel">Hotel</option>
+                          <option value="bed_and_breakfast">Bed & Breakfast</option>
+                        </select>
+                        <button
+                      className="btn btn-outline-primary btn-sm m-2"
+                      disabled={hotelType == ""}
+                      onClick={() => {
+                        setNearbyHotels([]);
+                        fetchNearbyHotels();
+                        setHotelType(''); // clear after submit
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
                   <Autocomplete
                       onLoad={(ref) => (autocompleteRef.current = ref)}
                       onPlaceChanged={handlePlaceChanged}
@@ -208,7 +242,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                     setMarkerPosition(pos);
                     setLatLng(pos);
                     updateAddressFromCoords(pos);
-                    fetchNearbyHotels(pos);
+                    // fetchNearbyHotels(pos);
                 }}
               >
                 <Marker
@@ -219,7 +253,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                     setMarkerPosition(pos);
                     setLatLng(pos);
                     updateAddressFromCoords(pos);
-                    fetchNearbyHotels(pos);
+                    // fetchNearbyHotels(pos);
                   }}
                 />
                 {nearbyMarkers}
