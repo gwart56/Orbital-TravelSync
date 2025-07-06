@@ -115,7 +115,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
 
         const request = {
             placeId: hotel.place_id,
-            fields: ['name', 'website', 'url', 'formatted_address'],
+            fields: ['name', 'website', 'url', 'formatted_address','rating', 'user_ratings_total', 'price_level'],
         };
 
         service.getDetails(request, (place, status) => {
@@ -271,6 +271,16 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                     >
                         <div style={{ maxWidth: "250px" }}>
                             <h6>{hotelDetails.name}</h6>
+                            {hotelDetails.rating && (
+                              <p style={{ fontSize: "12px" }}>
+                                ⭐ {hotelDetails.rating} ({hotelDetails.user_ratings_total ?? 0} reviews)
+                              </p>
+                            )}
+                            {hotelDetails.price_level && (
+                              <p style={{ fontSize: "12px" }}>
+                                Price Level: {hotelDetails.price_level}
+                              </p>
+                            )}
                             <p style={{ fontSize: "12px" }}>{hotelDetails.formatted_address}</p>
                             {hotelDetails.website ? (
                                 <a href={hotelDetails.website} target="_blank" rel="noopener noreferrer">

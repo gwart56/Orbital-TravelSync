@@ -87,12 +87,15 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
                         }}
                         icon={{
                           url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 24 36" fill="blue">
-                              <path d="M12 0C6.48 0 2 4.48 2 10c0 5.25 4.86 12.07 9.16 17.15.44.52 1.23.52 1.66 0C17.14 22.07 22 15.25 22 10c0-5.52-4.48-10-10-10z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="50" viewBox="0 0 24 36" fill="cyan">
+                              <path d="M12 0C6.48 0 2 4.48 2 10c0 5.25 4.86 12.07 9.16 17.15.44.52 1.23.52 1.66 0C17.14 22.07 22 15.25 22 10c0-5.52-4.48-10-10-10z"
+                                stroke="blue"
+                                stroke-width="1"
+                              />
                               <text x="12" y="15" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="bold">🏠</text>
                             </svg>
                           `),
-                          scaledSize: new window.google.maps.Size(35, 45)
+                          scaledSize: new window.google.maps.Size(35, 50)
                         }}
                         title={hotel.name}
                         onClick={() => {handleHotelClick(hotel);}}
@@ -177,7 +180,7 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
                 />
                 {nearbyMarkers}
 
-                {hotelDetails && (
+                {hotelDetails && (//INFO WINDOW WHEN U CLICK ON MARKER
                     <InfoWindow
                         position={{
                         lat: selectedHotel?.latLng.lat,
@@ -190,8 +193,8 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
                     >
                         <div style={{ maxWidth: "250px" }}>
                             <h6>{hotelDetails.name}</h6>
-                            <h6>{hotelDetails.price}</h6>
-                            <h6>{hotelDetails.rating}</h6>
+                            {hotelDetails.price && <p><strong>Price: </strong>{hotelDetails.price}</p>}
+                            {hotelDetails.rating && <p><strong>Rating: </strong>{hotelDetails.rating}</p>}
                             <p style={{ fontSize: "12px" }}>{hotelDetails.address}</p>
                             {hotelDetails.link ? (
                                 <a href={hotelDetails.link} target="_blank" rel="noopener noreferrer">

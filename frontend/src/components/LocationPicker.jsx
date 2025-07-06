@@ -109,7 +109,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
 
         const request = {
             placeId: act.place_id,
-            fields: ['name', 'website', 'url', 'formatted_address'],
+            fields: ['name', 'website', 'url', 'formatted_address','rating', 'user_ratings_total', 'price_level'],
         };
 
         service.getDetails(request, (place, status) => {
@@ -170,6 +170,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                           <option value="">Select Type</option>
                           <option value="tourist_attraction">Tourist Attractions</option>
                           <option value="restaurant">Restaurants</option>
+                          <option value="shopping_mall">Shopping Malls</option>
                           <option value="park">Parks</option>
                         </select>
                         <button
@@ -215,6 +216,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                   setMarkerPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                   updateAddressFromCoords({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                   setLatLng({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                  setSelectedAct(null);
+                  setActDetails(null);
                 }}
               >
                 <Marker
@@ -224,6 +227,8 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                     setMarkerPosition({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                     updateAddressFromCoords({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                     setLatLng({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                    setSelectedAct(null);
+                    setActDetails(null);
                   }}
                 />
                 {nearbyActivities.map(act => ( //generates all nearby act as markers
@@ -234,7 +239,16 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                         lng: act.geometry.location.lng()
                         }}
                         icon={{
-                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // different icon for acts
+                          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 24 36" fill="cyan">
+                              <path d="M12 0C6.48 0 2 4.48 2 10c0 5.25 4.86 12.07 9.16 17.15.44.52 1.23.52 1.66 0C17.14 22.07 22 15.25 22 10c0-5.52-4.48-10-10-10z" 
+                                stroke="blue"
+                                stroke-width="1"
+                              />
+                              <circle cx="12" cy="10" r="4" fill="blue"/>
+                            </svg>
+                          `),
+                          scaledSize: new window.google.maps.Size(30, 42)
                         }}
                         title={act.name}
                         onClick={() => {handleActClick(act);}}
@@ -254,6 +268,16 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
                     >
                         <div style={{ maxWidth: "250px" }}>
                             <h6>{actDetails.name}</h6>
+                            {actDetails.rating && ( //rating
+                              <p style={{ fontSize: "12px" }}>
+                                 {actDetails.rating} ⭐ ({actDetails.user_ratings_total ?? 0} reviews)
+                              </p>
+                            )}
+                            {actDetails.price_level && ( //$$$$
+                              <p style={{ fontSize: "12px" }}>
+                                Price Level: {actDetails.price_level==0?"Free":"$".repeat(actDetails.price_level)}
+                              </p>
+                            )}
                             <p style={{ fontSize: "12px" }}>{actDetails.formatted_address}</p>
                             {actDetails.website ? (
                                 <a href={actDetails.website} target="_blank" rel="noopener noreferrer">
