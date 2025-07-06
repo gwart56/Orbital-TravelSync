@@ -21,11 +21,11 @@ export async function createNewTravelDays(itineraryId, numOfDays) { //intitialis
     const travelDays = Array.from({ length: numOfDays }, (_, i) => (
         newTravelDay(itineraryId, i)
     ));
-    await addTravelDaysForItin(travelDays);
+    await addTravelDaysIntoDB(travelDays);
 }
 
 //FOR ADDING TRAVELDAY(S) INTO SUPABASE
-async function addTravelDaysForItin(travelDays) {// can accept one travel day or array of traveldays
+async function addTravelDaysIntoDB(travelDays) {// can accept one travel day or array of traveldays
     const { error: daysError } = await supabase
     .from('travel_days')
     .insert(travelDays);
@@ -36,7 +36,7 @@ async function addTravelDaysForItin(travelDays) {// can accept one travel day or
     }
 }
 
-export async function getTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMENT THIS CORRECTLY
+export async function loadTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMENT THIS CORRECTLY
   const { data, error } = await supabase
     .from('travel_days')
     .select('*')
