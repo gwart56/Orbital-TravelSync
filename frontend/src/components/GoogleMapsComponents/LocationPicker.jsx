@@ -9,7 +9,9 @@ const containerStyle = {
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
-export default function LocationPicker({ initialPosition, onClose, onSave }) {
+export default function LocationPicker({ act, onClose, onSave }) {
+    const initialPosition = null;
+    // act.latLng; temporarily commented TODO: IMPLEMENT ACTIVITY LATLNG
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
     const [latLng, setLatLng] = useState(centerDefault);
@@ -39,6 +41,10 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     useEffect( () => {
       if (isLoaded && !geocoder.current) { //make sure is BOTH loaded AND no exisitng geocoder instance
         geocoder.current = new window.google.maps.Geocoder(); //creates new geocoder instance
+        if (!initialPosition) {
+            console.log("A");
+            geocodeAddress(act.locAddress);
+        }
       }
     },[isLoaded]);
     
@@ -47,10 +53,10 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
       geocoder.current.geocode({ location: latLng }, (results, status) => {
       if (status === "OK" && results[0]) {
           const address = results[0].formatted_address;
-          const components = results[0]?.address_components || [];
-          const premiseComponent = components.find(c => c.types.includes("premise"));
-          const name = premiseComponent?.long_name || "Dropped Pin";
-          // const name = "Dropped Pin";
+          // const components = results[0]?.address_components || [];
+          // const premiseComponent = components.find(c => c.types.includes("premise"));
+          // const name = premiseComponent?.long_name || "";
+          const name = "";
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
@@ -74,6 +80,30 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
         setLocation({locName, locAddress})
       }
     };
+
+    const geocodeAddress = (address) => {//for converting manual Text to latLng
+      if (!geocoder.current || !address) return;
+
+      geocoder.current.geocode({ address }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const location = results[0].geometry.location;
+          const latLng = {
+            lat: location.lat(),
+            lng: location.lng(),
+          };
+          console.log("Geocoded LatLng:", latLng);
+
+          setMapCenter(latLng);
+          setMarkerPosition(latLng);
+          setLatLng(latLng);
+          updateAddressFromCoords(latLng);
+        } else {
+          console.error("Geocode failed:", status);
+        }
+      });
+    };
+
+
 
     const fetchNearbyActivities = () => { //uses Places API to get nearby places
         if (activityType == "") return;
@@ -104,13 +134,23 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
 
     //------------------------------------------------------HANDLES CLICKING ON ACT MARKER
     const handleActClick = (act) => {//handles when u click act marker
-        setSelectedAct(act);
+
+        setActDetails(null);
+        setSelectedAct(null);
+        
         const service = new window.google.maps.places.PlacesService(placesServiceDivRef.current);
+
+        const actPos = {lat: act.geometry.location.lat(),lng: act.geometry.location.lng()};
+        setMarkerPosition(actPos);
+        setLatLng(actPos);
+        updateAddressFromCoords(actPos);
 
         const request = {
             placeId: act.place_id,
             fields: ['name', 'website', 'url', 'formatted_address','rating', 'user_ratings_total', 'price_level'],
         };
+
+        setSelectedAct(act);
 
         service.getDetails(request, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
@@ -124,7 +164,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
 
     //------------------------------------------------------HANDLES SAVE
     const handleSave = () => {
-      onSave( location );
+      onSave( location, latLng );
       onClose();
     };
 
@@ -135,7 +175,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '5vh',
+        top: '3vh',
         left: '10vw',
         width: '80vw',
         maxHeight: '85vh',
@@ -150,6 +190,7 @@ export default function LocationPicker({ initialPosition, onClose, onSave }) {
             <div className="">
               <h5 className="">Edit Location <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
             </div>
+            <h6>*Note: Manually inputed addresses may not be marked on map accurately</h6>
             <div className="-body">
               <div className="mb-3">
                   <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">

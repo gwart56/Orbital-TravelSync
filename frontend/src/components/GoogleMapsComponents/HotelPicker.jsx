@@ -9,7 +9,8 @@ const containerStyle = {
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
-export default function HotelPicker({ initialPosition, onClose, onSave }) {
+export default function HotelPicker({ hotel, onClose, onSave }) {
+    const initialPosition = hotel.latLng;
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
     const [latLng, setLatLng] = useState(initialPosition || centerDefault);
@@ -39,6 +40,9 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     useEffect( () => {
       if (isLoaded && !geocoder.current) { //make sure is BOTH loaded AND no exisitng geocoder instance
         geocoder.current = new window.google.maps.Geocoder(); //creates new geocoder instance
+        if (!initialPosition) {
+          geocodeAddress(hotel.address); //tries to geocode manual address
+        }
       }
     },[isLoaded]);
     
@@ -50,13 +54,12 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
           // const components = results[0]?.address_components || [];
           // const premiseComponent = components.find(c => c.types.includes("premise"));
           // const name = premiseComponent?.long_name || "Dropped Pin";
-          const name = "Dropped Pin";
+          const name = "";
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
       });
     }
-    
 
     const handlePlaceChanged = () => {// this sets the marker position and map center position
       const place = autocompleteRef.current.getPlace();
@@ -75,6 +78,29 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
         const locAddress = (place.formatted_address);
         setLocation({locName, locAddress})
       }
+    };
+
+    const geocodeAddress = (address) => {//for converting manual Text to latLng
+      if (!geocoder.current || !address) return;
+
+      geocoder.current.geocode({ address }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const location = results[0].geometry.location;
+          const latLng = {
+            lat: location.lat(),
+            lng: location.lng(),
+          };
+          console.log("Geocoded LatLng:", latLng);
+
+          // You can use setMapCenter, setMarkerPosition, etc.
+          setMapCenter(latLng);
+          setMarkerPosition(latLng);
+          setLatLng(latLng);
+          updateAddressFromCoords(latLng);
+        } else {
+          console.error("Geocode failed:", status);
+        }
+      });
     };
 
     const fetchNearbyHotels = () => { //uses Places API to get nearby places
@@ -104,13 +130,19 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     };
 
     const handleHotelClick = (hotel) => {//handles when u click hotel marker
-        setSelectedHotel(hotel);
+      // console.log("hoteldetails...", hotelDetails);
+      // console.log("selectedhotel...", selectedHotel);
+      setHotelDetails(null);
+      setSelectedHotel(null);
+
         const service = new window.google.maps.places.PlacesService(placesServiceDivRef.current);
 
         const hotelPos = {lat: hotel.geometry.location.lat(),lng: hotel.geometry.location.lng()};
         setMarkerPosition(hotelPos);
         setLatLng(hotelPos);
         updateAddressFromCoords(hotelPos);
+        
+        setSelectedHotel(hotel);
         
 
         const request = {
@@ -163,7 +195,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '5vh',
+        top: '2vh',
         left: '10vw',
         width: '80vw',
         maxHeight: '85vh',
@@ -178,6 +210,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
             <div className="">
               <h5 className="">Edit Location <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
             </div>
+            <h6>*Note: Manually inputed addresses may not be marked on map accurately</h6>
             <div className="-body">
               <div className="mb-3">
                   <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">

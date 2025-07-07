@@ -11,7 +11,7 @@ import { HotelsPage } from './pages/HotelsPage';
 import ContactPage from './pages/ContactPage';
 import MapPage from './pages/MapPage';
 import LocationPicker from './components/GoogleMapsComponents/LocationPicker';
-import { SummaryPage } from './pages/SummaryPage';
+import { SummaryPage } from './pages/SummaryPage/SummaryPage';
 import FlightPage from './pages/FlightPage/FlightPage';
 
 function AppRoutes() {

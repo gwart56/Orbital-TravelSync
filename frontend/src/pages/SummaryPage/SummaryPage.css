@@ -19,10 +19,10 @@
 }
 
 /* Only affect background-image when used on SummaryPage */
-.summary-background {
+/* .summary-background {
   background-image: none !important;
   background-color: #e1e1e1;
-}
+} */
 
 
 /* Make top text readable */
@@ -354,8 +354,8 @@
   border-radius: 16px;
   padding: 30px;
   margin: 30px auto;
-  min-width: 800px;
-  max-width: 1400px;
+  min-width: 600px;
+  max-width: 1000px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   animation: fadeInUp 0.4s ease-in-out;
   display:flex;

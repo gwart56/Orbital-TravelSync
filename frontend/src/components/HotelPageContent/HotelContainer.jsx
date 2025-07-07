@@ -130,7 +130,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             <HotelPicker
               onSave={(loc, pos) => handleLocationSave(loc, pos)}
               onClose={() => setIsPickingLocation(false)}
-              initialPosition={hotel.latLng}
+              hotel={hotel}
             />
           ) : (
             <button

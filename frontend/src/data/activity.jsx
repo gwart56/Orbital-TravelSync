@@ -86,6 +86,7 @@ export class Activity {
     time;
     locName;
     locAddress;
+    latLng;
 
     constructor(...args) {
         if (args.length==4) {// 4 args

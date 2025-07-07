@@ -1,24 +1,22 @@
 import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import './SummaryPage.css';
-import Header from '../components/Header/Header';
-import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById} from '../lib/supabaseItinerary';
+import Header from '../../components/Header/Header';
+import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
+import { loadItineraryById} from '../../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
-import { Activity } from '../data/activity';
-import { loadFlightsByItineraryId } from '../data/flights';
+import { Activity } from '../../data/activity';
+import { loadFlightsByItineraryId } from '../../data/flights';
 
 function ActivityContent({activityArr}) {
   const activities = activityArr;
 
   
-  const activityElements = activities.length==0
-  ? (<div className="empty-activity-box text-center p-4 my-4 rounded shadow-sm fade-in">
-      <div className="emoji mb-2" style={{ fontSize: "2rem" }}>😴</div>
-      <h4 className="mb-2 fw-semibold">This day’s still empty</h4>
-      <p className="mb-3 text-muted">Let’s add some fun plans to your itinerary 📝</p>
+  const activityElements = activities.filter(a => a.name).length==0
+  ? (<div className="d-flex activity-row">
+      <h4 className="mb-2 fw-semibold">No activities</h4>
     </div>
 
     )
@@ -233,7 +231,7 @@ export function SummaryPage() {
                 <div 
                 className='bg-light p-4 rounded m-3'
                 >
-                  <h4>Flights</h4>
+                  <h4>Flight Details</h4>
                     <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
                         flights={flights}
                     /> 

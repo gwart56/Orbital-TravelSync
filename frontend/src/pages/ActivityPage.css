@@ -130,16 +130,6 @@
   transform: translateY(-3px);
 }
 
-.custom-btn.flight-btn {
-  background-color: #6db5ec;
-}
-
-.flight-btn:hover {
-  background-color: #58c4f3;
-  box-shadow: 0 0 10px #65b2e2, 0 0 20px rgba(101, 188, 226, 0.4);
-  transform: translateY(-3px);
-}
-
 .empty-activity-box {
   background-color: #f4f9ff;
   border-radius: 12px;
