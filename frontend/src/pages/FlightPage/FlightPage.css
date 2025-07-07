@@ -45,7 +45,7 @@
   text-shadow: 1px 1px 6px rgba(0,0,0,0);
 }
 
-.activity-container {
+.flight-container {
   background-color: #f4f9ff;
   border-left: 6px solid #007bff;
   border-radius: 12px;
@@ -86,7 +86,7 @@
   margin-bottom: 40px !important;
 }
 
-.activity-page-top-buttons {
+.flight-page-top-buttons {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,17 +130,7 @@
   transform: translateY(-3px);
 }
 
-.custom-btn.flight-btn {
-  background-color: #6db5ec;
-}
-
-.flight-btn:hover {
-  background-color: #58c4f3;
-  box-shadow: 0 0 10px #65b2e2, 0 0 20px rgba(101, 188, 226, 0.4);
-  transform: translateY(-3px);
-}
-
-.empty-activity-box {
+.empty-flight-box {
   background-color: #f4f9ff;
   border-radius: 12px;
   padding: 20px;
@@ -151,11 +141,11 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
-.empty-activity-box h4 {
+.empty-flight-box h4 {
   font-size: 1.5rem;
 }
 
-.empty-activity-box p {
+.empty-flight-box p {
   font-size: 1.1rem;
   color: #666;
 }
@@ -247,7 +237,7 @@
   text-shadow: none;
 }
 
-.new-activity-butt {
+.new-flight-butt {
   background-color: #28a745;
   color: white;
   font-size: 1.1rem;
@@ -262,7 +252,7 @@
   text-align: center;
 }
 
-.new-activity-butt:hover {
+.new-flight-butt:hover {
   background-color: #34c759;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -313,8 +303,17 @@
   flex-wrap: wrap;  /* allows stacking on small screens */
 }
 
+.activities-btn {
+  background-color: #f39c12;
+}
+
+.activities-btn:hover {
+  background-color: #f5b041;
+  box-shadow: 0 0 10px #f5b041, 0 0 20px rgba(245, 176, 65, 0.4);
+  transform: translateY(-3px);
+}
 /*FOR SUMMARY PAGE----------------------------------------------------------------*/
-.activity-row {
+/* .flight-row {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -326,7 +325,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-.activity-time {
+.flight-time {
   flex: 1;
   font-weight: 600;
   font-size: 1rem;
@@ -334,7 +333,7 @@
   text-align: left;
 }
 
-.activity-name {
+.flight-name {
   flex: 5;
   font-size: 1rem;
   color: #333;
@@ -353,4 +352,4 @@
   animation: fadeInUp 0.4s ease-in-out;
   display:flex;
   flex-direction: row;
-}
+} */

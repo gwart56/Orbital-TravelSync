@@ -17,7 +17,8 @@ function newTravelDay(itineraryId, index) {
     };
 }
 
-export async function createNewTravelDays(itineraryId, numOfDays) { //intitialises numOfDays length array of travelDays
+//CREATE : Create new numOfDays-length array of travelDays
+export async function createNewTravelDays(itineraryId, numOfDays) { 
     const travelDays = Array.from({ length: numOfDays }, (_, i) => (
         newTravelDay(itineraryId, i)
     ));
@@ -36,6 +37,8 @@ async function addTravelDaysIntoDB(travelDays) {// can accept one travel day or 
     }
 }
 
+
+// LOAD: Get all traveldays for a specific itinerary
 export async function loadTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMENT THIS CORRECTLY
   const { data, error } = await supabase
     .from('travel_days')
@@ -51,6 +54,8 @@ export async function loadTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMEN
   return data;
 }
 
+
+// LOAD: Get travelday by id
 export async function loadTravelDayById(travelDayId) {
     //TODO: maybe might use ltr idk
     const { data, error } = await supabase
@@ -63,8 +68,8 @@ export async function loadTravelDayById(travelDayId) {
     return data;
 }
 
+// UPDATE: Update travelday by id
 export async function updateTravelDayById(travelDayId, updatedTravelDay) {
-
     const { data, error } = await supabase
         .from('travel_days')
         .update(updatedTravelDay)
@@ -78,6 +83,7 @@ export async function updateTravelDayById(travelDayId, updatedTravelDay) {
     return data[0];
 }
 
+// DELETE: Delete travelday by id
 export async function deleteTravelDayById(travelDayId) {
   const { error } = await supabase
     .from('travel_days') 

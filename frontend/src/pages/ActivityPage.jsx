@@ -264,6 +264,7 @@ function ActivityPage() {
                 <div className="activity-page-top-buttons">
                   <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
                   <button className="custom-btn home-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
+                  <button className="custom-btn flight-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> ✈️ To Flights</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
                 </div>
