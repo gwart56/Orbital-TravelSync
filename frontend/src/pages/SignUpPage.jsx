@@ -1,4 +1,4 @@
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import { useState } from "react";
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from "../lib/AuthContext";

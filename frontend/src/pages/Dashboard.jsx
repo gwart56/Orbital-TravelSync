@@ -1,4 +1,4 @@
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import dayjs from "dayjs";
 import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
@@ -6,7 +6,7 @@ import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } fro
 import { useState, useEffect } from "react";
 import { MdDeleteForever } from 'react-icons/md';
 import "./Dashboard.css";
-import ItineraryModal from "../components/ItineraryModal";
+import ItineraryModal from "../components/ItineraryComponents/ItineraryModal";
 
 function DashboardNotLoggedIn() {
     return (

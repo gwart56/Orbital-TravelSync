@@ -1,12 +1,14 @@
 import { useState } from "react";
-import LocationPicker from "./LocationPicker";
-import HotelPicker from "./HotelPicker";
+// import LocationPicker from "../GoogleMapsComponents/LocationPicker";
+import HotelPicker from "../GoogleMapsComponents/HotelPicker";
+import ConfirmModal from "../Misc/ConfirmModal";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
   const [latLng, setLatLng] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   
   const handleEditClick = () => {
     setIsEditing(true);
@@ -268,15 +270,21 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           {/* Bottom Right: Delete */}
           <button
             className="btn btn-danger btn-md"
-            onClick={() => {
-              const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
-              if (confirmed) {
-                onDelete(hotel.id);
-              }
-            }}
+            onClick={()=>setDeleteModalOpen(true)}
+              // const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
+              // if (confirmed) {
+              //   onDelete(hotel.id);
+              // }
+            // }}
           >
             🗑️ Delete
           </button>
+          {deleteModalOpen && <ConfirmModal
+            message={`Are you sure you want to delete "${hotel.name}"?`}
+            onCancel={()=>setDeleteModalOpen(false)}
+            onConfirm={()=>onDelete(hotel.id)}
+          />
+        }
         </div>
       </div>
 

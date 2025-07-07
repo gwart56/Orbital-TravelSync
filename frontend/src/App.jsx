@@ -10,7 +10,7 @@ import ActivityPage from './pages/ActivityPage';
 import { HotelsPage } from './pages/HotelsPage';
 import ContactPage from './pages/ContactPage';
 import MapPage from './pages/MapPage';
-import LocationPicker from './components/LocationPicker';
+import LocationPicker from './components/GoogleMapsComponents/LocationPicker';
 import { SummaryPage } from './pages/SummaryPage';
 
 function AppRoutes() {

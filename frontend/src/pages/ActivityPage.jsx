@@ -2,14 +2,15 @@ import './ActivityPage.css';
 import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
-import ActivityContainer from '../components/ActivityContainer';
-import Header from '../components/Header';
+import Header from '../components/Header/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
-import ItineraryInfo from '../components/ItineraryInfo';
+import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
-import { AutoSaveButton } from '../components/AutoSaver';
+import { AutoSaveButton } from '../components/Misc/AutoSaver';
+import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
+import ConfirmModal from '../components/Misc/ConfirmModal';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -63,14 +64,15 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   );
 }
 
-//each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({dayArr, itin, setItin}) {
-  const [swapSelections, setSwapSelections] = useState({});
+//each TravelDaysContent contains Day No., Date, ActivityContent 
+function TravelDaysContent({dayArr, itin, setItin}) {
+  const [deletingDayId, setDeletingDayId] = useState(null);
+  const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
   const travelDays = dayArr;
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
   getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
-  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   function handleAdd() {
     setItin(itin.addDay());
@@ -89,10 +91,11 @@ function TravelDayContent({dayArr, itin, setItin}) {
 
 
   function handleDelete(id) {
-      const confirmDelete = window.confirm("Are you sure you want to delete this day?");
-      if (confirmDelete) {
+      // const confirmDelete = window.confirm("Are you sure you want to delete this day?");
+      // if (confirmDelete) {
           setItin(itin.removeDay(id));
-      }
+          
+      // }
   }
 
   const dayElements = travelDays.length==0
@@ -114,19 +117,25 @@ function TravelDayContent({dayArr, itin, setItin}) {
       // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
+      const dayNo = index + 1; //the day num
 
       return ( //i lazy to make container component
       <div key={d.id}>
         <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
         <div className="travel-day-container" key={d.id}>
           <div className="day-header">
-            <span className="day-label">Day {index + 1}</span>
-            <button className="delete-btn delete-btn-top" onClick={() => handleDelete(d.id)}>
+            <span className="day-label">Day {dayNo}</span>
+            <button className="delete-btn delete-btn-top" onClick={() => {setDeletingDayId(d.id);}}>
               <span>Delete</span> <MdDeleteForever />
             </button>
           </div>
 
-
+            {deletingDayId==d.id && <ConfirmModal
+                message={`Are you sure you want to delete Day ${dayNo}?`}
+                onConfirm={() => {handleDelete(d.id); setDeletingDayId(null);}}
+                onCancel={()=>setDeletingDayId(null)}
+              />
+            }
 
           <h5 className="day-subtext">
             📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
@@ -259,7 +268,7 @@ function ActivityPage() {
                   <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
                 </div>
 
-                <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
+                <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   dayArr={itin.travelDays}
                   itin={itin}
                   setItin={setItin}

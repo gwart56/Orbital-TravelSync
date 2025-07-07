@@ -2,12 +2,12 @@ import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
 import './ActivityPage.css';
-import Header from '../components/Header';
-import ItineraryInfo from '../components/ItineraryInfo';
+import Header from '../components/Header/Header';
+import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
-import { AutoSaveButton } from '../components/AutoSaver';
+// import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import { Activity } from '../data/activity';
 
 function ActivityContent({activityArr}) {

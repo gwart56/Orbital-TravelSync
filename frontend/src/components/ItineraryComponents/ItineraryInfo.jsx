@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../data/activity';
+import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { FaEdit } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import "./ItineraryInfo.css";

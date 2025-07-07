@@ -1,7 +1,7 @@
 //might be overkill to make this component idk (JUST FOR EDITING NAME(maybe date next time) OF HOTEL GRP)
 
 import { useEffect, useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../data/activity';
+import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
 import './HotelGroupInfo.css';
