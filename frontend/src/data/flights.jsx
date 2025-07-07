@@ -13,7 +13,7 @@ function newFlight({
   departureCity,
   arrivalCity,
   departureTime, //INCLUDES DATE AND TIME
-  arrivalTime, //INCLUDES DATE AND TIME
+  arrivalTime , //INCLUDES DATE AND TIME
   terminal = '', //optional?
   gate = '', //optional?
   durationMinutes = null, //optional?
@@ -23,20 +23,20 @@ function newFlight({
   return {
     flightId: genId(),
     itineraryId,
-    travelDayId,
+    // travelDayId,
     airline,
     flightNumber,
     departureAirport,
     arrivalAirport,
-    departureCity,
-    arrivalCity,
     departureTime,
     arrivalTime,
-    terminal,
-    gate,
-    durationMinutes,
+    // departureCity,
+    // arrivalCity,
+    // terminal,
+    // gate,
+    // durationMinutes,
     seatNumber,
-    notes
+    // notes
   };
 }
 
@@ -54,7 +54,7 @@ async function addFlightsIntoDB(flights) {
 }
 
 // CREATE: Creates and inserts a single flight object
-export async function createNewFlight(itineraryId) {
+export async function createNewFlight({itineraryId}) {
   const flight = newFlight({itineraryId});
   await addFlightsIntoDB([flight]);
   return flight;
@@ -62,6 +62,7 @@ export async function createNewFlight(itineraryId) {
 
 // LOAD: Get all flights for a specific itinerary
 export async function loadFlightsByItineraryId(itineraryId) {
+  console.log("fetching from itindb", itineraryId);
   const { data, error } = await supabase
     .from('flights')
     .select('*')

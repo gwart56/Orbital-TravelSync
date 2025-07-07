@@ -1,0 +1,363 @@
+.background-image {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url("https://wallpapercat.com/w/full/b/7/d/1518082-2560x1440-desktop-hd-mount-fuji-japan-background-image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding: 0 5vw;
+  overflow-x: hidden;
+}
+
+/* Only affect background-image when used on SummaryPage */
+.summary-background {
+  background-image: none !important;
+  background-color: #e1e1e1;
+}
+
+
+/* Make top text readable */
+.background-image h1,
+.background-image h2,
+.background-image h3,
+.itin-title {
+  color: #fff;
+  text-shadow: 2px 2px 6px rgba(0,0,0,1);
+}
+
+
+
+/* Card Styling */
+.travel-day-container {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 30px;
+  margin: 30px auto;
+  max-width: 1000px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 0.4s ease-in-out;
+}
+
+.travel-day-container h2 {
+  color: black;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0);
+}
+
+.activity-container {
+  background-color: #f4f9ff;
+  border-left: 6px solid #007bff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  width: 100%;
+  min-width: 600px; /* Prevents container from shrinking too small */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* Button Styling */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 8px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.btn-success { background-color: #28a745; border: none; }
+.btn-danger  { background-color: #dc3545; border: none; }
+.btn-primary { background-color: #007bff; border: none; }
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Fade in effect */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.welcome-text {
+  color: #007bff !important;
+  font-weight: 700;
+  text-shadow: none !important;
+  margin-bottom: 40px !important;
+}
+
+.activity-page-top-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+/* Shared styles */
+.custom-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  text-align: center;
+  background-color: #555; /* fallback for unstyled buttons */
+}
+
+/* Individual colors */
+.hotels-btn {
+  background-color: #4a90e2;
+}
+.hotels-btn:hover {
+  background-color: #5aaeff;
+  box-shadow: 0 0 10px #5aaeff, 0 0 20px rgba(90, 174, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.home-btn {
+  background-color: #50c878;
+}
+.home-btn:hover {
+  background-color: #65e295;
+  box-shadow: 0 0 10px #65e295, 0 0 20px rgba(101, 226, 149, 0.4);
+  transform: translateY(-3px);
+}
+
+.custom-btn.flight-btn {
+  background-color: #6db5ec;
+}
+
+.flight-btn:hover {
+  background-color: #58c4f3;
+  box-shadow: 0 0 10px #65b2e2, 0 0 20px rgba(101, 188, 226, 0.4);
+  transform: translateY(-3px);
+}
+
+.empty-activity-box {
+  background-color: #f4f9ff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  width: 100%;
+  min-width: 600px; /* Prevents container from shrinking too small */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.empty-activity-box h4 {
+  font-size: 1.5rem;
+}
+
+.empty-activity-box p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+
+.empty-itinerary-warning {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px auto;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.empty-itinerary-warning h4 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.empty-itinerary-warning p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+.empty-itinerary-message strong {
+  font-weight: 600;
+  color: #333;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Container for the day header */
+.day-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Large blue “Day X” label */
+.day-label {
+  color: #3498db; /* softer sky blue */
+  font-size: 2.8rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* stronger, smoother shadow */
+}
+
+/* DELETE BUTTON: Top right of day header */
+.delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #dc3545;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #e14a59;
+  transform: translateY(-2px);
+}
+
+/* Smaller subtext like date / hotel lines */
+.day-subtext {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #333;
+  margin: 8px 0;
+  text-shadow: none;
+}
+
+.new-activity-butt {
+  background-color: #28a745;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  min-width: 180px;
+  text-align: center;
+}
+
+.new-activity-butt:hover {
+  background-color: #34c759;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.themed-button {
+  padding: 12px 24px;
+  margin: 12px auto;
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  text-align: center;
+  max-width: 200px;
+}
+
+/* Individual variants */
+.add-new-day-btn {
+  background-color: rgba(40, 167, 69, 0.85); /* green with transparency */
+}
+
+.save-btn {
+  background-color: #007bff; /* blue with transparency */
+}
+
+.back-btn {
+  background-color: #28a745; /* gray with transparency */
+}
+
+/* Hover effect */
+.themed-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  cursor: pointer;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;        /* spacing between buttons */
+  margin-top: 24px;
+  flex-wrap: wrap;  /* allows stacking on small screens */
+}
+
+/*FOR SUMMARY PAGE----------------------------------------------------------------*/
+.activity-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto;
+  max-width: 800px;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.activity-time {
+  flex: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+}
+
+.activity-name {
+  flex: 5;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.travel-day-container-sum {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 30px;
+  margin: 30px auto;
+  min-width: 800px;
+  max-width: 1400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: fadeInUp 0.4s ease-in-out;
+  display:flex;
+  flex-direction: row;
+}

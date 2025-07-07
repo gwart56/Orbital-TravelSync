@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
-import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
-import './ActivityPage.css';
+import './SummaryPage.css';
 import Header from '../components/Header/Header';
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
+import { loadItineraryById} from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import { Activity } from '../data/activity';
+import { loadFlightsByItineraryId } from '../data/flights';
 
 function ActivityContent({activityArr}) {
   const activities = activityArr;
@@ -39,7 +39,7 @@ function ActivityContent({activityArr}) {
 }
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({dayArr, itin, setItin}) {
+function TravelDayContent({dayArr, itin}) {
   const travelDays = dayArr;
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
@@ -122,9 +122,65 @@ function TravelDayContent({dayArr, itin, setItin}) {
   );
 }
 
+function FlightContent({flights}) {
+  const flightElements = flights.length==0
+  ? (
+    <div className="empty-itinerary-warning text-center">
+      <h4>
+        🧭 No Flights Booked Yet
+      </h4>
+    </div>
+    )
+    :flights.map(f=>
+  (
+      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Airline:</strong>
+          <span className={f.airline ? "" : "text-placeholder"}>{f.airline || "Not set"}</span>
+        </div>
+
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Flight No.:</strong>
+          <span className={f.flightNumber ? "" : "text-placeholder"}>{f.flightNumber || "Not set"}</span>
+        </div>
+
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>From Airport:</strong>
+          <span className={f.departureAirport ? "" : "text-placeholder"}>{f.departureAirport || "Not set"}</span>
+        </div>
+
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>To Airport:</strong>
+          <span className={f.arrivalAirport ? "" : "text-placeholder"}>{f.arrivalAirport || "Not set"}</span>
+        </div>
+
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Departure:</strong>
+          <span className={f.departureTime ? "" : "text-placeholder"}>
+            {f.departureTime ? dayjs(f.departureTime).format('DD MMM YYYY, HH:mm') : "Not set"}
+          </span>
+        </div>
+
+        <div className="mb-3 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Arrival:</strong>
+          <span className={f.arrivalTime ? "" : "text-placeholder"}>
+            {f.arrivalTime ? dayjs(f.arrivalTime).format('DD MMM YYYY, HH:mm') : "Not set"}
+          </span>
+        </div>
+
+          {f.seatNumber && <div className="mb-3 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Seat Number:</strong>
+          <span className={f.seatNumber ? "" : "text-placeholder"}>{f.seatNumber || "Not set"}</span>
+        </div>}
+      </div>
+    )
+  )
+  return flightElements;
+}
 
 export function SummaryPage() {
     const [itin, setItin] = useState(null); //initialize itin to null
+    const [flights, setFlights] = useState(null);
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
 
@@ -135,6 +191,8 @@ export function SummaryPage() {
         try {
           const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
           setItin(loadedItin);
+          const loadedFlights = await loadFlightsByItineraryId(itinDbId);
+          setFlights(loadedFlights);
         } catch (err) {
           console.error("Failed to load itinerary", err);
         }
@@ -146,10 +204,10 @@ export function SummaryPage() {
 
 
     return (
-        <div className="background-image d-flex flex-column align-items-center">
+        <div className="background-image summary-background d-flex flex-column align-items-center">
             <Header />
             <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
-            {itin ? ( //**makes sure itin is not null first before loading all the info and content
+            {itin && flights ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
@@ -163,17 +221,25 @@ export function SummaryPage() {
                 </div>
 
                 <div 
-                className='bg-light p-4 rounded'
+                className='bg-light p-4 rounded m-3'
                 >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                         dayArr={itin.travelDays}
                         itin={itin}
-                        setItin={setItin}
+                    /> 
+                </div>
+
+                <div 
+                className='bg-light p-4 rounded m-3'
+                >
+                  <h4>Flights</h4>
+                    <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
+                        flights={flights}
                     /> 
                 </div>
               </>)
-              : (<h3 className="text-secondary">Loading Activities...</h3>)}
+              : (<h3 className="text-secondary">Loading Summary...</h3>)}
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
                 {/* <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button> */}

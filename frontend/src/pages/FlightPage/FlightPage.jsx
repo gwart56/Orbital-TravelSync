@@ -13,7 +13,7 @@ import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlig
 import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({ flights, itinDbId }) {
-  const [localFlights, setLocalFlights] = useState(flights); deleteFlightById
+  const [localFlights, setLocalFlights] = useState(flights);
   const [deletingId, setDeletingId] = useState(null);
 
   function handleAdd() {
@@ -26,7 +26,7 @@ function FlightContent({ flights, itinDbId }) {
       departureTime: '',
       arrivalTime: ''
     };
-    createNewFlight(emptyFlight).then(newFlight => {
+    createNewFlight({itineraryId: itinDbId}).then(newFlight => {
       setLocalFlights([...localFlights, newFlight]);
     });
   }
@@ -95,8 +95,8 @@ function FlightPage() {
     const fetchData = async () => {
       try {
         const loadedItin = await loadItineraryById(itinDbId);
-        const loadedFlights = [{itineraryId: itinDbId}]
-        // const loadedFlights = await loadFlightsByItineraryId(loadedItin.itineraryId);
+        // const loadedFlights = [{itineraryId: itinDbId}]
+        const loadedFlights = await loadFlightsByItineraryId(itinDbId);
         setItin(loadedItin);
         setFlights(loadedFlights);
       } catch (err) {
