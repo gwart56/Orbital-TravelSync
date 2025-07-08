@@ -13,29 +13,56 @@ import ActivityContainer from '../components/ActivityPageContent/ActivityContain
 import ConfirmModal from '../components/Misc/ConfirmModal';
 import { loadItineraryById, updateItineraryById } from '../data/itinerary';
 import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
-import { addItemToArray, insertItemIntoArrayAtIndex, reindexTravelDays } from '../utils/arrays';
+import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays } from '../utils/arrays';
+import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
-function ActivityContent({activityArr, dayId, itin, setItin}) {
-  const activities = activityArr;
+function ActivityContent({dayId, setLoadingMessage}) {
+  const [activities, setActivities] = useState([]);
+  // const activities = activityArr;
+  useEffect( () => {//FETCH TRAVELDAYS
+      const fetchActs = async () => {
+        try {
+          const loadedActs = await loadActivitiesByTravelDaysId(dayId); //wait to get itin class obj by id from supabase
+          setActivities(loadedActs);
+        } catch (err) {
+          console.error("Failed to load traveldays", err);
+        }
+      }
+      fetchActs();
+    }
+    ,[dayId]);
 
-  function handleSave(id, valuesArray) {
-    console.log("saved: id-" + id + ", " + valuesArray);
-    const newActArr = editActivityArray(activities, id, valuesArray);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr)); //updates itinerary
+  async function handleSave(id, data) {
+    setLoadingMessage("Saving...");
+    console.log("saved: id-" + id , data);
+    const {name, time, locName, locAddress} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress);
+    const newActArr = editItemInArrayById(activities, newAct, id);
+    // console.log('AAA',newActArr)
+    await updateactivityById(id, newAct);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
-  function handleDelete(id) {
+  async function handleDelete(id) {
+    setLoadingMessage("Deleting...");
     console.log("deleted: id-" + id);
-    const newActArr = deleteActivityArray(activities, id);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr));
+    const newActArr = deleteItemFromArrayById(activities, id);
+    await deleteactivityById(id);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
-  function handleAdd() {
+  async function handleAdd() {
+    setLoadingMessage("Adding...");
     console.log("added new activity");
-    const newActArr = addActivityArray(activities);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr));
+    const newAct = newActivity(dayId, "", "", "", "");
+    const newActArr = addItemToArray(activities, newAct);
+    await addActivityIntoDB(newAct);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
   const activityElements = activities.length==0
@@ -68,7 +95,7 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 }
 
 //each TravelDaysContent contains Day No., Date, ActivityContent 
-function TravelDaysContent({itinDbId, itin}) {
+function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
   const [travelDays, setTravelDays] = useState([]);
   const [deletingDayId, setDeletingDayId] = useState(null);
   const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
@@ -79,7 +106,7 @@ function TravelDaysContent({itinDbId, itin}) {
   // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   useEffect( () => {//FETCH TRAVELDAYS
-      const fetchItin = async () => {
+      const fetchTDs = async () => {
         try {
           const loadedTDs = await loadTravelDaysByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
           setTravelDays(loadedTDs);
@@ -87,31 +114,35 @@ function TravelDaysContent({itinDbId, itin}) {
           console.error("Failed to load traveldays", err);
         }
       }
-      fetchItin();
+      fetchTDs();
     }
     ,[itinDbId]);
 
   async function handleAdd() {
     try {
+      setLoadingMessage("Adding...");
       const newDay = newTravelDay(itinDbId, travelDays.length);
       // Insert to DB and get inserted row back
       const insertedRows = await addTravelDaysIntoDB([newDay]);
       const insertedDay = insertedRows[0];
-      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays+1});
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays+1});
       // Update local state
       setTravelDays([...travelDays, insertedDay]);
     } catch (err) {
       console.error("Failed to add travel day", err);
+    } finally {
+      setLoadingMessage("");
     }
   }
 
   // Insert a day before given index, reindex all days
   async function handleInsert(indexToInsert) {
     try {
+      setLoadingMessage("Inserting...");
       const latestDays = await loadTravelDaysByItineraryId(itinDbId);
 
       // Create new day with dummy index
-      const newDay = newTravelDay(itinDbId, -1);
+      const newDay = newTravelDay(itinDbId, indexToInsert);
 
       // Insert the new day first
       const insertedDays = await addTravelDaysIntoDB([newDay]);
@@ -128,12 +159,14 @@ function TravelDaysContent({itinDbId, itin}) {
       ));
 
       const freshDays = await loadTravelDaysByItineraryId(itinDbId);
-      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays + 1});
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays + 1});
       setTravelDays(freshDays);
     } catch (err) {
       console.error("Insert failed:", err);
       const fallback = await loadTravelDaysByItineraryId(itinDbId);
       setTravelDays(fallback);
+    } finally {
+      setLoadingMessage("");
     }
 }
 
@@ -143,6 +176,7 @@ function TravelDaysContent({itinDbId, itin}) {
     if (index1 === index2) return;
 
     try {
+      setLoadingMessage("Swapping...");
       const latestDays = await loadTravelDaysByItineraryId(itinDbId);
 
       // Swap in local array
@@ -164,12 +198,15 @@ function TravelDaysContent({itinDbId, itin}) {
       console.error("Failed to swap travel days", err);
       const freshDays = await loadTravelDaysByItineraryId(itinDbId);
       setTravelDays(freshDays);
+    } finally {
+      setLoadingMessage("");
     }
   }
 
   // Delete a travel day by travelDayId and reindex
   async function handleDelete(travelDayId) {
     try {
+      setLoadingMessage("Deleting...");
       console.log('traveldayid delete',travelDayId);
       // Delete from DB
       await deleteTravelDayById(travelDayId);
@@ -185,13 +222,15 @@ function TravelDaysContent({itinDbId, itin}) {
         reindexedDays.map(d => updateTravelDayById(d.id, { index: d.index }))
       );
 
-      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays-1});
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays-1});
       // Update local state
       setTravelDays(reindexedDays);
     } catch (err) {
       console.error("Failed to delete travel day", err);
       const fallback = await loadTravelDaysByItineraryId(itinDbId);
       setTravelDays(fallback);
+    } finally {
+      setLoadingMessage("");
     }
   }
 
@@ -207,7 +246,8 @@ function TravelDaysContent({itinDbId, itin}) {
     </div>
     )
   :[...travelDays]
-    .map((d, index) => {
+    .map((d, renderIndex) => {
+      const index = d.index;
       const latestdate = dayjs(itin.startDate, 'YYYY-MM-DD').add(index,'day').format('D MMMM YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
@@ -218,7 +258,7 @@ function TravelDaysContent({itinDbId, itin}) {
 
       return ( //i lazy to make container component
       <div key={d.id}>
-        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
+        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(renderIndex)}>+ Insert Day Before</button>
         <div className="travel-day-container" key={d.id}>
           <div className="day-header">
             <span className="day-label">Day {dayNo}</span>
@@ -291,12 +331,10 @@ function TravelDaysContent({itinDbId, itin}) {
           </div>
 
 
-          {/* <ActivityContent
-            activityArr={d.activities}
+          <ActivityContent
             dayId={d.id}
-            itin={itin}
-            setItin={setItin}
-          /> */}
+            setLoadingMessage={setLoadingMessage}
+          />
         </div>
       </div>
       );}
@@ -317,6 +355,7 @@ function ActivityPage() {
   // useEffect(() => { //saves to localstorage everytime there is an update to itin
   //   saveToLocal(itin);
   // }, [itin]);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   const [itin, setItin] = useState(null); //initialize itin to null
 
@@ -363,6 +402,12 @@ function ActivityPage() {
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
             <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
+            {loadingMessage && (
+              <div className="loading-overlay">
+                <span className="spinner-border mb-2 mx-2" role="status"></span>
+                <p>{loadingMessage}</p>
+              </div>
+            )}
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
@@ -383,6 +428,7 @@ function ActivityPage() {
                   itin={itin}
                   // setItin={setItin}
                   itinDbId={itinDbId}
+                  setLoadingMessage={setLoadingMessage}
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}

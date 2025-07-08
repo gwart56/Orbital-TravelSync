@@ -12,7 +12,7 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-function newActivity(travelDayId, name, time, locName, locAddress) {
+export function newActivity(travelDayId, name, time, locName, locAddress) {
     return {
         id: genId(),
         travelDayId,

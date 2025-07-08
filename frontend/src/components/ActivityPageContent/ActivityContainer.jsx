@@ -12,9 +12,9 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
   function saveActivity(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const valuesArray = Array.from(formData.values());
+    const dataObj = Object.fromEntries(formData.entries());;
     setIsEditing(false);
-    handleSave(id, valuesArray);
+    handleSave(id, dataObj);
   }
 
   function handleLocationSave(newLocation) {
