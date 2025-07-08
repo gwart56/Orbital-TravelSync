@@ -28,7 +28,7 @@ export async function createNewItinForUser(userId, name, startDate, numOfDays) {
 
 export async function addNewItineraryForUser(userId, newItin) {//STORES ITIN INTO SUPABASE 
     const { data, error } = await supabase
-        .from('itineraries')
+        .from('itins')
         .insert([{
             user_id: userId,
             title: newItin.name,
@@ -45,7 +45,7 @@ export async function addNewItineraryForUser(userId, newItin) {//STORES ITIN INT
 export async function updateItineraryById(itinDbId, updatedItin) {
 
     const { data, error } = await supabase
-        .from('itineraries')
+        .from('itins')
         .update({
             title: updatedItin.name,
             itinerary_data: updatedItin,
@@ -62,7 +62,7 @@ export async function updateItineraryById(itinDbId, updatedItin) {
 
 export async function loadAllItineraryForUser(userId) {
     const { data, error } = await supabase
-    .from('itineraries')
+    .from('itins')
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
@@ -99,7 +99,7 @@ export async function loadAllItineraryForUser(userId) {
 export async function loadItineraryById(itinDbId) {
     //TODO: maybe might use ltr idk
     const { data, error } = await supabase
-    .from('itineraries')
+    .from('itins')
     .select('*')
     .eq('id', itinDbId)
     .single();
@@ -110,7 +110,7 @@ export async function loadItineraryById(itinDbId) {
 
 export async function deleteItineraryById(itinDbId) {
   const { error } = await supabase
-    .from('itineraries') 
+    .from('itins') 
     .delete()
     .eq('id', itinDbId);
 
