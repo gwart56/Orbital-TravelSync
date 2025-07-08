@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import ItineraryInfo from "../components/ItineraryComponents/ItineraryInfo";
 import { useNavigate, useParams } from "react-router-dom";
-import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
+// import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
 import HotelContainer from "../components/HotelPageContent/HotelContainer";
 import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, doesHGOverlap, editHotelInArr, getAllConfirmedHotelsFromArr } from "../data/hotel";
 import { setItinHotels } from "../data/activity";

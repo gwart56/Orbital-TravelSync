@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../../data/activity';
+// import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { FaEdit } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import "./ItineraryInfo.css";
 import dayjs from 'dayjs';
 
-function ItineraryDateInput({ itin, setItin }){
+function ItineraryDateInput({ itin, onSave }){
   const [editing, setEditing] = useState(false);
   const [newStartDate, setNewStartDate] = useState(itin.startDate);
 
   const handleSave = () => {
-    setItin(updateItinStartDate(itin, newStartDate));
+    onSave({...itin, startDate: newStartDate});
     setEditing(false);
   };
 
@@ -18,7 +18,7 @@ function ItineraryDateInput({ itin, setItin }){
     <>
       {!editing ? (
         <h3 onClick={() => setEditing(true)} style={{ cursor: 'pointer' }} className="start-date">
-          📆 Adventure Begins: {dayjs(itin.startDate, "DD-MM-YYYY").format("D MMMM YYYY")}
+          📆 Adventure Begins: {dayjs(itin.startDate, "YYYY-MM-DD").format("D MMMM YYYY")}
         </h3>
       ) : (
         <h3>
@@ -37,12 +37,12 @@ function ItineraryDateInput({ itin, setItin }){
   );
 }
 
-function ItineraryNameInput({ itin, setItin }){
+function ItineraryNameInput({ itin, onSave }){
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(itin.name);
 
   const handleSave = () => {
-    setItin(updateItinName(itin, newName));
+    onSave({...itin, name:newName});
     setEditing(false);
   };
 
@@ -71,24 +71,24 @@ function ItineraryNameInput({ itin, setItin }){
   );
 }
 
-export default function ItineraryInfo({ itin, setItin }) {
-  const [editing, setEditing] = useState(false);
-  const [newStartDate, setNewStartDate] = useState(itin.startDate);
+export default function ItineraryInfo({ itin, onSave }) {
+  // const [editing, setEditing] = useState(false);
+  // const [newStartDate, setNewStartDate] = useState(itin.startDate);
 
-  const handleSave = () => {
-    setItin(updateItinStartDate(itin, newStartDate));
-    setEditing(false);
-  };
+  // const handleSave = () => {
+  //   onSave(updateItinStartDate(itin, newStartDate));
+  //   setEditing(false);
+  // };
 
   return (
     <>
       <ItineraryNameInput
         itin={itin}
-        setItin={setItin}
+        onSave={onSave}
       />
       <ItineraryDateInput 
         itin={itin}
-        setItin={setItin}
+        onSave={onSave}
       />
     </>
   );

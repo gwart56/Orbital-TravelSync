@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import './SummaryPage.css';
 import Header from '../../components/Header/Header';
 import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById} from '../../lib/supabaseItinerary';
+// import { loadItineraryById} from '../../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';

@@ -5,12 +5,15 @@ import { useState, useEffect } from 'react';
 import Header from '../components/Header/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
+// import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { defConfirmedHotelArr, getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
 import ConfirmModal from '../components/Misc/ConfirmModal';
+import { loadItineraryById, updateItineraryById } from '../data/itinerary';
+import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
+import { addItemToArray, insertItemIntoArrayAtIndex, reindexTravelDays } from '../utils/arrays';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -65,37 +68,131 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 }
 
 //each TravelDaysContent contains Day No., Date, ActivityContent 
-function TravelDaysContent({dayArr, itin, setItin}) {
+function TravelDaysContent({itinDbId, itin}) {
+  const [travelDays, setTravelDays] = useState([]);
   const [deletingDayId, setDeletingDayId] = useState(null);
   const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
-  const travelDays = dayArr;
+  // const travelDays = dayArr;
   const confirmedHotelsArr = 
-  //defConfirmedHotelArr;
-  getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
+  defConfirmedHotelArr;
+  // getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
   // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
-  function handleAdd() {
-    setItin(itin.addDay());
+  useEffect( () => {//FETCH TRAVELDAYS
+      const fetchItin = async () => {
+        try {
+          const loadedTDs = await loadTravelDaysByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+          setTravelDays(loadedTDs);
+        } catch (err) {
+          console.error("Failed to load traveldays", err);
+        }
+      }
+      fetchItin();
+    }
+    ,[itinDbId]);
+
+  async function handleAdd() {
+    try {
+      const newDay = newTravelDay(itinDbId, travelDays.length);
+      // Insert to DB and get inserted row back
+      const insertedRows = await addTravelDaysIntoDB([newDay]);
+      const insertedDay = insertedRows[0];
+      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays+1});
+      // Update local state
+      setTravelDays([...travelDays, insertedDay]);
+    } catch (err) {
+      console.error("Failed to add travel day", err);
+    }
   }
 
-  function handleInsert(i) {
-    const newDayArr = insertDayIntoArray(dayArr, i);
-    setItin(setItinDays(itin, newDayArr));
+  // Insert a day before given index, reindex all days
+  async function handleInsert(indexToInsert) {
+    try {
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
+
+      // Create new day with dummy index
+      const newDay = newTravelDay(itinDbId, -1);
+
+      // Insert the new day first
+      const insertedDays = await addTravelDaysIntoDB([newDay]);
+      const insertedDay = insertedDays[0];
+
+      // Insert the newly inserted day into the array at the index
+      const updatedDays = reindexTravelDays(
+        insertItemIntoArrayAtIndex(latestDays, insertedDay, indexToInsert)
+      );
+
+      // Update the indexes of all days (including insertedDay)
+      await Promise.all(updatedDays.map(d => 
+        updateTravelDayById(d.id, { index: d.index })
+      ));
+
+      const freshDays = await loadTravelDaysByItineraryId(itinDbId);
+      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays + 1});
+      setTravelDays(freshDays);
+    } catch (err) {
+      console.error("Insert failed:", err);
+      const fallback = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(fallback);
+    }
+}
+
+
+  // Swap two travel days by their indices, update indexes in DB
+  async function handleSwap(index1, index2) {
+    if (index1 === index2) return;
+
+    try {
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
+
+      // Swap in local array
+      const swappedDays = swapItemsInArray(latestDays, index1, index2);
+
+      // Reindex swapped days
+      const reindexedDays = reindexTravelDays(swappedDays);
+
+      // Update all affected rows in DB
+      await Promise.all(
+        reindexedDays.map(d => 
+          updateTravelDayById(d.id, { index: d.index })
+        )
+      );
+
+      // Update local state
+      setTravelDays(reindexedDays);
+    } catch (err) {
+      console.error("Failed to swap travel days", err);
+      const freshDays = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(freshDays);
+    }
   }
 
-  function handleSwap(index1, index2) {
-    if (index1 === index2 || index1 == null || index2 == null) return;
-    const newDayArr = swapDaysInArray(dayArr, index1, index2);
-    setItin(setItinDays(itin, newDayArr));
-  }
+  // Delete a travel day by travelDayId and reindex
+  async function handleDelete(travelDayId) {
+    try {
+      console.log('traveldayid delete',travelDayId);
+      // Delete from DB
+      await deleteTravelDayById(travelDayId);
 
+      // Fetch latest travel days
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
 
-  function handleDelete(id) {
-      // const confirmDelete = window.confirm("Are you sure you want to delete this day?");
-      // if (confirmDelete) {
-          setItin(itin.removeDay(id));
-          
-      // }
+      // Reindex remaining days
+      const reindexedDays = reindexTravelDays(latestDays);
+
+      // Update DB indexes
+      await Promise.all(
+        reindexedDays.map(d => updateTravelDayById(d.id, { index: d.index }))
+      );
+
+      await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays-1});
+      // Update local state
+      setTravelDays(reindexedDays);
+    } catch (err) {
+      console.error("Failed to delete travel day", err);
+      const fallback = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(fallback);
+    }
   }
 
   const dayElements = travelDays.length==0
@@ -111,7 +208,7 @@ function TravelDaysContent({dayArr, itin, setItin}) {
     )
   :[...travelDays]
     .map((d, index) => {
-      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
+      const latestdate = dayjs(itin.startDate, 'YYYY-MM-DD').add(index,'day').format('D MMMM YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
       // console.log("THAT DAY HOTEL", confirmedHotel);
@@ -138,7 +235,7 @@ function TravelDaysContent({dayArr, itin, setItin}) {
             }
 
           <h5 className="day-subtext">
-            📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+            📅 Date: {latestdate}
           </h5>
 
           {!checkInHotel && !checkOutHotel && (
@@ -194,12 +291,12 @@ function TravelDaysContent({dayArr, itin, setItin}) {
           </div>
 
 
-          <ActivityContent
+          {/* <ActivityContent
             activityArr={d.activities}
             dayId={d.id}
             itin={itin}
             setItin={setItin}
-          />
+          /> */}
         </div>
       </div>
       );}
@@ -227,7 +324,7 @@ function ActivityPage() {
 
   const navigate = useNavigate();
 
-  useEffect( () => {
+  useEffect( () => {//FETCH ITIN
       const fetchItin = async () => {
         try {
           const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
@@ -241,14 +338,26 @@ function ActivityPage() {
     ,[itinDbId]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
-  const saveToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
-    try {
-      await updateItineraryById(itinDbId, itin);
-      console.log('SAVED TO DB!');
-    } catch (err) {
-      console.error('Failed to update Itinerary...', err);
+  // const saveToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+  //   try {
+  //     await updateItineraryById(itinDbId, itin);
+  //     console.log('SAVED TO DB!');
+  //   } catch (err) {
+  //     console.error('Failed to update Itinerary...', err);
+  //   }
+  // }
+
+     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+        try {
+          await updateItineraryById(itinDbId, itin);
+          setItin(itin);
+          console.log('SAVED ITIN TO DB!');
+        } catch (err) {
+          console.error('Failed to update Itinerary...', err);
+        }
     }
-  }
+
+
 
     return (
         <div className="background-image d-flex flex-column align-items-center">
@@ -258,7 +367,7 @@ function ActivityPage() {
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
-                  setItin={setItin}
+                  onSave={saveItinToDB}
                 />
 
                 <div className="activity-page-top-buttons">
@@ -266,19 +375,20 @@ function ActivityPage() {
                   <button className="custom-btn home-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
                   <button className="custom-btn hotels-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> ✈️ To Flights</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
-                  <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+                  {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
                 </div>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
-                  dayArr={itin.travelDays}
+                  // dayArr={itin.travelDays}
                   itin={itin}
-                  setItin={setItin}
+                  // setItin={setItin}
+                  itinDbId={itinDbId}
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
-                <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button>
+                {/* <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button> */}
               </div>
             {/* <div style={{height: "20px"}}/> */}
             {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}

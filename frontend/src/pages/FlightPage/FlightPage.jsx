@@ -10,7 +10,8 @@ import ConfirmModal from '../../components/Misc/ConfirmModal';
 // import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
 import FlightContainer from '../../components/FlightPageComponents/FlightContainer';
 import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById } from '../../data/flights';
-import { loadItineraryById } from '../../lib/supabaseItinerary';
+import { loadItineraryById } from '../../data/itinerary';
+// import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({ flights, itinDbId }) {
   const [localFlights, setLocalFlights] = useState(flights);
