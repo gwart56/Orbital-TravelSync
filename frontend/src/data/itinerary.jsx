@@ -5,7 +5,7 @@ import { createNewTravelDays } from "./travelDays";
 //-------------------------------------------------------
 //ITINERARY DATA TYPE
 // {
-//     itineraryId;
+//     id;
 //     name;
 //     startDate;
 // }
@@ -13,7 +13,7 @@ import { createNewTravelDays } from "./travelDays";
 
 function newItinerary(name, startDate) {
     return {
-        itineraryId: genId(),
+        id: genId(),
         name,
         startDate
     };
@@ -22,7 +22,7 @@ function newItinerary(name, startDate) {
 export async function createNewItinForUser(userId, name, startDate, numOfDays) {
     const newItin = newItinerary(name, startDate);
     await addNewItineraryForUser(userId, newItin);
-    await createNewTravelDays(newItin.itineraryId, numOfDays);
+    await createNewTravelDays(newItin.id, numOfDays);
     return newItin;
 }
 
