@@ -1,4 +1,4 @@
-.background-image {
+.flight-background-image {
   position: relative;
   left: 50%;
   right: 50%;
@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url("https://wallpapercat.com/w/full/b/7/d/1518082-2560x1440-desktop-hd-mount-fuji-japan-background-image.jpg");
+  background-image: url("https://images.lifestyleasia.com/wp-content/uploads/sites/6/2024/11/11205457/singapore-changi-airport-best-things-to-do-free-attractions-shopping-dining-cinema-waterfall-jewel-1507x900.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -19,9 +19,9 @@
 }
 
 /* Make top text readable */
-.background-image h1,
-.background-image h2,
-.background-image h3,
+.flight-background-image h1,
+.flight-background-image h2,
+.flight-background-image h3,
 .itin-title {
   color: #fff;
   text-shadow: 2px 2px 6px rgba(0,0,0,1);

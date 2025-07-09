@@ -272,6 +272,12 @@ export function HotelsPage() {
                         <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
                             🎯 To Activities
                         </button>
+                        <button className="custom-nav-btn flights-btn" onClick={() => navigate(`/flights/${itinDbId}`)}>
+                            🛫 To Flights
+                        </button>
+                        <button className="custom-nav-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>
+                            📝 To Summary
+                        </button>
                         <button className="custom-nav-btn hotels-home-btn" onClick={() => navigate('/')}>
                             🏡 Back To Home
                         </button>

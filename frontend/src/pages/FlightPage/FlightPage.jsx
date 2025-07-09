@@ -106,17 +106,16 @@ function FlightPage() {
 
 
   return (
-    <div className="background-image d-flex flex-column align-items-center">
+    <div className="flight-background-image d-flex flex-column align-items-center">
       <Header />
       <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flight Planner</h1>
       {itin ? (
         <>
           <ItineraryInfo itin={itin} setItin={setItin} />
           <div className="flight-page-top-buttons">
-            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
-                🎯 To Activities
-            </button>
-            <button className="custom-btn home-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
+            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
+            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+            <button className="custom-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
           </div>
