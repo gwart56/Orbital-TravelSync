@@ -160,7 +160,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
 
       <div className="d-flex align-items-center gap-3 flex-wrap">
         {/* Name label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "2 1 0" }}>
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1.5 1 0" }}>
           <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
           <span
             className={`text-truncate ${!hotel.name ? 'fst-italic text-muted' : ''}`}
@@ -172,7 +172,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.name || '-'}
           >
-            {hotel.name || 'Untitled Hotel'}
+            {hotel.name || '-'}
           </span>
         </div>
 
@@ -194,24 +194,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.address} // Optional: shows full address on hover
           >
-            {hotel.address || 'No Address'}
-          </span>
-        </div>
-
-        {/* Rating label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
-          <strong className="me-1" style={{ minWidth: "50px" }}>Rating:</strong>
-          <span
-            className={`text-truncate ${!hotel.rating ? 'fst-italic text-muted' : ''}`}
-            style={{
-              maxWidth: "120px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap"
-            }}
-            title={hotel.rating || '-'}
-          >
-            {hotel.rating || '-'}
+            {hotel.address || '-'}
           </span>
         </div>
 
@@ -232,6 +215,23 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           </span>
         </div>
 
+        {/* Rating label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Rating:</strong>
+          <span
+            className={`text-truncate ${!hotel.rating ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.rating || '-'}
+          >
+            {hotel.rating || '-'}
+          </span>
+        </div>
+        
         {/* Buttons */}
         <div className="d-grid mt-2"
             style={{ gridTemplateColumns: "1fr 1fr", gap: "0.75rem", maxWidth: "320px" }}>

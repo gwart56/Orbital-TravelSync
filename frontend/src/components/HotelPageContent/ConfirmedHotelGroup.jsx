@@ -7,7 +7,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
             <span
                 className="text-truncate"
                 style={{
-                maxWidth: "200px",
+                maxWidth: "700px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap"
