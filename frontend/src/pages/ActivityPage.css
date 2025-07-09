@@ -351,7 +351,7 @@
   left: 5%;               /* start at left */
   /* background-color: rgba(255, 255, 255, 0.7);  semi-transparent white */
   color: white;
-  text-shadow: #333;
+  text-shadow: 2px 2px 2px rgba(0,0,0,1);
   display: flex;         /* flex for centering content */
   justify-content: center;
   align-items: center;

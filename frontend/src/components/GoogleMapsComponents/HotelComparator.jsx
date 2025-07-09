@@ -78,7 +78,33 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
     if (loadError) return <div>Error loading Google Maps</div>;
     if (!isLoaded) return <div>Loading Map...</div>;
 
-    const nearbyMarkers = comparedHotels.filter(h=>h.latLng).map(hotel => ( //generates all nearby hotel as markers
+    const comparableHotels = comparedHotels.filter(h=>h.latLng);
+    if (comparableHotels.length == 0) {
+      return <div className="p-3 m-3 bg-info rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
+        position:'fixed',
+        top: '5%',
+        left: '10vw',
+        width: '80vw',
+        maxHeight: '90vh',
+        backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        zIndex: 1050 
+        }}>
+        <div className=" -lg" role="document" onClick={onClose}>
+          <div className="" onClick={e => e.stopPropagation()}>
+            <div className="">
+              <h5 className="">Compare Locations<button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
+            </div>
+            <h4>No Comparable Hotel Locations Currently</h4>
+            <h6>*Note: Hotels with manually inputed locations may not be comparable</h6>
+          </div>
+        </div>
+      </div>
+    }
+
+    const nearbyMarkers = comparableHotels.map(hotel => ( //generates all nearby hotel as markers
                     <Marker
                         key={hotel.id}
                         position={{

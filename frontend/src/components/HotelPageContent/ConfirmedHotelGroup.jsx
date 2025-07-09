@@ -107,7 +107,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                 <button
                     className="btn btn-danger text-white"
                     onClick={() => {
-                        const updatedHotel = { ...confirmedHotel, isConfirmed: false };
+                        const updatedHotel = { ...confirmedHotel, isConfirmed: false, checkInDate: null, checkOutDate: null};
                         updateHotel(confirmedHotel.id, updatedHotel);
                         setConfirmedHotel(false);
                     }}

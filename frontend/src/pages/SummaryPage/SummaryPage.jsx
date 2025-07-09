@@ -5,13 +5,29 @@ import Header from '../../components/Header/Header';
 import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
 // import { loadItineraryById} from '../../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../../data/hotel';
+import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate, loadAllConfirmedHotelsByItineraryId } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
+import { loadItineraryById} from '../../data/itinerary';
+import { loadTravelDaysByItineraryId} from '../../data/travelDays';
+import { loadActivitiesByTravelDaysId } from '../../data/activities';
 
-function ActivityContent({activityArr}) {
-  const activities = activityArr;
+function ActivityContent({dayId}) {
+  const [activities, setActivities] = useState([]);
+    // const activities = activityArr;
+    useEffect( () => {//FETCH TRAVELDAYS
+        const fetchActs = async () => {
+          try {
+            const loadedActs = await loadActivitiesByTravelDaysId(dayId); //wait to get itin class obj by id from supabase
+            setActivities(loadedActs);
+          } catch (err) {
+            console.error("Failed to load traveldays", err);
+          }
+        }
+        fetchActs();
+      }
+      ,[dayId]);
 
   
   const activityElements = activities.filter(a => a.name).length==0
@@ -24,7 +40,7 @@ function ActivityContent({activityArr}) {
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
     .filter(a => a.name)
     .map((a) => 
-      <div className="d-flex activity-row">
+      <div className="d-flex activity-row" key={a.id}>
   <div className="activity-time">{a.time || '--:--'}</div>
   <div className="activity-name">{a.name}</div>
 </div>
@@ -37,11 +53,34 @@ function ActivityContent({activityArr}) {
 }
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({dayArr, itin}) {
-  const travelDays = dayArr;
-  const confirmedHotelsArr = 
-  //defConfirmedHotelArr;
-  getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
+function TravelDayContent({itinDbId, itin}) {
+  const [travelDays, setTravelDays] = useState([]);
+  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  useEffect( () => {//FETCH TRAVELDAYS
+        const fetchTDs = async () => {
+          try {
+            const loadedTDs = await loadTravelDaysByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setTravelDays(loadedTDs);
+          } catch (err) {
+            console.error("Failed to load traveldays", err);
+          }
+        }
+        fetchTDs();
+      }
+      ,[itinDbId]);
+  
+    useEffect( () => {//FETCH COnfirmed HOTELS
+        const fetchCHs = async () => {
+          try {
+            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setConfirmedHotelsArr(loadedCHs);
+          } catch (err) {
+            console.error("Failed to load confirmed hotels", err);
+          }
+        }
+        fetchCHs();
+      }
+      ,[itinDbId]);
   console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
 
@@ -55,13 +94,12 @@ function TravelDayContent({dayArr, itin}) {
     )
   :[...travelDays]
     .map((d, index) => {
-      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
+      const latestdate = dayjs(itin.startDate, 'YYYY-MM-DD').add(index,'day').format('D MMMM YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
       // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
-      const activitiesArr = [...d.activities];
 
       if (checkInHotel) {
         activitiesArr.push(new Activity([`Check in into ${checkInHotel.name}`, checkInHotel.checkInTime, checkInHotel.address, checkInHotel.address]));
@@ -72,7 +110,6 @@ function TravelDayContent({dayArr, itin}) {
       }
 
       return ( //i lazy to make container component
-      <>
         <div className="travel-day-container-sum" key={d.id}>
           <div className="d-flex" style={{flex:"1", flexDirection:"column", alignItems:"flex-end"}}>  
           <div className="day-header">
@@ -80,7 +117,7 @@ function TravelDayContent({dayArr, itin}) {
           </div>
 
           <h6 className="mx-3">
-             Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+             Date: {latestdate}
           </h6>
 
          {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && (
@@ -103,13 +140,11 @@ function TravelDayContent({dayArr, itin}) {
           </div>
           <div style={{flex:"2"}}>
             <ActivityContent
-                activityArr={activitiesArr}
                 dayId={d.id}
             />
           </div>
           
         </div>
-      </>
       );}
     );
 
@@ -223,7 +258,7 @@ export function SummaryPage() {
                 >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
-                        dayArr={itin.travelDays}
+                        itinDbId={itinDbId}
                         itin={itin}
                     /> 
                 </div>

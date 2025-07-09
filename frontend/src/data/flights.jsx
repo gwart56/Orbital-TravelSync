@@ -3,7 +3,7 @@ import { v4 as genId } from "uuid";
 
 //-------------------------------------------------------
 // Create a new flight object
-function newFlight({
+export function newFlight({
   itineraryId,
   travelDayId = null, //optional?
   airline,
@@ -42,7 +42,7 @@ function newFlight({
 
 //-------------------------------------------------------
 // ADD: Add 1 or more flights to Supabase
-async function addFlightsIntoDB(flights) {
+export async function addFlightsIntoDB(flights) {
   const { error } = await supabase
     .from('flights')
     .insert(flights);

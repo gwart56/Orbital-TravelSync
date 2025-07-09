@@ -7,7 +7,7 @@ import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoA
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 // import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { defConfirmedHotelArr, getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { defConfirmedHotelArr, loadAllConfirmedHotelsByItineraryId, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
 import ConfirmModal from '../components/Misc/ConfirmModal';
@@ -100,10 +100,10 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
   const [deletingDayId, setDeletingDayId] = useState(null);
   const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
   // const travelDays = dayArr;
-  const confirmedHotelsArr = 
-  defConfirmedHotelArr;
+  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  // defConfirmedHotelArr;
   // getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
-  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   useEffect( () => {//FETCH TRAVELDAYS
       const fetchTDs = async () => {
@@ -115,6 +115,19 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
         }
       }
       fetchTDs();
+    }
+    ,[itinDbId]);
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
+      const fetchCHs = async () => {
+        try {
+          const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+          setConfirmedHotelsArr(loadedCHs);
+        } catch (err) {
+          console.error("Failed to load confirmed hotels", err);
+        }
+      }
+      fetchCHs();
     }
     ,[itinDbId]);
 
@@ -255,7 +268,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
       const dayNo = index + 1; //the day num
-
+ 
       return ( //i lazy to make container component
       <div key={d.id}>
         <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(renderIndex)}>+ Insert Day Before</button>

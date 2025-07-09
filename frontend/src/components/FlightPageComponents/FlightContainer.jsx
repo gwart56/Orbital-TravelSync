@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 export default function FlightContainer({ flight, handleSave, handleDelete }) {
   const {
-    flightId,
+    id,
     airline,
     flightNumber,
     departureAirport,
@@ -33,7 +33,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
       seatNumber: formData.get('seatNumber') || ''
     };
 
-    handleSave(flightId, updatedData);
+    handleSave(id, updatedData);
     setIsEditing(false);
   }
 

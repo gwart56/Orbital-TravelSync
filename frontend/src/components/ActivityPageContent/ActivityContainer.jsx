@@ -4,7 +4,8 @@ import { useState } from 'react';
 import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit }) {
-  const { id, name, time, locName, locAddress, latLng } = activity;
+  const [latLng, setLatLng] = useState(activity.latLng); //mainly for google maps api
+  const { id, name, time, locName, locAddress } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
   const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
   const [isPickingLocation, setIsPickingLocation] = useState(false);
@@ -14,15 +15,16 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
     const formData = new FormData(event.currentTarget);
     const dataObj = Object.fromEntries(formData.entries());;
     setIsEditing(false);
-    handleSave(id, dataObj);
+    handleSave(id, {...dataObj, latLng});
   }
 
-  function handleLocationSave(newLocation) {
+  function handleLocationSave(newLocation, pos) {
     if (!newLocation) {
       return;
     }
     console.log(newLocation);
     setLocation(newLocation);
+    setLatLng(pos);
     setIsPickingLocation(false);
   }
 
