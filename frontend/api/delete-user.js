@@ -1,10 +1,7 @@
-// This API route handles the deletion of a user and their associated data
-
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey)
 
 export default async function handler(req, res) {
@@ -14,28 +11,21 @@ export default async function handler(req, res) {
   if (!userId) return res.status(400).json({ error: 'Missing userId' })
 
   try {
-    // Step 1: Delete user-related data from your custom tables
-    const tablesToClean = ['itineraries'] // Add any other tables with user data
+    // Step 1: Delete all itineraries for this user (cascade takes care of all related tables)
+    const { error: itinDelError } = await supabaseAdmin
+      .from('itins')
+      .delete()
+      .eq('user_id', userId)
 
-    for (const table of tablesToClean) {
-      const { error: tableError } = await supabaseAdmin
-        .from(table)
-        .delete()
-        .eq('user_id', userId)
-
-      if (tableError) {
-        throw new Error(`Failed to delete data from ${table}: ${tableError.message}`)
-      }
-    }
+    if (itinDelError) throw new Error(`Failed to delete itineraries: ${itinDelError.message}`)
 
     // Step 2: Delete user from Supabase Auth
-    const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
-    if (deleteError) throw new Error(deleteError.message)
+    const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(userId)
+    if (deleteUserError) throw new Error(deleteUserError.message)
 
-    return res.status(200).json({ message: 'User and associated data deleted successfully' })
+    return res.status(200).json({ message: 'User and all associated data deleted successfully' })
   } catch (err) {
     console.error('Error deleting user and data:', err.message)
     return res.status(500).json({ error: err.message })
   }
 }
-
