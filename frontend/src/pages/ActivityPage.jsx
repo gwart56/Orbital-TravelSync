@@ -13,7 +13,7 @@ import ActivityContainer from '../components/ActivityPageContent/ActivityContain
 import ConfirmModal from '../components/Misc/ConfirmModal';
 import { loadItineraryById, updateItineraryById } from '../data/itinerary';
 import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
-import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays } from '../utils/arrays';
+import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays, swapItemsInArray } from '../utils/arrays';
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 
 
@@ -191,12 +191,16 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
     try {
       setLoadingMessage("Swapping...");
       const latestDays = await loadTravelDaysByItineraryId(itinDbId);
+      // console.log("SWAP A", latestDays);
 
       // Swap in local array
       const swappedDays = swapItemsInArray(latestDays, index1, index2);
+      // console.log("SWAP B", swappedDays);
 
       // Reindex swapped days
-      const reindexedDays = reindexTravelDays(swappedDays);
+      const reindexedDays = swappedDays.map((d, i) => ({ ...d, index: i }));
+      // console.log("SWAP C", reindexedDays);
+
 
       // Update all affected rows in DB
       await Promise.all(
