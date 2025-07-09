@@ -11,23 +11,35 @@ import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
 import { loadItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
-import { loadActivitiesByTravelDaysId } from '../../data/activities';
+import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
 
-function ActivityContent({dayId}) {
+function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   const [activities, setActivities] = useState([]);
     // const activities = activityArr;
-    useEffect( () => {//FETCH TRAVELDAYS
-        const fetchActs = async () => {
-          try {
-            const loadedActs = await loadActivitiesByTravelDaysId(dayId); //wait to get itin class obj by id from supabase
-            setActivities(loadedActs);
-          } catch (err) {
-            console.error("Failed to load traveldays", err);
+
+    useEffect(() => { //FETCH ACTS
+      const fetchActs = async () => {
+        try {
+          const loadedActs = await loadActivitiesByTravelDaysId(dayId);
+
+          const updatedActs = [...loadedActs];
+
+          if (checkInHotel) {
+            updatedActs.push(newActivity(dayId, `Check in into ${checkInHotel.name}`, checkInHotel.checkInTime, checkInHotel.address, checkInHotel.address));
           }
+
+          if (checkOutHotel) {
+            updatedActs.push(newActivity(dayId, `Check out of ${checkOutHotel.name}`, checkOutHotel.checkOutTime, checkOutHotel.address, checkOutHotel.address));
+          }
+
+          setActivities(updatedActs);
+        } catch (err) {
+          console.error("Failed to load activities", err);
         }
-        fetchActs();
-      }
-      ,[dayId]);
+      };
+
+      fetchActs();
+    }, [dayId, checkInHotel, checkOutHotel]);
 
   
   const activityElements = activities.filter(a => a.name).length==0
@@ -101,14 +113,6 @@ function TravelDayContent({itinDbId, itin}) {
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
 
-      if (checkInHotel) {
-        activitiesArr.push(new Activity([`Check in into ${checkInHotel.name}`, checkInHotel.checkInTime, checkInHotel.address, checkInHotel.address]));
-      }
-
-      if (checkOutHotel) {
-        activitiesArr.push(new Activity([`Check out of ${checkOutHotel.name}`, checkOutHotel.checkOutTime, checkOutHotel.address, checkOutHotel.address]));
-      }
-
       return ( //i lazy to make container component
         <div className="travel-day-container-sum" key={d.id}>
           <div className="d-flex" style={{flex:"1", flexDirection:"column", alignItems:"flex-end"}}>  
@@ -120,11 +124,11 @@ function TravelDayContent({itinDbId, itin}) {
              Date: {latestdate}
           </h6>
 
-         {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && (
+         {/* {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && ( */}
             <h6 className="">
               {confirmedHotel?.name ? 'Hotel That Night:' : ''} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
             </h6>
-          )}
+
 
           {/*{checkOutHotel && (
             <h6 className="">
@@ -140,6 +144,8 @@ function TravelDayContent({itinDbId, itin}) {
           </div>
           <div style={{flex:"2"}}>
             <ActivityContent
+                checkInHotel={checkInHotel}
+                checkOutHotel={checkOutHotel}
                 dayId={d.id}
             />
           </div>
@@ -166,7 +172,7 @@ function FlightContent({flights}) {
     )
     :flights.map(f=>
   (
-      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
+      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Airline:</strong>
           <span className={f.airline ? "" : "text-placeholder"}>{f.airline || "Not set"}</span>
