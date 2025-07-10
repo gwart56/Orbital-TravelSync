@@ -48,7 +48,7 @@ function SignUpContent() {
 
     return (
         <div className="login-form-container">
-            <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to TravelSync</h1>
+            <h1 className="text-primary" style={{marginBottom: "20px", marginTop: "100px"}}>Welcome to ✈️TravelSync!</h1>
             <p className="lead">Sync Your Plans. Travel in Sync.</p>
             <div className="login-form">
                 <form onSubmit={handleSubmit}>
