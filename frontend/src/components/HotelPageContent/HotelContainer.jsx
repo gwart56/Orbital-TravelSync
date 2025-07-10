@@ -87,8 +87,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="time"
               name="checkInTime"
               defaultValue={hotel.checkInTime}
-              placeholder="e.g. 15:00"
               className="form-control d-inline w-auto"
+              required
             />
           </div>
 
@@ -98,8 +98,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="time"
               name="checkOutTime"
               defaultValue={hotel.checkOutTime}
-              placeholder="e.g. 12:00"
               className="form-control d-inline w-auto"
+              required
             />
           </div>
 
