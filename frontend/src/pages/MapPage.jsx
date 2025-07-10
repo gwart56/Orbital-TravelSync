@@ -6,7 +6,7 @@ import {
   LoadScript,
   Autocomplete
 } from "@react-google-maps/api";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 
 const libraries = ["places"];
 

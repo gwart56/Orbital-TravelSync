@@ -1,0 +1,49 @@
+/* For the trip title */
+.trip-title {
+  font-weight: 800;
+  font-size: 2.2rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.trip-title:hover {
+  text-shadow: 0 0 8px rgba(255, 111, 97, 0.4);
+  transform: scale(1.02)
+}
+
+/* For the start date */
+.start-date {
+  font-size: 1.3rem;
+  font-style: italic;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.start-date:hover {
+  text-shadow: 0 0 2px !important;
+  transform: translateY(-1px);
+}
+
+.input-name {
+  /* display: block; */
+    width: 100%;
+    padding: .375rem .75rem;
+    font-weight: 800;
+    font-size: 2.2rem;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin-right: 16px;
+    flex: 4 1 0;
+}
+
+.flex-basis-0 {
+  flex-basis: 0;
+}

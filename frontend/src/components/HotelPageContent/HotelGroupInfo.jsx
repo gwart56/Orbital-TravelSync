@@ -1,7 +1,7 @@
 //might be overkill to make this component idk (JUST FOR EDITING NAME(maybe date next time) OF HOTEL GRP)
 
 import { useEffect, useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../data/activity';
+import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
 import './HotelGroupInfo.css';
@@ -35,6 +35,7 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confi
           <h3>🟢 Check-in Date: 
             <input
               type="date"
+              className="form-control d-inline w-auto"
               value={newStartDate}
               onChange={(e) => setNewStartDate(e.target.value)
                 //FORMATS DATE
@@ -74,16 +75,18 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHote
         </>
       ) : (
         <>
-          <h3>🔴 Check-out Date: 
-            <input
-              type="date"
-              value={newEndDate}
-              onChange={(e) => setNewEndDate(e.target.value)
-                  //FORMATS DATE
-              }
-            />
-            <button className="btn btn-light" onClick={handleSave}>Save</button>
-            <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
+          <h3>🔴 
+            Check-out Date: 
+              <input
+                type="date"
+                className="form-control d-inline w-auto"
+                value={newEndDate}
+                onChange={(e) => setNewEndDate(e.target.value)
+                    //FORMATS DATE
+                }
+              />
+              <button className="btn btn-light" onClick={handleSave}>Save</button>
+              <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
           </h3>
         </>
       )}
@@ -151,19 +154,21 @@ function HGNameInput({ hg, renameHG }){
         </h3>
       ) : (
         <h3>
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSave();
-              if (e.key === 'Escape') setEditing(false);
-            }}
-            style={{ marginRight: '8px' }}
-          />
-          <button className="btn btn-sm btn-light" onClick={handleSave}>Save</button>
-          <button className="btn btn-sm btn-light" onClick={() => setEditing(false)}>Cancel</button>
+          <div className="d-flex px-5 gap-3 justify-content-center w-75 m-auto">
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="input-grp-name"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSave();
+                if (e.key === 'Escape') setEditing(false);
+              }}
+            />
+            <button className="btn btn-sm btn-light" style={{flex:"1 1 0"}} onClick={handleSave}>Save</button>
+            <button className="btn btn-sm btn-light" style={{flex:"1 1 0"}} onClick={() => setEditing(false)}>Cancel</button>
+          </div>
         </h3>
       )}
     </>

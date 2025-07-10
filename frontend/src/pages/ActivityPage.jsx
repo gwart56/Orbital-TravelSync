@@ -2,14 +2,15 @@ import './ActivityPage.css';
 import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect } from 'react';
-import ActivityContainer from '../components/ActivityContainer';
-import Header from '../components/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray} from '../data/activity';
-import ItineraryInfo from '../components/ItineraryInfo';
+import Header from '../components/Header/Header';
+import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
+import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
-import { AutoSaveButton } from '../components/AutoSaver';
+import { AutoSaveButton } from '../components/Misc/AutoSaver';
+import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
+import ConfirmModal from '../components/Misc/ConfirmModal';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -63,28 +64,40 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
   );
 }
 
-//each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({dayArr, itin, setItin}) {
+//each TravelDaysContent contains Day No., Date, ActivityContent 
+function TravelDaysContent({dayArr, itin, setItin}) {
+  const [deletingDayId, setDeletingDayId] = useState(null);
+  const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
   const travelDays = dayArr;
   const confirmedHotelsArr = 
   //defConfirmedHotelArr;
   getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
-  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
   function handleAdd() {
     setItin(itin.addDay());
   }
 
-  function handleDelete(id) {
-      const confirmDelete = window.confirm("Are you sure you want to delete this day?");
-      if (confirmDelete) {
-          setItin(itin.removeDay(id));
-      }
+  function handleInsert(i) {
+    const newDayArr = insertDayIntoArray(dayArr, i);
+    setItin(setItinDays(itin, newDayArr));
+  }
+
+  function handleSwap(index1, index2) {
+    if (index1 === index2 || index1 == null || index2 == null) return;
+    const newDayArr = swapDaysInArray(dayArr, index1, index2);
+    setItin(setItinDays(itin, newDayArr));
   }
 
 
-  let totalNumDays = 0;
-  let latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(-1,'day').format('DD-MM-YYYY'); //subtracts 1 day to make up increments
+  function handleDelete(id) {
+      // const confirmDelete = window.confirm("Are you sure you want to delete this day?");
+      // if (confirmDelete) {
+          setItin(itin.removeDay(id));
+          
+      // }
+  }
+
   const dayElements = travelDays.length==0
   ? (
     <div className="empty-itinerary-warning text-center">
@@ -97,54 +110,97 @@ function TravelDayContent({dayArr, itin, setItin}) {
     </div>
     )
   :[...travelDays]
-    .map(d => {
-      latestdate = dayjs(latestdate, 'DD-MM-YYYY').add(1,'day').format('DD-MM-YYYY');
+    .map((d, index) => {
+      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
-      console.log("THAT DAY HOTEL", confirmedHotel);
+      // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
+      const dayNo = index + 1; //the day num
 
       return ( //i lazy to make container component
-      <div className="travel-day-container" key={d.id}>
-        <div className="day-header">
-          <span className="day-label">Day {totalNumDays++ + 1}</span>
-          <button className="delete-btn delete-btn-top" onClick={() => handleDelete(d.id)}>
-            <span>Delete</span> <MdDeleteForever />
-          </button>
+      <div key={d.id}>
+        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
+        <div className="travel-day-container" key={d.id}>
+          <div className="day-header">
+            <span className="day-label">Day {dayNo}</span>
+            <button className="delete-btn delete-btn-top" onClick={() => {setDeletingDayId(d.id);}}>
+              <span>Delete</span> <MdDeleteForever />
+            </button>
+          </div>
+
+            {deletingDayId==d.id && <ConfirmModal
+                message={`Are you sure you want to delete Day ${dayNo}?`}
+                onConfirm={() => {handleDelete(d.id); setDeletingDayId(null);}}
+                onCancel={()=>setDeletingDayId(null)}
+              />
+            }
+
+          <h5 className="day-subtext">
+            📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+          </h5>
+
+          {!checkInHotel && !checkOutHotel && (
+            <h5 className="day-subtext">
+              {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
+            </h5>
+          )}
+
+          {checkOutHotel && (
+            <h5 className="day-subtext">
+              🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
+            </h5>
+          )}
+
+          {checkInHotel && (
+            <h5 className="day-subtext">
+              🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
+            </h5>
+          )}
+
+          <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+            <label htmlFor={`swap-select-${index}`} className="">🔁 Swap Day with:</label>
+            <select
+              id={`swap-select-${index}`}
+              className="form-select form-select-sm"
+              value={swapSelections[index] ?? ""}
+              style={{ maxWidth: "200px" }}
+              onChange={(e) => {
+                if (e.target.value === "") { //checks if user selected a day
+                  setSwapSelections({});
+                  return;
+                }
+                const targetIndex = parseInt(e.target.value);
+                setSwapSelections({[index]: targetIndex });
+              }}
+            >
+              <option value="">Select Day</option>
+              {travelDays.map((_, i) => (
+                i !== index && <option key={i} value={i}>Day {i + 1}</option>
+              ))}
+            </select>
+
+            <button
+              className="btn btn-outline-primary btn-sm m-2"
+              disabled={swapSelections[index] == null}
+              onClick={() => {
+                handleSwap(index, swapSelections[index]);
+                setSwapSelections({}); // clear after swapping
+              }}
+            >
+              Swap Days
+            </button>
+          </div>
+
+
+          <ActivityContent
+            activityArr={d.activities}
+            dayId={d.id}
+            itin={itin}
+            setItin={setItin}
+          />
         </div>
-
-
-
-        <h5 className="day-subtext">
-          📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
-        </h5>
-
-        {!checkInHotel && !checkOutHotel && (
-          <h5 className="day-subtext">
-            {confirmedHotel?.name ? '🛏️ Hotel That Night:' : '🏨'} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
-          </h5>
-        )}
-
-        {checkOutHotel && (
-          <h5 className="day-subtext">
-            🛄 Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
-          </h5>
-        )}
-
-        {checkInHotel && (
-          <h5 className="day-subtext">
-            🛎️ Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
-          </h5>
-        )}
-
-
-        <ActivityContent
-          activityArr={d.activities}
-          dayId={d.id}
-          itin={itin}
-          setItin={setItin}
-        />
       </div>
       );}
     );
@@ -207,11 +263,13 @@ function ActivityPage() {
 
                 <div className="activity-page-top-buttons">
                   <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
+                  <button className="custom-btn home-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> ✈️ To Flights</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
                 </div>
 
-                <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
+                <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   dayArr={itin.travelDays}
                   itin={itin}
                   setItin={setItin}

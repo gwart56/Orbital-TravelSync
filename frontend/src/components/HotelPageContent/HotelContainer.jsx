@@ -1,11 +1,14 @@
 import { useState } from "react";
-import LocationPicker from "./LocationPicker";
-import HotelPicker from "./HotelPicker";
+// import LocationPicker from "../GoogleMapsComponents/LocationPicker";
+import HotelPicker from "../GoogleMapsComponents/HotelPicker";
+import ConfirmModal from "../Misc/ConfirmModal";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
+  const [latLng, setLatLng] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   
   const handleEditClick = () => {
     setIsEditing(true);
@@ -21,18 +24,21 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
         address: formData.get("address"),
         link: formData.get("link"),
         checkInTime: formData.get("checkInTime"),
-        checkOutTime: formData.get("checkOutTime")
+        checkOutTime: formData.get("checkOutTime"),
+        rating: formData.get("rating"),
+        latLng: latLng
     };
     onSave(updatedHotel);
     setIsEditing(false);
   };
 
-   function handleLocationSave(newLocation) { //returns {locName, locAddress}
+   function handleLocationSave(newLocation, pos) { //args: {locName, locAddress} , {lat, lng}
     if (!newLocation) {
       return;
     }
     console.log(newLocation);
     setLocation(newLocation.locAddress);
+    setLatLng(pos);
     setIsPickingLocation(false);
   }
 
@@ -60,6 +66,17 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               name="price"
               defaultValue={hotel.price}
               placeholder="e.g. $200"
+              className="form-control d-inline w-auto"
+            />
+          </div>
+
+          <div className="mb-3">
+            <strong>Rating: </strong>
+            <input
+              type="text"
+              name="rating"
+              defaultValue={hotel.rating}
+              placeholder="e.g. 4.8 stars"
               className="form-control d-inline w-auto"
             />
           </div>
@@ -103,7 +120,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               type="text"
               name="address"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) => {setLocation(e.target.value); setLatLng(null);}}
               placeholder="e.g. 10 Bayfront Ave, Singapore"
               className="form-control"
             />
@@ -111,10 +128,9 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
 
           {isPickingLocation ? (
             <HotelPicker
-              onSave={(loc) => handleLocationSave(loc)}
+              onSave={(loc, pos) => handleLocationSave(loc, pos)}
               onClose={() => setIsPickingLocation(false)}
-              location={location}
-              setLocation={setLocation}
+              hotel={hotel}
             />
           ) : (
             <button
@@ -144,7 +160,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
 
       <div className="d-flex align-items-center gap-3 flex-wrap">
         {/* Name label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "2 1 0" }}>
           <strong className="me-1" style={{ minWidth: "50px" }}>Name:</strong>
           <span
             className={`text-truncate ${!hotel.name ? 'fst-italic text-muted' : ''}`}
@@ -156,24 +172,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.name || '-'}
           >
-            {hotel.name || '-'}
-          </span>
-        </div>
-
-        {/* Price label + value */}
-        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
-          <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
-          <span
-            className={`text-truncate ${!hotel.price ? 'fst-italic text-muted' : ''}`}
-            style={{
-              maxWidth: "120px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap"
-            }}
-            title={hotel.price || '-'}
-          >
-            {hotel.price || '-'}
+            {hotel.name || 'Untitled Hotel'}
           </span>
         </div>
 
@@ -195,7 +194,41 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.address} // Optional: shows full address on hover
           >
-            {hotel.address || '-'}
+            {hotel.address || 'No Address'}
+          </span>
+        </div>
+
+        {/* Rating label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Rating:</strong>
+          <span
+            className={`text-truncate ${!hotel.rating ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.rating || '-'}
+          >
+            {hotel.rating || '-'}
+          </span>
+        </div>
+
+        {/* Price label + value */}
+        <div className="d-flex align-items-center" style={{ minWidth: "0", flex: "1 1 0" }}>
+          <strong className="me-1" style={{ minWidth: "50px" }}>Price:</strong>
+          <span
+            className={`text-truncate ${!hotel.price ? 'fst-italic text-muted' : ''}`}
+            style={{
+              maxWidth: "120px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}
+            title={hotel.price || '-'}
+          >
+            {hotel.price || '-'}
           </span>
         </div>
 
@@ -237,15 +270,21 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           {/* Bottom Right: Delete */}
           <button
             className="btn btn-danger btn-md"
-            onClick={() => {
-              const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
-              if (confirmed) {
-                onDelete(hotel.id);
-              }
-            }}
+            onClick={()=>setDeleteModalOpen(true)}
+              // const confirmed = window.confirm(`Are you sure you want to delete "${hotel.name}"?`);
+              // if (confirmed) {
+              //   onDelete(hotel.id);
+              // }
+            // }}
           >
             🗑️ Delete
           </button>
+          {deleteModalOpen && <ConfirmModal
+            message={`Are you sure you want to delete "${hotel.name}"?`}
+            onCancel={()=>setDeleteModalOpen(false)}
+            onConfirm={()=>onDelete(hotel.id)}
+          />
+        }
         </div>
       </div>
 

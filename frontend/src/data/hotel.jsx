@@ -6,7 +6,7 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 dayjs.extend(isSameOrAfter); //FOR PLUGINS
 dayjs.extend(isSameOrBefore); //FOR PLUGINS
 
-export function newHotel(name, price, address, link, checkInDate, checkInTime, checkOutDate, checkOutTime, isConfirmed) {
+export function newHotel(name, price, address, link, checkInDate, checkInTime, checkOutDate, checkOutTime, isConfirmed, rating, latLng) {
     return {
         id: genId(),
         name: name, // default name if not provided
@@ -17,7 +17,9 @@ export function newHotel(name, price, address, link, checkInDate, checkInTime, c
         checkInTime: checkInTime || "15:00", // default check-in time
         checkOutDate,
         checkOutTime: checkOutTime || "11:00", // default check-out time
-        isConfirmed: isConfirmed ?? false // default to false if not provided
+        isConfirmed: isConfirmed ?? false, // default to false if not provided
+        rating: rating || "",
+        latLng: latLng || null
     };
 }
 
@@ -93,7 +95,7 @@ export function getHotelCheckInOutForDate(d, hotelArr) {
 export function getHotelForDate(date, hotelArr) {
   return hotelArr.find(hotel => {
     return dayjs(date, 'DD-MM-YYYY').isSameOrAfter(dayjs(hotel.checkInDate,'DD-MM-YYYY')) 
-        && dayjs(date, 'DD-MM-YYYY').isSameOrBefore(dayjs(hotel.checkOutDate, 'DD-MM-YYYY'));
+        && dayjs(date, 'DD-MM-YYYY').isBefore(dayjs(hotel.checkOutDate, 'DD-MM-YYYY'));
   });
 }
 

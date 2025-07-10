@@ -1,0 +1,139 @@
+import './FlightPage.css';
+import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import Header from '../../components/Header/Header';
+import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
+import { AutoSaveButton } from '../../components/Misc/AutoSaver';
+import ConfirmModal from '../../components/Misc/ConfirmModal';
+
+// import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
+import FlightContainer from '../../components/FlightPageComponents/FlightContainer';
+import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById } from '../../data/flights';
+import { loadItineraryById } from '../../lib/supabaseItinerary';
+
+function FlightContent({ flights, itinDbId }) {
+  const [localFlights, setLocalFlights] = useState(flights);
+  const [deletingId, setDeletingId] = useState(null);
+
+  function handleAdd() {
+    const emptyFlight = {
+      itineraryId: itinDbId,
+      airline: '',
+      flightNumber: '',
+      departureAirport: '',
+      arrivalAirport: '',
+      departureTime: '',
+      arrivalTime: ''
+    };
+    createNewFlight({itineraryId: itinDbId}).then(newFlight => {
+      setLocalFlights([...localFlights, newFlight]);
+    });
+  }
+
+  function handleSave(id, updatedData) {
+    updateFlightById(id, updatedData).then(() => {
+      setLocalFlights(localFlights.map(f => f.flightId === id ? { ...f, ...updatedData } : f));
+    });
+  }
+
+  function handleDelete(id) {
+    setDeletingId(id);
+  }
+
+  function confirmDelete(id) {
+    deleteFlightById(id).then(() => {
+      setLocalFlights(localFlights.filter(f => f.flightId !== id));
+      setDeletingId(null);
+    });
+  }
+
+  const flightElements = localFlights.length === 0
+    ? <div className="empty-itinerary-warning text-center">
+      <h4>
+        ✈️ No flights added yet.
+      </h4>
+      <p>
+         Click below to add one
+      </p>
+    </div>
+    : localFlights
+        .sort((a, b) => dayjs(a.departureTime).unix() - dayjs(b.departureTime).unix())
+        .map(flight => (
+          <div key={flight.flightId}>
+            {deletingId === flight.flightId && (
+              <ConfirmModal
+                message={`Delete flight ${flight.flightNumber}?`}
+                onConfirm={() => confirmDelete(flight.flightId)}
+                onCancel={() => setDeletingId(null)}
+              />
+            )}
+            <FlightContainer
+              flight={flight}
+              handleSave={handleSave}
+              handleDelete={() => handleDelete(flight.flightId)}
+            />
+          </div>
+        ));
+
+  return (
+    <div className="flight-content">
+      {flightElements}
+      <button className="btn btn-success mb-3" onClick={handleAdd}>+ Add Flight</button>
+    </div>
+  );
+}
+
+function FlightPage() {
+  const [itin, setItin] = useState(null);
+  const [flights, setFlights] = useState([]);
+
+  const { id: itinDbId } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const loadedItin = await loadItineraryById(itinDbId);
+        // const loadedFlights = [{itineraryId: itinDbId}]
+        const loadedFlights = await loadFlightsByItineraryId(itinDbId);
+        setItin(loadedItin);
+        setFlights(loadedFlights);
+      } catch (err) {
+        console.error("Failed to load itinerary or flights", err);
+      }
+    };
+    fetchData();
+  }, [itinDbId]);
+
+
+  return (
+    <div className="background-image d-flex flex-column align-items-center">
+      <Header />
+      <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flight Planner</h1>
+      {itin ? (
+        <>
+          <ItineraryInfo itin={itin} setItin={setItin} />
+          <div className="flight-page-top-buttons">
+            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
+                🎯 To Activities
+            </button>
+            <button className="custom-btn home-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
+            <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
+            {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
+          </div>
+
+          <FlightContent flights={flights} itinDbId={itinDbId} />
+        </>
+      ) : (
+        <h3 className="text-secondary">Loading Flights...</h3>
+      )}
+
+      <div className="button-row">
+        <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
+      </div>
+    </div>
+  );
+}
+
+export default FlightPage;

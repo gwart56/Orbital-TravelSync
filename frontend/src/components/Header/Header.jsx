@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
-import { useAuthContext } from '../lib/AuthContext';
+import { useAuthContext } from '../../lib/AuthContext';
 import './Header.css';
 
 export default function Header() {

@@ -1,10 +1,10 @@
 import './ActivityContainer.css';
 import { MdDeleteForever } from "react-icons/md";
 import { useState } from 'react';
-import LocationPicker from "./LocationPicker";
+import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit }) {
-  const { id, name, time, locName, locAddress } = activity;
+  const { id, name, time, locName, locAddress, latLng } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
   const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
   const [isPickingLocation, setIsPickingLocation] = useState(false);
@@ -134,10 +134,11 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           </div>
           {isPickingLocation ? (
             <LocationPicker
-              onSave={(loc) => handleLocationSave(loc)}
+              onSave={(loc, pos) => handleLocationSave(loc, pos)}
               onClose={() => setIsPickingLocation(false)}
               location={location}
               setLocation={setLocation}
+              act={activity}
             />
           ) : (
             <button

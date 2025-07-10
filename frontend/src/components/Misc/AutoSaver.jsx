@@ -6,9 +6,10 @@ export function AutoSaveButton({itin, saveToDB}) {
 
     useEffect( () => {
         if (autoSave) {
+        setSuccessful('Auto-Saving...'); //shows timeout msg
         const timer = setTimeout(() => {
             saveToDB(itin);
-            setSuccessful('AUTO-SAVED!');
+            setSuccessful('✅ AUTO-SAVED!');
             // Clear success message after 2 seconds
             const successTimer = setTimeout(() => setSuccessful(''), 1000);
 
@@ -78,7 +79,7 @@ export function AutoSaveButton({itin, saveToDB}) {
                 zIndex: 10
             }}
             >
-            ✅ {successfulMsg}
+            {successfulMsg}
             </div>
         )}
         </div>

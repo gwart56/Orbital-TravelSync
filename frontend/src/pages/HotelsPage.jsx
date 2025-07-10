@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import ItineraryInfo from "../components/ItineraryInfo";
+import Header from "../components/Header/Header";
+import ItineraryInfo from "../components/ItineraryComponents/ItineraryInfo";
 import { useNavigate, useParams } from "react-router-dom";
 import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
-import HotelContainer from "../components/HotelContainer";
+import HotelContainer from "../components/HotelPageContent/HotelContainer";
 import { addHGToArr, addHotelToArr, deleteHGFromArr, deleteHotelFromArr, doesHGOverlap, editHotelInArr, getAllConfirmedHotelsFromArr } from "../data/hotel";
 import { setItinHotels } from "../data/activity";
-import HGInfo from "../components/HotelGroupInfo";
-import ConfirmedHotelGroup from "../components/ConfirmedHotelGroup";
-import { AutoSaveButton } from "../components/AutoSaver";
+import HGInfo from "../components/HotelPageContent/HotelGroupInfo";
+import ConfirmedHotelGroup from "../components/HotelPageContent/ConfirmedHotelGroup";
+import { AutoSaveButton } from "../components/Misc/AutoSaver";
 import "./HotelsPage.css";
-import dayjs from "dayjs";
+import HotelComparator from "../components/GoogleMapsComponents/HotelComparator";
+import ConfirmModal from "../components/Misc/ConfirmModal";
 
 function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT FOR ONE HOTEL GROUP
     const hotels = hotelGrp?.hotels; 
     const hgName = hotelGrp?.name;
+    const [isComparingLocations, setIsComparingLocations] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const getConfirmedHotel = () => {
         //THIS RETURNS THE CONFIRMED HOTEL IN A HOTEL GROUP (ASSUMES ONLY 1 CONFIRMED HOTEL)
@@ -99,7 +102,7 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
 )
         :hotels
         .map(h => (
-        <div>
+        <div key={h.id}>
             <HotelContainer
                 key={h.id}
                 hotel={h}
@@ -125,8 +128,22 @@ function HotelGrpContent({hotelGrp, hgId, itin, setItin, deleteHG}) { //CONTENT 
                 <> 
                     <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
                     {hotelsElements}
+                    {isComparingLocations && <HotelComparator
+                        key={`hotel-comparator-${hgId}`} // <-- helps force full remount
+                        comparedHotels={hotels}
+                        onClose={() => setIsComparingLocations(false)}
+                    />}
                     <button className='btn btn-primary m-3' onClick={addNewHotel}>+ Add New Hotel</button>
-                    <button className='btn btn-danger m-3' onClick={deleteHG}>Delete Hotel Group</button>
+                    <button className='btn btn-success m-3' 
+                        onClick={()=>{setIsComparingLocations(true)}}
+                        disabled={hotels.length<=0}
+                        >Compare Locations</button>
+                    <button className='btn btn-danger m-3' onClick={()=>setDeleteModalOpen(true)}>Delete Hotel Group</button>
+                    {deleteModalOpen && <ConfirmModal
+                        message={"Are you sure you want to delete this Hotel Group?"}
+                        onConfirm={deleteHG}
+                        onCancel={()=>setDeleteModalOpen(false)}
+                    />}
                 </>
                 )} 
             </div>
@@ -164,12 +181,12 @@ function HotelGroupsContent({itin, setItin}) {
     }
 
     const deleteHG = (hgId) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this Hotel Group?");
-        if (confirmDelete) {                               
+        // const confirmDelete = window.confirm("Are you sure you want to delete this Hotel Group?");
+        // if (confirmDelete) {                               
             const newHotelGrps = deleteHGFromArr(hgId, hotelGroupsArr);
             setItin(prev => setItinHotels(prev, newHotelGrps));
             console.log("deleted hotel grp");
-        }
+        // }
     }
 
     return (

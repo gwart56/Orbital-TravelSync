@@ -9,13 +9,16 @@ const containerStyle = {
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
-export default function HotelPicker({ initialPosition, onClose, onSave }) {
+export default function HotelPicker({ hotel, onClose, onSave }) {
+    const initialPosition = hotel.latLng;
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
+    const [latLng, setLatLng] = useState(initialPosition || centerDefault);
     const [location, setLocation] = useState(null);
-    const [nearbyHotels, setNearbyHotels] = useState([]);
-    const [selectedHotel, setSelectedHotel] = useState(null);
-    const [hotelDetails, setHotelDetails] = useState(null);
+    const [hotelType, setHotelType] = useState('');
+    const [nearbyHotels, setNearbyHotels] = useState([]); //This is for NearbyHotels
+    const [selectedHotel, setSelectedHotel] = useState(null); //This for the chosen NearbyHotel marker
+    const [hotelDetails, setHotelDetails] = useState(null); //This is for the Info Window to display details
 
 
     //AutoComp => for search bar
@@ -37,6 +40,9 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     useEffect( () => {
       if (isLoaded && !geocoder.current) { //make sure is BOTH loaded AND no exisitng geocoder instance
         geocoder.current = new window.google.maps.Geocoder(); //creates new geocoder instance
+        if (!initialPosition) {
+          geocodeAddress(hotel.address); //tries to geocode manual address
+        }
       }
     },[isLoaded]);
     
@@ -48,13 +54,12 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
           // const components = results[0]?.address_components || [];
           // const premiseComponent = components.find(c => c.types.includes("premise"));
           // const name = premiseComponent?.long_name || "Dropped Pin";
-          const name = "Dropped Pin";
+          const name = "";
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
       });
     }
-    
 
     const handlePlaceChanged = () => {// this sets the marker position and map center position
       const place = autocompleteRef.current.getPlace();
@@ -68,22 +73,47 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
         setMapCenter(newPos);
         setMarkerPosition(newPos);
         fetchNearbyHotels(newPos);
+        setLatLng(newPos);
         const locName = (place.name);
         const locAddress = (place.formatted_address);
         setLocation({locName, locAddress})
       }
     };
 
-    const fetchNearbyHotels = (location) => { //uses Places API to get nearby places
+    const geocodeAddress = (address) => {//for converting manual Text to latLng
+      if (!geocoder.current || !address) return;
+
+      geocoder.current.geocode({ address }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const location = results[0].geometry.location;
+          const latLng = {
+            lat: location.lat(),
+            lng: location.lng(),
+          };
+          console.log("Geocoded LatLng:", latLng);
+
+          // You can use setMapCenter, setMarkerPosition, etc.
+          setMapCenter(latLng);
+          setMarkerPosition(latLng);
+          setLatLng(latLng);
+          updateAddressFromCoords(latLng);
+        } else {
+          console.error("Geocode failed:", status);
+        }
+      });
+    };
+
+    const fetchNearbyHotels = () => { //uses Places API to get nearby places
+        if (hotelType == "") return;
         try {
             console.log("TRYING TO FETCH HOTELS");
             if (!isLoaded || !mapRef.current) return;
 
             const service = new window.google.maps.places.PlacesService(mapRef.current);
             const request = {
-            location: new window.google.maps.LatLng(location.lat, location.lng),
+            location: new window.google.maps.LatLng(latLng.lat, latLng.lng),
             radius: 1000,
-            type: 'lodging',
+            type: hotelType,
             };
 
             service.nearbySearch(request, (results, status) => {
@@ -100,12 +130,24 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     };
 
     const handleHotelClick = (hotel) => {//handles when u click hotel marker
-        setSelectedHotel(hotel);
+      // console.log("hoteldetails...", hotelDetails);
+      // console.log("selectedhotel...", selectedHotel);
+      setHotelDetails(null);
+      setSelectedHotel(null);
+
         const service = new window.google.maps.places.PlacesService(placesServiceDivRef.current);
+
+        const hotelPos = {lat: hotel.geometry.location.lat(),lng: hotel.geometry.location.lng()};
+        setMarkerPosition(hotelPos);
+        setLatLng(hotelPos);
+        updateAddressFromCoords(hotelPos);
+        
+        setSelectedHotel(hotel);
+        
 
         const request = {
             placeId: hotel.place_id,
-            fields: ['name', 'website', 'url', 'formatted_address'],
+            fields: ['name', 'website', 'url', 'formatted_address','rating', 'user_ratings_total', 'price_level'],
         };
 
         service.getDetails(request, (place, status) => {
@@ -121,7 +163,7 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
 
 
     const handleSave = () => {
-      onSave( location );
+      onSave( location , latLng );
       onClose();
     };
 
@@ -129,26 +171,80 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
     if (loadError) return <div>Error loading Google Maps</div>;
     if (!isLoaded) return <div>Loading Map...</div>;
 
+    const nearbyMarkers = nearbyHotels.map(hotel => ( //generates all nearby hotel as markers
+                    <Marker
+                        key={hotel.place_id}
+                        position={{
+                        lat: hotel.geometry.location.lat(),
+                        lng: hotel.geometry.location.lng()
+                        }}
+                        icon={{
+                          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 24 36" fill="blue">
+                              <path d="M12 0C6.48 0 2 4.48 2 10c0 5.25 4.86 12.07 9.16 17.15.44.52 1.23.52 1.66 0C17.14 22.07 22 15.25 22 10c0-5.52-4.48-10-10-10z"/>
+                              <circle cx="12" cy="10" r="4" fill="white"/>
+                            </svg>
+                          `),
+                          scaledSize: new window.google.maps.Size(30, 42)
+                        }}
+                        title={hotel.name}
+                        onClick={() => {handleHotelClick(hotel);}}
+                    />
+                    ));
+
     return (
       <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
         position:'fixed',
-        top: '10vh',
+        top: '2vh',
         left: '10vw',
         width: '80vw',
-        height: '85vh',
+        maxHeight: '85vh',
         backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
         // display: 'flex',
         // justifyContent: 'center',
         // alignItems: 'center',
         zIndex: 1050 
-        }}>
+      }}>
         <div className=" -lg" role="document" onClick={onClose}>
           <div className="" onClick={e => e.stopPropagation()}>
             <div className="">
               <h5 className="">Edit Location <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
             </div>
+            <h6>*Note: Manually inputed addresses may not be marked on map accurately</h6>
             <div className="-body">
               <div className="mb-3">
+                  <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+                    <label htmlFor={`type-select`} className="">🏨 Search Nearby Hotels:</label>
+                        <select
+                          id={`type-select`}
+                          className="form-select form-select-sm"
+                          value={hotelType ?? "None"}
+                          style={{ maxWidth: "200px" }}
+                          onChange={(e) => {
+                            if (e.target.value === "") { //checks if user selected a day
+                              setHotelType('');
+                              return;
+                            }
+                            setHotelType(e.target.value);
+                          }}
+                        >
+                          <option value="">Select Type</option>
+                          <option value="lodging">All Lodging</option>
+                          <option value="hotel">Hotel</option>
+                          <option value="bed_and_breakfast">Bed & Breakfast</option>
+                        </select>
+                        <button
+                      className="btn btn-outline-primary btn-sm m-2"
+                      disabled={hotelType == ""}
+                      onClick={() => {
+                        setNearbyHotels([]);
+                        fetchNearbyHotels();
+                        setHotelType(''); // clear after submit
+                      }}
+                    >
+                      Search
+                    </button>
+                  </div>
                   <Autocomplete
                       onLoad={(ref) => (autocompleteRef.current = ref)}
                       onPlaceChanged={handlePlaceChanged}
@@ -177,8 +273,9 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                 onClick={e => {
                     const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
                     setMarkerPosition(pos);
+                    setLatLng(pos);
                     updateAddressFromCoords(pos);
-                    fetchNearbyHotels(pos);
+                    // fetchNearbyHotels(pos);
                 }}
               >
                 <Marker
@@ -187,25 +284,13 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                   onDragEnd={e => {
                     const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
                     setMarkerPosition(pos);
+                    setLatLng(pos);
                     updateAddressFromCoords(pos);
-                    fetchNearbyHotels(pos);
+                    // fetchNearbyHotels(pos);
                   }}
                 />
-                {nearbyHotels.map(hotel => ( //generates all nearby hotel as markers
-                    <Marker
-                        key={hotel.place_id}
-                        position={{
-                        lat: hotel.geometry.location.lat(),
-                        lng: hotel.geometry.location.lng()
-                        }}
-                        icon={{
-                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" // different icon for hotels
-                        }}
-                        title={hotel.name}
-                        onClick={() => {handleHotelClick(hotel); console.log("LOADING INFOWINDOW")}}
-                    />
-                    ))
-                }
+                {nearbyMarkers}
+
                 {hotelDetails && (
                     <InfoWindow
                         position={{
@@ -219,6 +304,16 @@ export default function HotelPicker({ initialPosition, onClose, onSave }) {
                     >
                         <div style={{ maxWidth: "250px" }}>
                             <h6>{hotelDetails.name}</h6>
+                            {hotelDetails.rating && (
+                              <p style={{ fontSize: "12px" }}>
+                                ⭐ {hotelDetails.rating} ({hotelDetails.user_ratings_total ?? 0} reviews)
+                              </p>
+                            )}
+                            {hotelDetails.price_level && (
+                              <p style={{ fontSize: "12px" }}>
+                                Price Level: {hotelDetails.price_level}
+                              </p>
+                            )}
                             <p style={{ fontSize: "12px" }}>{hotelDetails.formatted_address}</p>
                             {hotelDetails.website ? (
                                 <a href={hotelDetails.website} target="_blank" rel="noopener noreferrer">

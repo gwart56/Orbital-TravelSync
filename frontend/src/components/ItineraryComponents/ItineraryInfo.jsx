@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../data/activity';
+import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { FaEdit } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import "./ItineraryInfo.css";
@@ -25,6 +25,7 @@ function ItineraryDateInput({ itin, setItin }){
           📆 Adventure Begins: 
           <input
             type="date"
+            className='form-control'
             value={newStartDate}
             onChange={(e) => setNewStartDate(e.target.value)}
           />
@@ -53,13 +54,16 @@ function ItineraryNameInput({ itin, setItin }){
         </h1>
       ) : (
         <h2>
+          <div className='d-flex w-100 justify-content-center gap-2'>
           <input
+            className='input-name'
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
           />
-          <button className="btn btn-light" onClick={handleSave}>Save</button>
-          <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
+          <button className="btn btn-light mx-2 p-2 flex-grow-1 flex-basis-0" onClick={handleSave}>Save</button>
+          <button className="btn btn-light mx-2 p-2 flex-grow-1 flex-basis-0" onClick={() => setEditing(false)}>Cancel</button>
+          </div>
         </h2>
       )}
 
