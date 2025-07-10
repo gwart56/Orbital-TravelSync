@@ -4,36 +4,34 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
-import { AutoSaveButton } from '../../components/Misc/AutoSaver';
+// import { AutoSaveButton } from '../../components/Misc/AutoSaver';
 import ConfirmModal from '../../components/Misc/ConfirmModal';
 
 // import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
 import FlightContainer from '../../components/FlightPageComponents/FlightContainer';
-import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById } from '../../data/flights';
-import { loadItineraryById } from '../../lib/supabaseItinerary';
+import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById, newFlight, addFlightsIntoDB } from '../../data/flights';
+import { loadItineraryById } from '../../data/itinerary';
+// import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({ flights, itinDbId }) {
   const [localFlights, setLocalFlights] = useState(flights);
   const [deletingId, setDeletingId] = useState(null);
 
-  function handleAdd() {
-    const emptyFlight = {
+  async function handleAdd() {
+    const emptyFlight = newFlight({
       itineraryId: itinDbId,
       airline: '',
       flightNumber: '',
       departureAirport: '',
-      arrivalAirport: '',
-      departureTime: '',
-      arrivalTime: ''
-    };
-    createNewFlight({itineraryId: itinDbId}).then(newFlight => {
-      setLocalFlights([...localFlights, newFlight]);
+      arrivalAirport: ''
     });
+      addFlightsIntoDB(emptyFlight);
+      setLocalFlights([...localFlights, emptyFlight]);
   }
 
-  function handleSave(id, updatedData) {
+  async function handleSave(id, updatedData) {
     updateFlightById(id, updatedData).then(() => {
-      setLocalFlights(localFlights.map(f => f.flightId === id ? { ...f, ...updatedData } : f));
+      setLocalFlights(localFlights.map(f => f.id === id ? { ...f, ...updatedData } : f));
     });
   }
 
@@ -41,9 +39,9 @@ function FlightContent({ flights, itinDbId }) {
     setDeletingId(id);
   }
 
-  function confirmDelete(id) {
+  async function confirmDelete(id) {
     deleteFlightById(id).then(() => {
-      setLocalFlights(localFlights.filter(f => f.flightId !== id));
+      setLocalFlights(localFlights.filter(f => f.id !== id));
       setDeletingId(null);
     });
   }
@@ -60,18 +58,18 @@ function FlightContent({ flights, itinDbId }) {
     : localFlights
         .sort((a, b) => dayjs(a.departureTime).unix() - dayjs(b.departureTime).unix())
         .map(flight => (
-          <div key={flight.flightId}>
-            {deletingId === flight.flightId && (
+          <div key={flight.id}>
+            {deletingId === flight.id && (
               <ConfirmModal
                 message={`Delete flight ${flight.flightNumber}?`}
-                onConfirm={() => confirmDelete(flight.flightId)}
+                onConfirm={() => confirmDelete(flight.id)}
                 onCancel={() => setDeletingId(null)}
               />
             )}
             <FlightContainer
               flight={flight}
               handleSave={handleSave}
-              handleDelete={() => handleDelete(flight.flightId)}
+              handleDelete={() => handleDelete(flight.id)}
             />
           </div>
         ));
@@ -106,19 +104,31 @@ function FlightPage() {
     fetchData();
   }, [itinDbId]);
 
+  const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+            try {
+              await updateItineraryById(itinDbId, itin);
+              setItin(itin);
+              console.log('SAVED ITIN TO DB!');
+            } catch (err) {
+              console.error('Failed to update Itinerary...', err);
+            }
+        }
+
 
   return (
-    <div className="background-image d-flex flex-column align-items-center">
+    <div className="flight-background-image d-flex flex-column align-items-center">
       <Header />
       <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flight Planner</h1>
       {itin ? (
         <>
-          <ItineraryInfo itin={itin} setItin={setItin} />
+          <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
+            itin={itin}
+            onSave={saveItinToDB}
+          />
           <div className="flight-page-top-buttons">
-            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
-                🎯 To Activities
-            </button>
-            <button className="custom-btn home-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
+            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
+            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+            <button className="custom-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
           </div>

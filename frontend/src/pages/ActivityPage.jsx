@@ -5,34 +5,65 @@ import { useState, useEffect } from 'react';
 import Header from '../components/Header/Header';
 import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
+// import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
+import { defConfirmedHotelArr, loadAllConfirmedHotelsByItineraryId, getHotelCheckInOutForDate, getHotelForDate } from '../data/hotel';
 import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
 import ConfirmModal from '../components/Misc/ConfirmModal';
+import { loadItineraryById, updateItineraryById } from '../data/itinerary';
+import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
+import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays, swapItemsInArray } from '../utils/arrays';
+import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
+import { LoadingMessage } from '../components/Misc/LoadingMessage';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
-function ActivityContent({activityArr, dayId, itin, setItin}) {
-  const activities = activityArr;
+function ActivityContent({dayId, setLoadingMessage}) {
+  const [activities, setActivities] = useState([]);
+  // const activities = activityArr;
+  useEffect( () => {//FETCH TRAVELDAYS
+      const fetchActs = async () => {
+        try {
+          const loadedActs = await loadActivitiesByTravelDaysId(dayId); //wait to get itin class obj by id from supabase
+          setActivities(loadedActs);
+        } catch (err) {
+          console.error("Failed to load traveldays", err);
+        }
+      }
+      fetchActs();
+    }
+    ,[dayId]);
 
-  function handleSave(id, valuesArray) {
-    console.log("saved: id-" + id + ", " + valuesArray);
-    const newActArr = editActivityArray(activities, id, valuesArray);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr)); //updates itinerary
+  async function handleSave(id, data) {
+    setLoadingMessage("Saving...");
+    console.log("saved: id-" + id , data);
+    const {name, time, locName, locAddress} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress);
+    const newActArr = editItemInArrayById(activities, newAct, id);
+    // console.log('AAA',newActArr)
+    await updateactivityById(id, newAct);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
-  function handleDelete(id) {
+  async function handleDelete(id) {
+    setLoadingMessage("Deleting...");
     console.log("deleted: id-" + id);
-    const newActArr = deleteActivityArray(activities, id);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr));
+    const newActArr = deleteItemFromArrayById(activities, id);
+    await deleteactivityById(id);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
-  function handleAdd() {
+  async function handleAdd() {
+    setLoadingMessage("Adding...");
     console.log("added new activity");
-    const newActArr = addActivityArray(activities);
-    setItin(itin.setActivitiesOfDay(dayId, newActArr));
+    const newAct = newActivity(dayId, "", "", "", "");
+    const newActArr = addItemToArray(activities, newAct);
+    await addActivityIntoDB(newAct);
+    setLoadingMessage("");
+    setActivities(newActArr);
   }
 
   const activityElements = activities.length==0
@@ -65,37 +96,160 @@ function ActivityContent({activityArr, dayId, itin, setItin}) {
 }
 
 //each TravelDaysContent contains Day No., Date, ActivityContent 
-function TravelDaysContent({dayArr, itin, setItin}) {
+function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
+  const [travelDays, setTravelDays] = useState([]);
   const [deletingDayId, setDeletingDayId] = useState(null);
   const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
-  const travelDays = dayArr;
-  const confirmedHotelsArr = 
-  //defConfirmedHotelArr;
-  getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
-  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  // const travelDays = dayArr;
+  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  // defConfirmedHotelArr;
+  // getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
+  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
-  function handleAdd() {
-    setItin(itin.addDay());
+  useEffect( () => {//FETCH TRAVELDAYS
+      const fetchTDs = async () => {
+        try {
+          const loadedTDs = await loadTravelDaysByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+          setTravelDays(loadedTDs);
+        } catch (err) {
+          console.error("Failed to load traveldays", err);
+        }
+      }
+      fetchTDs();
+    }
+    ,[itinDbId]);
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
+      const fetchCHs = async () => {
+        try {
+          const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+          setConfirmedHotelsArr(loadedCHs);
+        } catch (err) {
+          console.error("Failed to load confirmed hotels", err);
+        }
+      }
+      fetchCHs();
+    }
+    ,[itinDbId]);
+
+  async function handleAdd() {
+    try {
+      setLoadingMessage("Adding...");
+      const newDay = newTravelDay(itinDbId, travelDays.length);
+      // Insert to DB and get inserted row back
+      const insertedRows = await addTravelDaysIntoDB([newDay]);
+      const insertedDay = insertedRows[0];
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays+1});
+      // Update local state
+      setTravelDays([...travelDays, insertedDay]);
+    } catch (err) {
+      console.error("Failed to add travel day", err);
+    } finally {
+      setLoadingMessage("");
+    }
   }
 
-  function handleInsert(i) {
-    const newDayArr = insertDayIntoArray(dayArr, i);
-    setItin(setItinDays(itin, newDayArr));
+  // Insert a day before given index, reindex all days
+  async function handleInsert(indexToInsert) {
+    try {
+      setLoadingMessage("Inserting...");
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
+
+      // Create new day with dummy index
+      const newDay = newTravelDay(itinDbId, indexToInsert);
+
+      // Insert the new day first
+      const insertedDays = await addTravelDaysIntoDB([newDay]);
+      const insertedDay = insertedDays[0];
+
+      // Insert the newly inserted day into the array at the index
+      const updatedDays = reindexTravelDays(
+        insertItemIntoArrayAtIndex(latestDays, insertedDay, indexToInsert)
+      );
+
+      // Update the indexes of all days (including insertedDay)
+      await Promise.all(updatedDays.map(d => 
+        updateTravelDayById(d.id, { index: d.index })
+      ));
+
+      const freshDays = await loadTravelDaysByItineraryId(itinDbId);
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays + 1});
+      setTravelDays(freshDays);
+    } catch (err) {
+      console.error("Insert failed:", err);
+      const fallback = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(fallback);
+    } finally {
+      setLoadingMessage("");
+    }
+}
+
+
+  // Swap two travel days by their indices, update indexes in DB
+  async function handleSwap(index1, index2) {
+    if (index1 === index2) return;
+
+    try {
+      setLoadingMessage("Swapping...");
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
+      // console.log("SWAP A", latestDays);
+
+      // Swap in local array
+      const swappedDays = swapItemsInArray(latestDays, index1, index2);
+      // console.log("SWAP B", swappedDays);
+
+      // Reindex swapped days
+      const reindexedDays = swappedDays.map((d, i) => ({ ...d, index: i }));
+      // console.log("SWAP C", reindexedDays);
+
+
+      // Update all affected rows in DB
+      await Promise.all(
+        reindexedDays.map(d => 
+          updateTravelDayById(d.id, { index: d.index })
+        )
+      );
+
+      // Update local state
+      setTravelDays(reindexedDays);
+    } catch (err) {
+      console.error("Failed to swap travel days", err);
+      const freshDays = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(freshDays);
+    } finally {
+      setLoadingMessage("");
+    }
   }
 
-  function handleSwap(index1, index2) {
-    if (index1 === index2 || index1 == null || index2 == null) return;
-    const newDayArr = swapDaysInArray(dayArr, index1, index2);
-    setItin(setItinDays(itin, newDayArr));
-  }
+  // Delete a travel day by travelDayId and reindex
+  async function handleDelete(travelDayId) {
+    try {
+      setLoadingMessage("Deleting...");
+      console.log('traveldayid delete',travelDayId);
+      // Delete from DB
+      await deleteTravelDayById(travelDayId);
 
+      // Fetch latest travel days
+      const latestDays = await loadTravelDaysByItineraryId(itinDbId);
 
-  function handleDelete(id) {
-      // const confirmDelete = window.confirm("Are you sure you want to delete this day?");
-      // if (confirmDelete) {
-          setItin(itin.removeDay(id));
-          
-      // }
+      // Reindex remaining days
+      const reindexedDays = reindexTravelDays(latestDays);
+
+      // Update DB indexes
+      await Promise.all(
+        reindexedDays.map(d => updateTravelDayById(d.id, { index: d.index }))
+      );
+
+      // await updateItineraryById(itinDbId, {...itin, numOfDays: itin.numOfDays-1});
+      // Update local state
+      setTravelDays(reindexedDays);
+    } catch (err) {
+      console.error("Failed to delete travel day", err);
+      const fallback = await loadTravelDaysByItineraryId(itinDbId);
+      setTravelDays(fallback);
+    } finally {
+      setLoadingMessage("");
+    }
   }
 
   const dayElements = travelDays.length==0
@@ -110,18 +264,19 @@ function TravelDaysContent({dayArr, itin, setItin}) {
     </div>
     )
   :[...travelDays]
-    .map((d, index) => {
-      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
+    .map((d, renderIndex) => {
+      const index = d.index;
+      const latestdate = dayjs(itin.startDate, 'YYYY-MM-DD').add(index,'day').format('D MMMM YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
       // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
       const dayNo = index + 1; //the day num
-
+ 
       return ( //i lazy to make container component
       <div key={d.id}>
-        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(index)}>+ Insert Day Before</button>
+        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(renderIndex)}>+ Insert Day Before</button>
         <div className="travel-day-container" key={d.id}>
           <div className="day-header">
             <span className="day-label">Day {dayNo}</span>
@@ -138,7 +293,7 @@ function TravelDaysContent({dayArr, itin, setItin}) {
             }
 
           <h5 className="day-subtext">
-            📅 Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+            📅 Date: {latestdate}
           </h5>
 
           {!checkInHotel && !checkOutHotel && (
@@ -195,10 +350,8 @@ function TravelDaysContent({dayArr, itin, setItin}) {
 
 
           <ActivityContent
-            activityArr={d.activities}
             dayId={d.id}
-            itin={itin}
-            setItin={setItin}
+            setLoadingMessage={setLoadingMessage}
           />
         </div>
       </div>
@@ -220,6 +373,7 @@ function ActivityPage() {
   // useEffect(() => { //saves to localstorage everytime there is an update to itin
   //   saveToLocal(itin);
   // }, [itin]);
+  const [loadingMessage, setLoadingMessage] = useState("");
 
   const [itin, setItin] = useState(null); //initialize itin to null
 
@@ -227,7 +381,7 @@ function ActivityPage() {
 
   const navigate = useNavigate();
 
-  useEffect( () => {
+  useEffect( () => {//FETCH ITIN
       const fetchItin = async () => {
         try {
           const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
@@ -241,44 +395,65 @@ function ActivityPage() {
     ,[itinDbId]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
-  const saveToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
-    try {
-      await updateItineraryById(itinDbId, itin);
-      console.log('SAVED TO DB!');
-    } catch (err) {
-      console.error('Failed to update Itinerary...', err);
+  // const saveToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+  //   try {
+  //     await updateItineraryById(itinDbId, itin);
+  //     console.log('SAVED TO DB!');
+  //   } catch (err) {
+  //     console.error('Failed to update Itinerary...', err);
+  //   }
+  // }
+
+     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+        try {
+          await updateItineraryById(itinDbId, itin);
+          setItin(itin);
+          console.log('SAVED ITIN TO DB!');
+        } catch (err) {
+          console.error('Failed to update Itinerary...', err);
+        }
     }
-  }
+
+
 
     return (
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
             <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
+            {/* {loadingMessage && (
+              <div className="loading-overlay">
+                <span className="spinner-border mb-2 mx-2" role="status"></span>
+                <p>{loadingMessage}</p>
+              </div>
+            )} */}
+            <LoadingMessage loadingMessage={loadingMessage}/>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
-                  setItin={setItin}
+                  onSave={saveItinToDB}
                 />
 
                 <div className="activity-page-top-buttons">
                   <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
-                  <button className="custom-btn home-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> ✈️ To Flights</button>
+                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> 🛫 To Flights</button>
+                  <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
-                  <AutoSaveButton itin={itin} saveToDB={saveToDB}/>
+                  {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
                 </div>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
-                  dayArr={itin.travelDays}
+                  // dayArr={itin.travelDays}
                   itin={itin}
-                  setItin={setItin}
+                  // setItin={setItin}
+                  itinDbId={itinDbId}
+                  setLoadingMessage={setLoadingMessage}
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
-                <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button>
+                {/* <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button> */}
               </div>
             {/* <div style={{height: "20px"}}/> */}
             {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}

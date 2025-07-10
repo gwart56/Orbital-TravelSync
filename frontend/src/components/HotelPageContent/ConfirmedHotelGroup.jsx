@@ -7,7 +7,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
             <span
                 className="text-truncate"
                 style={{
-                maxWidth: "200px",
+                maxWidth: "700px",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap"
@@ -107,7 +107,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                 <button
                     className="btn btn-danger text-white"
                     onClick={() => {
-                        const updatedHotel = { ...confirmedHotel, isConfirmed: false };
+                        const updatedHotel = { ...confirmedHotel, isConfirmed: false, checkInDate: null, checkOutDate: null};
                         updateHotel(confirmedHotel.id, updatedHotel);
                         setConfirmedHotel(false);
                     }}

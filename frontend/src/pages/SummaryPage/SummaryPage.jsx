@@ -3,15 +3,43 @@ import { useState, useEffect } from 'react';
 import './SummaryPage.css';
 import Header from '../../components/Header/Header';
 import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
-import { loadItineraryById} from '../../lib/supabaseItinerary';
+// import { loadItineraryById} from '../../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate } from '../../data/hotel';
+import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate, loadAllConfirmedHotelsByItineraryId } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
+import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
+import { loadTravelDaysByItineraryId} from '../../data/travelDays';
+import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
 
-function ActivityContent({activityArr}) {
-  const activities = activityArr;
+function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
+  const [activities, setActivities] = useState([]);
+    // const activities = activityArr;
+
+    useEffect(() => { //FETCH ACTS
+      const fetchActs = async () => {
+        try {
+          const loadedActs = await loadActivitiesByTravelDaysId(dayId);
+
+          const updatedActs = [...loadedActs];
+
+          if (checkInHotel) {
+            updatedActs.push(newActivity(dayId, `Check in into ${checkInHotel.name}`, checkInHotel.checkInTime, checkInHotel.address, checkInHotel.address));
+          }
+
+          if (checkOutHotel) {
+            updatedActs.push(newActivity(dayId, `Check out of ${checkOutHotel.name}`, checkOutHotel.checkOutTime, checkOutHotel.address, checkOutHotel.address));
+          }
+
+          setActivities(updatedActs);
+        } catch (err) {
+          console.error("Failed to load activities", err);
+        }
+      };
+
+      fetchActs();
+    }, [dayId, checkInHotel, checkOutHotel]);
 
   
   const activityElements = activities.filter(a => a.name).length==0
@@ -24,7 +52,7 @@ function ActivityContent({activityArr}) {
     .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
     .filter(a => a.name)
     .map((a) => 
-      <div className="d-flex activity-row">
+      <div className="d-flex activity-row" key={a.id}>
   <div className="activity-time">{a.time || '--:--'}</div>
   <div className="activity-name">{a.name}</div>
 </div>
@@ -37,11 +65,34 @@ function ActivityContent({activityArr}) {
 }
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({dayArr, itin}) {
-  const travelDays = dayArr;
-  const confirmedHotelsArr = 
-  //defConfirmedHotelArr;
-  getAllConfirmedHotelsFromArr(itin.hotelGrps) ;
+function TravelDayContent({itinDbId, itin}) {
+  const [travelDays, setTravelDays] = useState([]);
+  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  useEffect( () => {//FETCH TRAVELDAYS
+        const fetchTDs = async () => {
+          try {
+            const loadedTDs = await loadTravelDaysByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setTravelDays(loadedTDs);
+          } catch (err) {
+            console.error("Failed to load traveldays", err);
+          }
+        }
+        fetchTDs();
+      }
+      ,[itinDbId]);
+  
+    useEffect( () => {//FETCH COnfirmed HOTELS
+        const fetchCHs = async () => {
+          try {
+            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setConfirmedHotelsArr(loadedCHs);
+          } catch (err) {
+            console.error("Failed to load confirmed hotels", err);
+          }
+        }
+        fetchCHs();
+      }
+      ,[itinDbId]);
   console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
 
@@ -55,24 +106,14 @@ function TravelDayContent({dayArr, itin}) {
     )
   :[...travelDays]
     .map((d, index) => {
-      const latestdate = dayjs(itin.startDate, 'DD-MM-YYYY').add(index,'day').format('DD-MM-YYYY');
+      const latestdate = dayjs(itin.startDate, 'YYYY-MM-DD').add(index,'day').format('D MMMM YYYY');
       const {checkIns, checkOuts} = getHotelCheckInOutForDate(latestdate, confirmedHotelsArr);
       const confirmedHotel = getHotelForDate(latestdate, confirmedHotelsArr);
       // console.log("THAT DAY HOTEL", confirmedHotel);
       const checkInHotel = checkIns.length==0? undefined : checkIns[0];
       const checkOutHotel = checkOuts.length==0? undefined : checkOuts[0];
-      const activitiesArr = [...d.activities];
-
-      if (checkInHotel) {
-        activitiesArr.push(new Activity([`Check in into ${checkInHotel.name}`, checkInHotel.checkInTime, checkInHotel.address, checkInHotel.address]));
-      }
-
-      if (checkOutHotel) {
-        activitiesArr.push(new Activity([`Check out of ${checkOutHotel.name}`, checkOutHotel.checkOutTime, checkOutHotel.address, checkOutHotel.address]));
-      }
 
       return ( //i lazy to make container component
-      <>
         <div className="travel-day-container-sum" key={d.id}>
           <div className="d-flex" style={{flex:"1", flexDirection:"column", alignItems:"flex-end"}}>  
           <div className="day-header">
@@ -80,14 +121,13 @@ function TravelDayContent({dayArr, itin}) {
           </div>
 
           <h6 className="mx-3">
-             Date: {dayjs(latestdate, "DD-MM-YYYY").format("D MMMM YYYY")}
+             Date: {latestdate}
           </h6>
 
-         {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && (
+         {/* {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && ( */}
             <h6 className="">
               {confirmedHotel?.name ? 'Hotel That Night:' : ''} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
             </h6>
-          )}
 
           {/*{checkOutHotel && (
             <h6 className="">
@@ -103,13 +143,13 @@ function TravelDayContent({dayArr, itin}) {
           </div>
           <div style={{flex:"2"}}>
             <ActivityContent
-                activityArr={activitiesArr}
+                checkInHotel={checkInHotel}
+                checkOutHotel={checkOutHotel}
                 dayId={d.id}
             />
           </div>
           
         </div>
-      </>
       );}
     );
 
@@ -131,7 +171,7 @@ function FlightContent({flights}) {
     )
     :flights.map(f=>
   (
-      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
+      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Airline:</strong>
           <span className={f.airline ? "" : "text-placeholder"}>{f.airline || "Not set"}</span>
@@ -200,32 +240,34 @@ export function SummaryPage() {
     ,[itinDbId]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
+    const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+            try {
+              await updateItineraryById(itinDbId, itin);
+              setItin(itin);
+              console.log('SAVED ITIN TO DB!');
+            } catch (err) {
+              console.error('Failed to update Itinerary...', err);
+            }
+        }
+
 
     return (
         <div className="background-image summary-background d-flex flex-column align-items-center">
             <Header />
-            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️ Summary</h1>
             {itin && flights ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
-                  setItin={setItin}
+                  onSave={saveItinToDB}
                 />
 
                 <div className="activity-page-top-buttons">
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
+                  <button className="custom-btn activities-btn" onClick={()=>navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}>🛫 To Flights</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
-                </div>
-
-                <div 
-                className='bg-light p-4 rounded m-3'
-                >
-                  <h4>Summary Of Itinerary</h4>
-                    <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
-                        dayArr={itin.travelDays}
-                        itin={itin}
-                    /> 
                 </div>
 
                 <div 
@@ -236,6 +278,17 @@ export function SummaryPage() {
                         flights={flights}
                     /> 
                 </div>
+                
+                <div 
+                className='bg-light p-4 rounded m-3'
+                >
+                  <h4>Summary Of Itinerary</h4>
+                    <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
+                        itinDbId={itinDbId}
+                        itin={itin}
+                    /> 
+                </div>
+
               </>)
               : (<h3 className="text-secondary">Loading Summary...</h3>)}
               <div className="button-row">

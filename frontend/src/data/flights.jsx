@@ -3,7 +3,7 @@ import { v4 as genId } from "uuid";
 
 //-------------------------------------------------------
 // Create a new flight object
-function newFlight({
+export function newFlight({
   itineraryId,
   travelDayId = null, //optional?
   airline,
@@ -21,7 +21,7 @@ function newFlight({
   notes = '' //optional?
 }) {
   return {
-    flightId: genId(),
+    id: genId(),
     itineraryId,
     // travelDayId,
     airline,
@@ -42,7 +42,7 @@ function newFlight({
 
 //-------------------------------------------------------
 // ADD: Add 1 or more flights to Supabase
-async function addFlightsIntoDB(flights) {
+export async function addFlightsIntoDB(flights) {
   const { error } = await supabase
     .from('flights')
     .insert(flights);
@@ -93,12 +93,12 @@ export async function loadFlightsByTravelDayId(travelDayId) {
   return data;
 }
 
-// LOAD: Get flight by flightId
-export async function loadFlightById(flightId) {
+// LOAD: Get flight by id
+export async function loadFlightById(id) {
   const { data, error } = await supabase
     .from('flights')
     .select('*')
-    .eq('flightId', flightId)
+    .eq('id', id)
     .single();
 
   if (error) throw error;
@@ -106,30 +106,30 @@ export async function loadFlightById(flightId) {
 }
 
 // UPDATE: Update a flight object by ID
-export async function updateFlightById(flightId, updatedFlight) {
+export async function updateFlightById(id, updatedFlight) {
   const { data, error } = await supabase
     .from('flights')
     .update(updatedFlight)
-    .eq('flightId', flightId)
+    .eq('id', id)
     .select();
 
   if (error) throw error;
 
-  console.log("Updated flight with ID:", flightId);
+  console.log("Updated flight with ID:", id);
   return data[0];
 }
 
 // DELETE: Delete a flight by ID
-export async function deleteFlightById(flightId) {
+export async function deleteFlightById(id) {
   const { error } = await supabase
     .from('flights')
     .delete()
-    .eq('flightId', flightId);
+    .eq('id', id);
 
   if (error) {
     console.error("Failed to delete flight:", error.message);
     throw error;
   }
 
-  console.log("Successfully deleted flight with ID:", flightId);
+  console.log("Successfully deleted flight with ID:", id);
 }

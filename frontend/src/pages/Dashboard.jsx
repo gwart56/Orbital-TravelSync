@@ -2,11 +2,13 @@ import Header from "../components/Header/Header";
 import dayjs from "dayjs";
 import { useAuthContext } from "../lib/AuthContext";
 import { useNavigate, Link} from 'react-router-dom';
-import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
+// import { addItineraryForUser, deleteItineraryById, loadAllItineraryForUser } from "../lib/supabaseItinerary";
 import { useState, useEffect } from "react";
 import { MdDeleteForever } from 'react-icons/md';
 import "./Dashboard.css";
 import ItineraryModal from "../components/ItineraryComponents/ItineraryModal";
+import { createNewItinForUser, deleteItineraryById, loadAllItineraryForUser } from "../data/itinerary";
+import { loadTravelDaysByItineraryId } from "../data/travelDays";
 
 function DashboardNotLoggedIn() {
     return (
@@ -36,9 +38,9 @@ function ItineraryLinks({userId, navigate}) {
 
     const addNewItinerary = async ({name, startDate, numDays}) => {
         try {
-            const newItin = await addItineraryForUser(userId, 
+            const newItin = await createNewItinForUser(userId, 
                 name, 
-                dayjs(startDate, 'YYYY-MM-DD').format('DD-MM-YYYY'),  //format the startDate
+                dayjs(startDate, 'YYYY-MM-DD'),  //format the startDate
                 numDays);
             console.log('successfully created new itinerary');
             console.log(newItin);
@@ -61,24 +63,33 @@ function ItineraryLinks({userId, navigate}) {
     useEffect(() => {
         const fetchItins = async () => {
             try {
-                const loadedItins = await loadAllItineraryForUser(userId);
+            const loadedItins = await loadAllItineraryForUser(userId);
 
-                // Sort by startDate (assuming format is DD-MM-YYYY)
-                const sorted = loadedItins.sort((a, b) => {
-                    const dateA = dayjs(a.itin.startDate, 'DD-MM-YYYY');
-                    const dateB = dayjs(b.itin.startDate, 'DD-MM-YYYY');
-                    return dateA - dateB; // ascending (earliest first)
-                    // return dateB - dateA; // descending (latest first)
-                });
+            const itinsWithDayCount = await Promise.all(
+                loadedItins.map(async (it) => {
+                const travelDays = await loadTravelDaysByItineraryId(it.itin.id);
+                return {
+                    ...it,
+                    numOfDays: travelDays.length,
+                };
+                })
+            );
 
-                setItins(sorted);
-                } catch (err) {
-                console.error("failed to load itins", err);
+            // Sort by startDate
+            const sorted = itinsWithDayCount.sort((a, b) => {
+                const dateA = dayjs(a.itin.startDate, 'YYYY-MM-DD');
+                const dateB = dayjs(b.itin.startDate, 'YYYY-MM-DD');
+                return dateA - dateB;
+            });
+
+            setItins(sorted);
+            } catch (err) {
+            console.error("Failed to load itineraries:", err);
             }
         };
 
         fetchItins();
-    }, []);
+        }, []);
 
 
     const goToActivityPage = (itinDbId) => {
@@ -94,8 +105,8 @@ function ItineraryLinks({userId, navigate}) {
             </div>
             )
 
-        : itinsArray.map((it, index) => (
-            <div
+        : itinsArray.map((it, index) => { 
+            return (<div
             className="d-flex justify-content-center fade-in"
             style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
             key={it.itinDbId}
@@ -106,8 +117,8 @@ function ItineraryLinks({userId, navigate}) {
                     onClick={() => goToActivityPage(it.itinDbId)}
                 >
                     <div className="itin-detail name"><h4><strong>🌍</strong> {it.itin.name}</h4></div>
-                    <div className="itin-detail date"><h4><strong>📅</strong> {dayjs(it.itin.startDate, "DD-MM-YYYY").format("D MMMM YYYY")}</h4></div>
-                    <div className="itin-detail days"><h4><strong>🕒</strong> {it.itin.travelDays.length} days</h4></div>
+                    <div className="itin-detail date"><h4><strong>📅</strong> {dayjs(it.itin.startDate, "YYYY-MM-DD").format("D MMMM YYYY")}</h4></div>
+                    <div className="itin-detail days"><h4><strong>🕒</strong> {it.numOfDays} days</h4></div>
 
 
                     <div
@@ -128,9 +139,8 @@ function ItineraryLinks({userId, navigate}) {
                         </button>
                     </div>
                 </div>
-            </div>
-
-        )) : (<h3 className="text-secondary">Loading Itineraries...</h3>);
+            </div>)}
+        ): (<h3 className="text-secondary">Loading Itineraries...</h3>);
 
     return (
         <div>

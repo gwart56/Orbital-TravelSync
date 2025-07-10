@@ -4,18 +4,20 @@ import {v4 as genId} from "uuid";
 //-------------------------------------------------------
 //TRAVELDAY DATA TYPE
 // {
-//     travelDayId;
+//     id;
 //     itineraryId; <---foreign key
 //     index;
 // }
 
-function newTravelDay(itineraryId, index) {
+export function newTravelDay(itineraryId, index) {
     return {
-        travelDayId: genId(),
+        id: genId(),
         itineraryId,
         index
     };
 }
+
+//SUPABASE STUFF --------------------------------------------
 
 //CREATE : Create new numOfDays-length array of travelDays
 export async function createNewTravelDays(itineraryId, numOfDays) { 
@@ -26,22 +28,25 @@ export async function createNewTravelDays(itineraryId, numOfDays) {
 }
 
 //FOR ADDING TRAVELDAY(S) INTO SUPABASE
-async function addTravelDaysIntoDB(travelDays) {// can accept one travel day or array of traveldays
-    const { error: daysError } = await supabase
-    .from('travel_days')
-    .insert(travelDays);
+export async function addTravelDaysIntoDB(travelDays) {// can accept one travel day or array of traveldays
+    const { data, error: daysError } = await supabase
+    .from('travelDays')
+    .insert(travelDays)
+    .select();
 
     if (daysError) {
         console.error('Failed to store travel days:', daysError);
         throw daysError;
     }
+
+    return data;
 }
 
 
 // LOAD: Get all traveldays for a specific itinerary
 export async function loadTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMENT THIS CORRECTLY
   const { data, error } = await supabase
-    .from('travel_days')
+    .from('travelDays')
     .select('*')
     .eq('itineraryId', itineraryId)
     .order('index', { ascending: true }); // ensures days are in order
@@ -56,12 +61,12 @@ export async function loadTravelDaysByItineraryId(itineraryId) {//TODO: IMPLEMEN
 
 
 // LOAD: Get travelday by id
-export async function loadTravelDayById(travelDayId) {
+export async function loadTravelDayById(id) {
     //TODO: maybe might use ltr idk
     const { data, error } = await supabase
-    .from('travel_days')
+    .from('travelDays')
     .select('*')
-    .eq('travelDayId', travelDayId)
+    .eq('id', id)
     .single();
 
     if (error) throw error;
@@ -69,31 +74,31 @@ export async function loadTravelDayById(travelDayId) {
 }
 
 // UPDATE: Update travelday by id
-export async function updateTravelDayById(travelDayId, updatedTravelDay) {
+export async function updateTravelDayById(id, updatedTravelDay) {
     const { data, error } = await supabase
-        .from('travel_days')
+        .from('travelDays')
         .update(updatedTravelDay)
-        .eq('travelDayId', travelDayId)
+        .eq('id', id)
         .select(); // get updated row back (optional)
 
     if (error) throw error;
 
-    console.log("Updating supabase, travelDay with id: " + travelDayId);
+    console.log("Updating supabase, travelDay with id: " + id);
 
     return data[0];
 }
 
 // DELETE: Delete travelday by id
-export async function deleteTravelDayById(travelDayId) {
+export async function deleteTravelDayById(id) {
   const { error } = await supabase
-    .from('travel_days') 
+    .from('travelDays') 
     .delete()
-    .eq('id', travelDayId);
+    .eq('id', id);
 
   if (error) {
     console.error("Failed to delete travelday:", error.message);
     throw error;
   }
 
-  console.log("Successfully deleted travelday with ID:", travelDayId);
+  console.log("Successfully deleted travelday with ID:", id);
 }

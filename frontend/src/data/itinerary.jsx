@@ -1,6 +1,7 @@
 import {v4 as genId} from "uuid";
 import dayjs from 'dayjs'; // handles dates
 import { createNewTravelDays } from "./travelDays";
+import { supabase } from "../lib/supabaseClient";
 
 //-------------------------------------------------------
 //ITINERARY DATA TYPE
@@ -8,29 +9,32 @@ import { createNewTravelDays } from "./travelDays";
 //     id;
 //     name;
 //     startDate;
+//     numOfDays;
 // }
 
 
-function newItinerary(name, startDate) {
+function newItinerary(name, startDate, numOfDays) {
     return {
         id: genId(),
         name,
-        startDate
+        startDate,
+        numOfDays
     };
 }
 
 export async function createNewItinForUser(userId, name, startDate, numOfDays) {
-    const newItin = newItinerary(name, startDate);
+    const newItin = newItinerary(name, startDate, numOfDays);
     await addNewItineraryForUser(userId, newItin);
     await createNewTravelDays(newItin.id, numOfDays);
     return newItin;
 }
 
-export async function addNewItineraryForUser(userId, newItin) {//STORES ITIN INTO SUPABASE 
+async function addNewItineraryForUser(userId, newItin) {//STORES ITIN INTO SUPABASE 
     const { data, error } = await supabase
         .from('itins')
         .insert([{
             user_id: userId,
+            id: newItin.id,
             title: newItin.name,
             itinerary_data: newItin,
         }
@@ -39,7 +43,7 @@ export async function addNewItineraryForUser(userId, newItin) {//STORES ITIN INT
         console.error('Failed to create itinerary:', error);
         throw error;
     }
-    return data[0]; // contains the inserted row with 'id' and other columns
+    return data; // contains the inserted row with 'id' and other columns
 }
 
 export async function updateItineraryById(itinDbId, updatedItin) {
@@ -93,6 +97,7 @@ export async function loadAllItineraryForUser(userId) {
         dateCreated: formatDate(row.created_at)
     }));
 
+    console.log('itinarr',itinArray);
     return itinArray;
 }
 

@@ -10,8 +10,9 @@ const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
 export default function LocationPicker({ act, onClose, onSave }) {
-    const initialPosition = null;
-    // act.latLng; temporarily commented TODO: IMPLEMENT ACTIVITY LATLNG
+    const initialPosition = act.latLng; 
+    // null;
+    // temporarily commented TODO: IMPLEMENT ACTIVITY LATLNG
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
     const [latLng, setLatLng] = useState(centerDefault);
@@ -42,7 +43,7 @@ export default function LocationPicker({ act, onClose, onSave }) {
       if (isLoaded && !geocoder.current) { //make sure is BOTH loaded AND no exisitng geocoder instance
         geocoder.current = new window.google.maps.Geocoder(); //creates new geocoder instance
         if (!initialPosition) {
-            console.log("A");
+            // console.log("A");
             geocodeAddress(act.locAddress);
         }
       }

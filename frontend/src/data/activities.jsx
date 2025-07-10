@@ -4,7 +4,7 @@ import {v4 as genId} from "uuid";
 //-------------------------------------------------------
 //ACTIVITY DATA TYPE
 // {
-//     activityId;
+//     id;
 //     travelDayId; <---foreign key
 //     name;
 //     time;
@@ -12,9 +12,9 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-function newActivity(travelDayId, name, time, locName, locAddress) {
+export function newActivity(travelDayId, name, time, locName, locAddress) {
     return {
-        activityId: genId(),
+        id: genId(),
         travelDayId,
         name,
         time,
@@ -56,43 +56,43 @@ export async function loadActivitiesByTravelDaysId(travelDayId) {//TODO: IMPLEME
   return data;
 }
 
-export async function loadactivityById(activityId) {
+export async function loadactivityById(id) {
     //TODO: maybe might use ltr idk
     const { data, error } = await supabase
     .from('activities')
     .select('*')
-    .eq('activityId', activityId)
+    .eq('id', id)
     .single();
 
     if (error) throw error;
     return data;
 }
 
-export async function updateactivityById(activityId, updatedactivity) {
+export async function updateactivityById(id, updatedactivity) {
 
     const { data, error } = await supabase
         .from('activities')
         .update(updatedactivity)
-        .eq('activityId', activityId)
+        .eq('id', id)
         .select(); // get updated row back (optional)
 
     if (error) throw error;
 
-    console.log("Updating supabase, activity with id: " + activityId);
+    console.log("Updating supabase, activity with id: " + id);
 
     return data[0];
 }
 
-export async function deleteactivityById(activityId) {
+export async function deleteactivityById(id) {
   const { error } = await supabase
     .from('activities') 
     .delete()
-    .eq('activityId', activityId);
+    .eq('id', id);
 
   if (error) {
     console.error("Failed to delete activity:", error.message);
     throw error;
   }
 
-  console.log("Successfully deleted activity with ID:", activityId);
+  console.log("Successfully deleted activity with ID:", id);
 }
