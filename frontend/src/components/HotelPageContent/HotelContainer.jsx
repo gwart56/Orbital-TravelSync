@@ -62,7 +62,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           <div className="mb-3">
             <strong>Price: </strong>
             <input
-              type="text"
+              type="number"
               name="price"
               defaultValue={hotel.price}
               placeholder="e.g. $200"

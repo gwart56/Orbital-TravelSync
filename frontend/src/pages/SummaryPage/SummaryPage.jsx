@@ -65,9 +65,9 @@ function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
 }
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({itinDbId, itin}) {
+function TravelDayContent({itinDbId, itin, confirmedHotelsArr}) {
   const [travelDays, setTravelDays] = useState([]);
-  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  // const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
   useEffect( () => {//FETCH TRAVELDAYS
         const fetchTDs = async () => {
           try {
@@ -81,19 +81,19 @@ function TravelDayContent({itinDbId, itin}) {
       }
       ,[itinDbId]);
   
-    useEffect( () => {//FETCH COnfirmed HOTELS
-        const fetchCHs = async () => {
-          try {
-            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
-            setConfirmedHotelsArr(loadedCHs);
-          } catch (err) {
-            console.error("Failed to load confirmed hotels", err);
-          }
-        }
-        fetchCHs();
-      }
-      ,[itinDbId]);
-  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  //   useEffect( () => {//FETCH COnfirmed HOTELS
+  //       const fetchCHs = async () => {
+  //         try {
+  //           const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+  //           setConfirmedHotelsArr(loadedCHs);
+  //         } catch (err) {
+  //           console.error("Failed to load confirmed hotels", err);
+  //         }
+  //       }
+  //       fetchCHs();
+  //     }
+  //     ,[itinDbId]);
+  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
 
   const dayElements = travelDays.length==0
@@ -216,13 +216,41 @@ function FlightContent({flights}) {
   return flightElements;
 }
 
+function expenditure({ flights, hotels }) {
+  const totalFlightCost = flights.reduce((sum, f) => sum + (f.price || 0), 0);
+  const totalHotelCost = hotels.reduce((sum, h) => sum + (h.price || 0), 0);
+  const totalExpenditure = totalFlightCost + totalHotelCost;
+
+  return (
+    <div className="expenditure-summary">
+      <h5>Total Flight Cost: ${totalFlightCost.toFixed(2)}</h5>
+      <h5>Total Hotel Cost: ${totalHotelCost.toFixed(2)}</h5>
+      <h4 className="text-primary">Total Expenditure: ${totalExpenditure.toFixed(2)}</h4>
+    </div>
+  );
+}
+
 export function SummaryPage() {
     const [itin, setItin] = useState(null); //initialize itin to null
     const [flights, setFlights] = useState(null);
+    const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
 
   const navigate = useNavigate();
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
+        const fetchCHs = async () => {
+          try {
+            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setConfirmedHotelsArr(loadedCHs);
+          } catch (err) {
+            console.error("Failed to load confirmed hotels", err);
+          }
+        }
+        fetchCHs();
+      }
+      ,[itinDbId]);
 
   useEffect( () => {
       const fetchItin = async () => {
@@ -286,8 +314,17 @@ export function SummaryPage() {
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                         itinDbId={itinDbId}
+                        confirmedHotelsArr={confirmedHotelsArr}
                         itin={itin}
                     /> 
+                </div>
+
+                <div className='bg-light p-4 rounded m-3'>
+                  <h4>Expenditure Summary</h4>
+                  {expenditure({ 
+                    flights, 
+                    hotels: confirmedHotelsArr
+                  })}
                 </div>
 
               </>)

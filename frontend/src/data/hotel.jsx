@@ -12,7 +12,7 @@ export function newHotel(groupId, name, price, address, link, checkInDate, check
         id: genId(),
         groupId,
         name: name, // default name if not provided
-        price: price || "", // default price if not provided
+        price: price || 0, // default price if not provided
         address: address || "", // default address if not provided
         link,
         checkInDate,
@@ -79,13 +79,18 @@ export function editHGInArr(targetId, hgArray, updatedHG) {
     return hgArray.map(h => h.id == targetId? updatedHG: h);
 }
 
-export function getAllConfirmedHotelsFromArr(hgArray) { //RETURNS ARRAY OF CONFIRMED HOTELS
-    return hgArray.map(hg => {
-        const hotel = hg.hotels.find(h => h.isConfirmed);
-        return hotel? {...hotel, checkInDate: hg.startDate, checkOutDate: hg.endDate} : undefined;
-    })
-    .filter(hotel => hotel !== undefined); // filter out those without confirmed;
+export function getAllConfirmedHotelsFromArr(hgArray) { // This function extracts all confirmed hotels from an array of hotel groups
+    if (!Array.isArray(hgArray)) return [];
+    return hgArray
+        .map(hg => {
+            const hotel = hg.hotels.find(h => h.isConfirmed);
+            return hotel
+                ? { ...hotel, checkInDate: hg.startDate, checkOutDate: hg.endDate }
+                : undefined;
+        })
+        .filter(hotel => hotel !== undefined); // Filter out those without confirmed hotels
 }
+
 //functions dealing with array of CONFIRMED (assuming no overlap)
 export function getHotelCheckInOutForDate(d, hotelArr) {
     const date = dayjs(d, 'D MMMM YYYY');
