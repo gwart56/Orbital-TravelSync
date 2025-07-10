@@ -17,6 +17,7 @@ import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertIte
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 import { LoadingMessage } from '../components/Misc/LoadingMessage';
 import { useAuthContext } from '../lib/AuthContext';
+import { AddCollaboratorForm } from '../components/Misc/AddCollaboratorForm';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -443,6 +444,7 @@ function ActivityPage() {
               </div>
             )} */}
             <LoadingMessage loadingMessage={loadingMessage}/>
+            <AddCollaboratorForm itineraryId={itinDbId} />
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN

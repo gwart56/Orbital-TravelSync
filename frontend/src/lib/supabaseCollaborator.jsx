@@ -1,5 +1,6 @@
 import { supabase } from "./supabaseClient";
 
+
 export async function addCollaborator(itineraryId, collaboratorUserId, role = "viewer") {
   const { data, error } = await supabase
     .from("itinerary_members")
