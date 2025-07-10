@@ -11,11 +11,12 @@ import { defConfirmedHotelArr, loadAllConfirmedHotelsByItineraryId, getHotelChec
 import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import ActivityContainer from '../components/ActivityPageContent/ActivityContainer';
 import ConfirmModal from '../components/Misc/ConfirmModal';
-import { loadItineraryById, updateItineraryById } from '../data/itinerary';
+import { loadItineraryById, loadItineraryRowById, updateItineraryById } from '../data/itinerary';
 import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
 import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays, swapItemsInArray } from '../utils/arrays';
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 import { LoadingMessage } from '../components/Misc/LoadingMessage';
+import { useAuthContext } from '../lib/AuthContext';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -95,7 +96,7 @@ function ActivityContent({dayId, setLoadingMessage}) {
   );
 }
 
-//each TravelDaysContent contains Day No., Date, ActivityContent 
+//each TravelDaysContent contains Day No., Date, ActivityContent -----------------------------------------------------
 function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
   const [travelDays, setTravelDays] = useState([]);
   const [deletingDayId, setDeletingDayId] = useState(null);
@@ -365,15 +366,15 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
     </div>
   );
 }
-
+//---------------------------------------------------------------------------------------------------------------------
 
 
 function ActivityPage() {
-  // const [itin, setItin] = useState(loadItinFromLocal()); //loads itinerary from localstorage
-  // useEffect(() => { //saves to localstorage everytime there is an update to itin
-  //   saveToLocal(itin);
-  // }, [itin]);
+
   const [loadingMessage, setLoadingMessage] = useState("");
+  const {session} = useAuthContext();
+  const sessionUser = session?.user; // get user of current session
+  const sessionUserId = sessionUser?.id; //get userId
 
   const [itin, setItin] = useState(null); //initialize itin to null
 
@@ -384,7 +385,22 @@ function ActivityPage() {
   useEffect( () => {//FETCH ITIN
       const fetchItin = async () => {
         try {
-          const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
+          // const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
+          const data = await loadItineraryRowById(itinDbId); // gives {id, user_id, itinerary_data, created_at, itinerary_members(ARRAY)}
+
+          const creatorId = data.user_id;
+          const memberIds = data.itinerary_members.map(m => m.user_id);
+
+          console.log("session user", sessionUserId);
+          console.log("itin user id", creatorId);
+
+          if (sessionUserId !== creatorId && !memberIds.includes(sessionUserId)) {
+            alert("You do not have permission to view this itinerary.");
+            navigate('/');
+            return;
+          }
+
+          const loadedItin = data.itinerary_data;
           setItin(loadedItin);
         } catch (err) {
           console.error("Failed to load itinerary", err);

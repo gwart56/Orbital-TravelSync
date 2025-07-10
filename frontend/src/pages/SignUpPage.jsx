@@ -85,7 +85,7 @@ function SignUpContent() {
                     <label htmlFor="confirm-password" className="form-label mt-3">Confirm Password:</label>
                     <input
                         type="password"
-                        id="password"
+                        id="confirm-password"
                         name="confirmPassword"
                         className="form-control"
                         placeholder="Confirm Password"
