@@ -21,7 +21,7 @@ import { AddCollaboratorForm } from '../components/Misc/AddCollaboratorForm';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
-function ActivityContent({dayId, setLoadingMessage}) {
+function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   const [activities, setActivities] = useState([]);
   // const activities = activityArr;
   useEffect( () => {//FETCH TRAVELDAYS
@@ -85,10 +85,11 @@ function ActivityContent({dayId, setLoadingMessage}) {
         handleSave={handleSave}
         handleDelete={handleDelete}
         isEdit={false} //determines if activity container is being edited or not
+        isEditable={isEditable}
       />);
   return (
     <div className = "activity-grid js-activity-grid">
-      <button className="new-activity-butt btn btn-success" onClick={handleAdd}>
+      <button className="new-activity-butt btn btn-success" onClick={handleAdd} disabled={!isEditable}>
         + Add Activity
       </button>
 
@@ -98,7 +99,7 @@ function ActivityContent({dayId, setLoadingMessage}) {
 }
 
 //each TravelDaysContent contains Day No., Date, ActivityContent -----------------------------------------------------
-function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
+function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable}) {
   const [travelDays, setTravelDays] = useState([]);
   const [deletingDayId, setDeletingDayId] = useState(null);
   const [swapSelections, setSwapSelections] = useState({}); //dayselections for swapping
@@ -278,13 +279,13 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
  
       return ( //i lazy to make container component
       <div key={d.id}>
-        <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(renderIndex)}>+ Insert Day Before</button>
+        {isEditable && <button className="add-new-day-btn themed-button m-3" onClick={() => handleInsert(renderIndex)}>+ Insert Day Before</button>}
         <div className="travel-day-container" key={d.id}>
           <div className="day-header">
             <span className="day-label">Day {dayNo}</span>
-            <button className="delete-btn delete-btn-top" onClick={() => {setDeletingDayId(d.id);}}>
+            {isEditable && <button className="delete-btn delete-btn-top" onClick={() => {setDeletingDayId(d.id);}}>
               <span>Delete</span> <MdDeleteForever />
-            </button>
+            </button>}
           </div>
 
             {deletingDayId==d.id && <ConfirmModal
@@ -340,7 +341,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
 
             <button
               className="btn btn-outline-primary btn-sm m-2"
-              disabled={swapSelections[index] == null}
+              disabled={swapSelections[index] == null || !isEditable}
               onClick={() => {
                 handleSwap(index, swapSelections[index]);
                 setSwapSelections({}); // clear after swapping
@@ -354,6 +355,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
           <ActivityContent
             dayId={d.id}
             setLoadingMessage={setLoadingMessage}
+            isEditable={isEditable}
           />
         </div>
       </div>
@@ -363,7 +365,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
   return (
     <div className="day-content p-2">
       {dayElements}
-      <button className="add-new-day-btn themed-button" onClick={handleAdd}>+ Add New Day</button>
+      {isEditable && <button className="add-new-day-btn themed-button" onClick={handleAdd}>+ Add New Day</button>}
     </div>
   );
 }
@@ -373,6 +375,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage}) {
 function ActivityPage() {
 
   const [loadingMessage, setLoadingMessage] = useState("");
+  const [itinMeta, setItinMeta] = useState(null);  // holds user_id and itinerary_members
   const {session} = useAuthContext();
   const sessionUser = session?.user; // get user of current session
   const sessionUserId = sessionUser?.id; //get userId
@@ -388,14 +391,17 @@ function ActivityPage() {
         try {
           // const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
           const data = await loadItineraryRowById(itinDbId); // gives {id, user_id, itinerary_data, created_at, itinerary_members(ARRAY)}
+          
+          setItinMeta(data);
 
           const creatorId = data.user_id;
-          const memberIds = data.itinerary_members.map(m => m.user_id);
+          const itinMembers = data.itinerary_members;
+          const memberDetails = itinMembers.find(m => m.user_id == sessionUserId);
 
           console.log("session user", sessionUserId);
           console.log("itin user id", creatorId);
 
-          if (sessionUserId !== creatorId && !memberIds.includes(sessionUserId)) {
+          if (sessionUserId !== creatorId && !memberDetails) {
             alert("You do not have permission to view this itinerary.");
             navigate('/');
             return;
@@ -420,6 +426,17 @@ function ActivityPage() {
   //     console.error('Failed to update Itinerary...', err);
   //   }
   // }
+     const isEditable = (() => {
+        if (!itinMeta || !sessionUserId) return false;
+        const creatorId = itinMeta.user_id;
+        const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+        if (sessionUserId === creatorId || memberDetails?.role === 'editor') {
+          console.log("YES EDITABLE");
+          return true;
+        }
+        console.log("NO NOT EDITABLE");
+        return false;
+      })(); //determines whether page is editable or not
 
      const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
         try {
@@ -450,6 +467,7 @@ function ActivityPage() {
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
                   onSave={saveItinToDB}
+                  isEditable={isEditable}
                 />
 
                 <div className="activity-page-top-buttons">
@@ -466,12 +484,12 @@ function ActivityPage() {
                   // setItin={setItin}
                   itinDbId={itinDbId}
                   setLoadingMessage={setLoadingMessage}
+                  isEditable={isEditable}
                 /> 
               </>)
               : (<h3 className="text-secondary">Loading Activities...</h3>)}
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
-                {/* <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button> */}
               </div>
             {/* <div style={{height: "20px"}}/> */}
             {/* <button className='btn btn-primary' onClick={()=>console.log(itin)}>Print Itinerary in Console</button> */}

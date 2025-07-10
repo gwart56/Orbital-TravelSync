@@ -7,7 +7,8 @@ export function AddCollaboratorForm({ itineraryId }) {
 
   async function handleAddCollaborator() {
     setStatus("Looking up user...");
-    const user = await findUserByEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await findUserByEmail(normalizedEmail);
     if (!user) {
       setStatus("User not found.");
       return;

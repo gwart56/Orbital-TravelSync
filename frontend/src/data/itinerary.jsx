@@ -170,7 +170,7 @@ export async function loadCollaboratingItineraries(userId) {
 export async function loadItineraryRowById(itinDbId) {
   const { data, error } = await supabase
     .from('itins')
-    .select('*, itinerary_members ( user_id )')
+    .select('*, itinerary_members ( user_id, role )')
     .eq('id', itinDbId)
     .single();
 

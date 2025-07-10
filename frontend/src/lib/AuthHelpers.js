@@ -4,11 +4,13 @@ import { supabase } from "./supabaseClient";
 export async function upsertUserToCloneTable(user) {
   const { id, email, user_metadata } = user;
 
+  const normalizedEmail = user.email.trim().toLowerCase();
+
   const { error } = await supabase
     .from('users')
     .upsert({
       id,
-      email,
+      email: normalizedEmail,
       name: user_metadata?.name || null
     });
 
