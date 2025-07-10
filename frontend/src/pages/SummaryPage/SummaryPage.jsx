@@ -9,7 +9,7 @@ import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDat
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
 import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
-import { loadItineraryById} from '../../data/itinerary';
+import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
 import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
 
@@ -129,7 +129,6 @@ function TravelDayContent({itinDbId, itin}) {
               {confirmedHotel?.name ? 'Hotel That Night:' : ''} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
             </h6>
 
-
           {/*{checkOutHotel && (
             <h6 className="">
                Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
@@ -241,16 +240,26 @@ export function SummaryPage() {
     ,[itinDbId]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
+    const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+            try {
+              await updateItineraryById(itinDbId, itin);
+              setItin(itin);
+              console.log('SAVED ITIN TO DB!');
+            } catch (err) {
+              console.error('Failed to update Itinerary...', err);
+            }
+        }
+
 
     return (
         <div className="background-image summary-background d-flex flex-column align-items-center">
             <Header />
-            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️ Summary</h1>
             {itin && flights ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
-                  setItin={setItin}
+                  onSave={saveItinToDB}
                 />
 
                 <div className="activity-page-top-buttons">

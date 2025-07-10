@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
-import { AutoSaveButton } from '../../components/Misc/AutoSaver';
+// import { AutoSaveButton } from '../../components/Misc/AutoSaver';
 import ConfirmModal from '../../components/Misc/ConfirmModal';
 
 // import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
@@ -104,6 +104,16 @@ function FlightPage() {
     fetchData();
   }, [itinDbId]);
 
+  const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+            try {
+              await updateItineraryById(itinDbId, itin);
+              setItin(itin);
+              console.log('SAVED ITIN TO DB!');
+            } catch (err) {
+              console.error('Failed to update Itinerary...', err);
+            }
+        }
+
 
   return (
     <div className="flight-background-image d-flex flex-column align-items-center">
@@ -111,7 +121,10 @@ function FlightPage() {
       <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flight Planner</h1>
       {itin ? (
         <>
-          <ItineraryInfo itin={itin} setItin={setItin} />
+          <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
+            itin={itin}
+            onSave={saveItinToDB}
+          />
           <div className="flight-page-top-buttons">
             <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
             <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>

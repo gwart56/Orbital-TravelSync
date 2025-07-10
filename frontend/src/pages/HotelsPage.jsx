@@ -12,7 +12,7 @@ import ConfirmedHotelGroup from "../components/HotelPageContent/ConfirmedHotelGr
 import "./HotelsPage.css";
 import HotelComparator from "../components/GoogleMapsComponents/HotelComparator";
 import ConfirmModal from "../components/Misc/ConfirmModal";
-import { loadItineraryById } from "../data/itinerary";
+import { loadItineraryById, updateItineraryById } from "../data/itinerary";
 import { addItemToArray, deleteItemFromArrayById, editItemInArrayById} from '../utils/arrays';
 
 function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId}) { //CONTENT FOR ONE HOTEL GROUP
@@ -254,6 +254,15 @@ export function HotelsPage() {
     //             console.error('Failed to update Itinerary...', err);
     //         }
     //     };
+     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+            try {
+              await updateItineraryById(itinDbId, itin);
+              setItin(itin);
+              console.log('SAVED ITIN TO DB!');
+            } catch (err) {
+              console.error('Failed to update Itinerary...', err);
+            }
+        }
     
     
 
@@ -266,7 +275,10 @@ export function HotelsPage() {
 
             {itin? (
                 <>
-                    <ItineraryInfo itin={itin} setItin={setItin} />
+                    <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
+                        itin={itin}
+                        onSave={saveItinToDB}
+                    />
 
                     <div className="custom-button-group">
                         <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
