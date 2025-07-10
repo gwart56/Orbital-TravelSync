@@ -264,6 +264,15 @@ export function SummaryPage() {
                 <div 
                 className='bg-light p-4 rounded m-3'
                 >
+                  <h4>Flight Details</h4>
+                    <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
+                        flights={flights}
+                    /> 
+                </div>
+                
+                <div 
+                className='bg-light p-4 rounded m-3'
+                >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                         itinDbId={itinDbId}
@@ -271,14 +280,6 @@ export function SummaryPage() {
                     /> 
                 </div>
 
-                <div 
-                className='bg-light p-4 rounded m-3'
-                >
-                  <h4>Flight Details</h4>
-                    <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
-                        flights={flights}
-                    /> 
-                </div>
               </>)
               : (<h3 className="text-secondary">Loading Summary...</h3>)}
               <div className="button-row">
