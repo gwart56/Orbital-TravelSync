@@ -15,6 +15,7 @@ import { loadItineraryById, updateItineraryById } from '../data/itinerary';
 import { addTravelDaysIntoDB, deleteTravelDayById, loadTravelDaysByItineraryId, newTravelDay, updateTravelDayById } from '../data/travelDays';
 import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertItemIntoArrayAtIndex, reindexTravelDays, swapItemsInArray } from '../utils/arrays';
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
+import { LoadingMessage } from '../components/Misc/LoadingMessage';
 
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
@@ -419,12 +420,13 @@ function ActivityPage() {
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
             <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
-            {loadingMessage && (
+            {/* {loadingMessage && (
               <div className="loading-overlay">
                 <span className="spinner-border mb-2 mx-2" role="status"></span>
                 <p>{loadingMessage}</p>
               </div>
-            )}
+            )} */}
+            <LoadingMessage loadingMessage={loadingMessage}/>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
