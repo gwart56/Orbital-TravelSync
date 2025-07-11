@@ -126,8 +126,9 @@ function FlightPage() {
             onSave={saveItinToDB}
           />
           <div className="flight-page-top-buttons">
-            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
             <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
+            <button className="custom-nav-btn darkened-flights-btn">🛫 To Flights</button>
             <button className="custom-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}

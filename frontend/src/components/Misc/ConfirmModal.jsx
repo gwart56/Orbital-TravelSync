@@ -1,5 +1,3 @@
-
-
 export default function ConfirmModal({ message, onConfirm, onCancel }) {
     return (
         <div

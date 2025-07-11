@@ -62,10 +62,13 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           <div className="mb-3">
             <strong>Price: </strong>
             <input
-              type="text"
+              type="number"
               name="price"
               defaultValue={hotel.price}
               placeholder="e.g. $200"
+              min="0"
+              step="0.01"
+              required
               className="form-control d-inline w-auto"
             />
           </div>
@@ -211,7 +214,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.price || '-'}
           >
-            {hotel.price || '-'}
+            ${hotel.price || '-'}
           </span>
         </div>
 

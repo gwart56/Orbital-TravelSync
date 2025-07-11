@@ -29,7 +29,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                     }}
                     title={confirmedHotel.price || '-'}
                 >
-                    {confirmedHotel.price || '-'}
+                    ${confirmedHotel.price || '-'}
                 </span>
             </div>
 
