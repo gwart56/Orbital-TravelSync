@@ -39,8 +39,8 @@ export function newFlight({
     // durationMinutes,
     seatNumber,
     // notes,
-    // isReturn,
-    // price,
+    isReturn,
+    price,
   };
 }
 

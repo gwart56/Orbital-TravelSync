@@ -66,6 +66,9 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               name="price"
               defaultValue={hotel.price}
               placeholder="e.g. $200"
+              min="0"
+              step="0.01"
+              required
               className="form-control d-inline w-auto"
             />
           </div>
@@ -211,7 +214,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
             }}
             title={hotel.price || '-'}
           >
-            {hotel.price || '-'}
+            ${hotel.price || '-'}
           </span>
         </div>
 
