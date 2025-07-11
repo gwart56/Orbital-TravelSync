@@ -206,17 +206,23 @@ function FlightContent({flights}) {
           </span>
         </div>
 
-        <div className="mb-2 d-flex align-items-start">
-          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
-          <span className={f.price ? "" : "text-placeholder"}>
-            {f.price ? `$${f.price}` : "Not set"}
-          </span>
-        </div>
-
-          {f.seatNumber && <div className="mb-2 d-flex align-items-start">
+        {f.seatNumber && <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Seat Number:</strong>
           <span className={f.seatNumber ? "" : "text-placeholder"}>{f.seatNumber || "Not set"}</span>
         </div>}
+
+        
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+          <span className={f.price ? "" : "text-placeholder"}>
+            {f.isReturn
+              ? "Return Flight"
+              : f.price
+                ? `$${f.price}`
+                : "Not set"}
+          </span>
+        </div>
+
       </div>
     )
   )
