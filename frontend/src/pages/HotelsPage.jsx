@@ -68,7 +68,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
     
         // Cleanup function: This runs when hgId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing travelDay channel for ${hgId}`);
+          console.log(`[Cleanup] Removing hotel channel for ${hgId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -104,22 +104,28 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
     }
 
     const updateHotel = async (targetId, updatedH) => {
+        setLoadingMessage("Updating...");
         const newHotelArr = editItemInArrayById(hotels, updatedH, targetId);
         await updateHotelById(targetId, updatedH);
         setHotels(newHotelArr);
+        setLoadingMessage("");
     }
 
     const deleteHotel = async (targetId) => {
+        setLoadingMessage("Deleting...");
         const newHotelArr = deleteItemFromArrayById(hotels, targetId);
         await deleteHotelById(targetId);
         setHotels(newHotelArr);
+        setLoadingMessage("");
     }
 
     const addNewHotel = async () => {
+        setLoadingMessage("Adding...");
         const newHot = newHotel(hgId, "");
         await addHotelsIntoDB(newHot);
         const newHotelArr = [...hotels, newHot];
         setHotels(newHotelArr);
+        setLoadingMessage("");
         // console.log("added new hotel");
     }
 
@@ -309,18 +315,22 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage}) {
     ));
 
     const addNewHG = async () => {
+        setLoadingMessage("Adding...");
         const newHotelGrp = newHotelGroup(itinDbId,"New Group");
         const newHotelGrps = [...hotelGrps, newHotelGrp];
         await addHotelGrpsIntoDB(newHotelGrp);
         setHotelGroups(newHotelGrps);
         console.log("added new hotel grp");
+        setLoadingMessage("");
     }
 
-    const deleteHG = async (hgId) => {                           
+    const deleteHG = async (hgId) => {       
+        setLoadingMessage("Deleting...");                    
         const newHotelGrps = hotelGrps.filter(x => x.id !== hgId);
         await deleteHotelGroupById(hgId);
         setHotelGroups(newHotelGrps);
         console.log("deleted hotel grp");
+        setLoadingMessage("");
     }
 
     return (
