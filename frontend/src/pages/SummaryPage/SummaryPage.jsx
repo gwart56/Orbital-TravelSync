@@ -212,16 +212,21 @@ function FlightContent({flights}) {
         </div>}
 
         
-        <div className="mb-2 d-flex align-items-start">
-          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
-          <span className={f.price ? "" : "text-placeholder"}>
-            {f.isReturn
-              ? "Return Flight"
-              : f.price
-                ? `$${f.price}`
-                : "Not set"}
-          </span>
-        </div>
+        {f.isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}></strong>
+              <span className="text-success">This is a return flight</span>
+            </div>
+          )}
+
+          {!f.isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+              <span className={f.price ? "" : "text-placeholder"}>
+                {f.price ? `$${f.price}` : "Not set"}
+              </span>
+            </div>
+          )}
 
       </div>
     )
@@ -313,7 +318,7 @@ export function SummaryPage() {
                 </div>
 
                 <div 
-                className='bg-light p-4 rounded m-3'
+                className='bg-light p-4 rounded m-3 fade-in'
                 >
                   <h4>Flight Details</h4>
                     <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -322,7 +327,7 @@ export function SummaryPage() {
                 </div>
                 
                 <div 
-                className='bg-light p-4 rounded m-3'
+                className='bg-light p-4 rounded m-3 fade-in'
                 >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -332,7 +337,7 @@ export function SummaryPage() {
                     /> 
                 </div>
 
-                <div className='bg-light p-4 rounded m-3'>
+                <div className='bg-light p-4 rounded m-3 fade-in'>
                   <h4>Expenditure Summary</h4>
                   {expenditure({ 
                     flights, 

@@ -45,7 +45,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
   }
 
   return (
-    <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
+    <div className="flight-container border rounded p-3 my-3 fade-in" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
       {!isEditing ? (
         <>
           <div className="mb-2 d-flex align-items-start">
@@ -54,7 +54,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
           </div>
 
           <div className="mb-2 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Flight No.:</strong>
+            <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Flight Number:</strong>
             <span className={flightNumber ? "" : "text-placeholder"}>{flightNumber || "Not set"}</span>
           </div>
 
@@ -87,16 +87,27 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
             <span className={seatNumber ? "" : "text-placeholder"}>{seatNumber || "Not set"}</span>
           </div>}
 
-          <div className="mb-2 d-flex align-items-start">
-            <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
-            <span>
-              {isReturn ? "Return Flight" : (price ? `$${price}` : "Not set")}
-            </span>
-          </div>
+          {isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}></strong>
+              <span className="text-success">This is a return flight</span>
+            </div>
+          )}
 
-          <div className="flight-button-row">
-            <button className="btn btn-sm btn-outline-primary" onClick={() => setIsEditing(true)}>✏️ Edit</button>
-            <button className="btn btn-sm btn-danger" onClick={handleDelete}>
+          {!isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+              <span className={price ? "" : "text-placeholder"}>
+                {price ? `$${price}` : "Not set"}
+              </span>
+            </div>
+          )}
+
+          <div className="activity-button-row">
+            <button className="activity-container-btn edit-btn" onClick={() => setIsEditing(true)}>
+              ✏️ Edit
+            </button>
+            <button className="activity-container-btn activity-delete-btn" onClick={handleDelete}>
               <MdDeleteForever className="delete-icon" />
               Delete
             </button>
@@ -111,6 +122,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               type="text"
               name="airline"
               defaultValue={airline}
+              placeholder="e.g. Singapore Airlines"
               required
             />
           </div>
@@ -122,6 +134,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               type="text"
               name="flightNumber"
               defaultValue={flightNumber}
+              placeholder="e.g. SQ123"
               required
             />
           </div>
@@ -133,6 +146,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               type="text"
               name="departureAirport"
               defaultValue={departureAirport}
+              placeholder="e.g. Singapore Changi Airport (SIN) Terminal 1"
             //   required
             />
           </div>
@@ -144,6 +158,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               type="text"
               name="arrivalAirport"
               defaultValue={arrivalAirport}
+              placeholder="e.g. London Heathrow Airport (LHR) Terminal 5"
             //   required
             />
           </div>
@@ -193,12 +208,17 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               onChange={(e) => setLocalPrice(e.target.value)}
               min="0"
               step="0.01"
+              placeholder="e.g. 500"
+              required={!localIsReturn} // price is required unless it's a return flight
             />
           </div>
 
-          <div className="mb-3 d-flex align-items-center">
+          <div className="mb-3 d-flex align-items-center justify-content-start ms-3">
+            <label className="form-check-label me-2" htmlFor="returnFlightCheckbox">
+              <strong>Return Flight</strong>
+            </label>
             <input
-              className="form-check-input me-2"
+              className="form-check-input"
               type="checkbox"
               id="returnFlightCheckbox"
               checked={localIsReturn}
@@ -208,10 +228,8 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
                 if (checked) setLocalPrice(0); // force price to 0 if return flight
               }}
             />
-            <label className="form-check-label" htmlFor="returnFlightCheckbox">
-              Return Flight
-            </label>
           </div>
+
 
           <div className="d-flex gap-2 justify-content-end">
             <button type="submit" className="btn btn-sm btn-success">Save</button>
