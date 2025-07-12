@@ -20,6 +20,7 @@ import { useAuthContext } from '../lib/AuthContext';
 import { AddCollaboratorForm } from '../components/Misc/AddCollaboratorForm';
 import { supabase } from '../lib/supabaseClient';
 import {v4 as genId} from "uuid";
+import { fetchItin } from '../utils/fetchingForPage';
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
 function ActivityContent({dayId, setLoadingMessage, isEditable}) {
@@ -522,32 +523,33 @@ function ActivityPage() {
   const navigate = useNavigate();
 
   useEffect( () => {//FETCH ITIN
-      const fetchItin = async () => {
-        try {
-          const data = await loadItineraryRowById(itinDbId); // gives {id, user_id, itinerary_data, created_at, itinerary_members(ARRAY)}
+      // const fetchItin = async () => {
+      //   try {
+      //     const data = await loadItineraryRowById(itinDbId); // gives {id, user_id, itinerary_data, created_at, itinerary_members(ARRAY)}
           
-          setItinMeta(data);
+      //     setItinMeta(data);
 
-          const creatorId = data.user_id;
-          const itinMembers = data.itinerary_members;
-          const memberDetails = itinMembers.find(m => m.user_id == sessionUserId);
+      //     const creatorId = data.user_id;
+      //     const itinMembers = data.itinerary_members;
+      //     const memberDetails = itinMembers.find(m => m.user_id == sessionUserId);
 
-          console.log("session user", sessionUserId);
-          console.log("itin user id", creatorId);
+      //     console.log("session user", sessionUserId);
+      //     console.log("itin user id", creatorId);
 
-          if (sessionUserId !== creatorId && !memberDetails) {
-            alert("You do not have permission to view this itinerary.");
-            navigate('/');
-            return;
-          }
+      //     if (sessionUserId !== creatorId && !memberDetails) {
+      //       alert("You do not have permission to view this itinerary.");
+      //       navigate('/');
+      //       return;
+      //     }
 
-          const loadedItin = data.itinerary_data;
-          setItin(loadedItin);
-        } catch (err) {
-          console.error("Failed to load itinerary", err);
-        }
-      }
-      fetchItin();
+      //     const loadedItin = data.itinerary_data;
+      //     setItin(loadedItin);
+      //   } catch (err) {
+      //     console.error("Failed to load itinerary", err);
+      //   }
+      // }
+      // fetchItin();
+      fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
     }
     ,[itinDbId, sessionUserId, navigate]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)

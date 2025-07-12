@@ -3,7 +3,7 @@ import { useState } from "react";
 import HotelPicker from "../GoogleMapsComponents/HotelPicker";
 import ConfirmModal from "../Misc/ConfirmModal";
 
-const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
+const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
@@ -258,12 +258,12 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
           </button>
 
           {/* Top Right: Edit */}
-          <button className="btn btn-primary btn-md" onClick={handleEditClick}>
+          <button className="btn btn-primary btn-md" onClick={handleEditClick} disabled={!isEditable}>
             ✏️ Edit
           </button>
 
           {/* Bottom Left: Choose Hotel */}
-          <button className="btn btn-success btn-md" onClick={() => onConfirm(hotel)}>
+          <button className="btn btn-success btn-md" onClick={() => onConfirm(hotel)} disabled={!isEditable}>
             ✅ Choose
           </button>
 
@@ -276,6 +276,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm }) => {
               //   onDelete(hotel.id);
               // }
             // }}
+            disabled={!isEditable}
           >
             🗑️ Delete
           </button>

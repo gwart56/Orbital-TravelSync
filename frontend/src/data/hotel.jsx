@@ -12,7 +12,7 @@ export function newHotel(groupId, name, price, address, link, checkInDate, check
         id: genId(),
         groupId,
         name: name, // default name if not provided
-        price: price || "", // default price if not provided
+        price: price || 0, // default price if not provided
         address: address || "", // default address if not provided
         link,
         checkInDate,

@@ -1,4 +1,4 @@
-export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setConfirmedHotel}){
+export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setConfirmedHotel, isEditable}){
     return (
         <div className="d-flex flex-column gap-2">
 
@@ -104,7 +104,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                     🔗 Visit
                 </button>
 
-                <button
+                {isEditable && <button
                     className="btn btn-danger text-white"
                     onClick={() => {
                         const updatedHotel = { ...confirmedHotel, isConfirmed: false, checkInDate: null, checkOutDate: null};
@@ -113,7 +113,7 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                     }}
                 >
                     🗙 Unconfirm Hotel
-                </button>
+                </button>}
             </div>
 
 
