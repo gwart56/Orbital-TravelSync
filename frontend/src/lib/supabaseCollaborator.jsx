@@ -43,3 +43,14 @@ export async function findEmailByUserId(userId) {
   return data;
 }
 
+export async function checkIfCollaboratorExists(itineraryId, userId) {
+  const { data, error } = await supabase
+    .from("itinerary_members")
+    .select("*")
+    .eq("itinerary_id", itineraryId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return !!data;
+}
