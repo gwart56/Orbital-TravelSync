@@ -1,6 +1,8 @@
 // import { supabase } from "./supabaseClient";
 // import { createNewItin, Itinerary } from "../data/activity";
 
+import { useNavigate } from "react-router-dom";
+
 // export async function addItineraryForUser(userId, name, startDate, numDays) {
 //     const plainItin = JSON.parse(JSON.stringify(createNewItin(name, startDate, numDays))); // convert class to plain object
 
@@ -101,3 +103,31 @@
 
 //   console.log("Successfully deleted itinerary with ID:", itinDbId);
 // }
+// const navigate = useNavigate();
+
+// export const fetchItin = async (itinDbId, setItin, setItinMeta) => {
+//         try {
+//           // const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
+//           const data = await loadItineraryRowById(itinDbId); // gives {id, user_id, itinerary_data, created_at, itinerary_members(ARRAY)}
+          
+//           setItinMeta(data);
+
+//           const creatorId = data.user_id;
+//           const itinMembers = data.itinerary_members;
+//           const memberDetails = itinMembers.find(m => m.user_id == sessionUserId);
+
+//           console.log("session user", sessionUserId);
+//           console.log("itin user id", creatorId);
+
+//           if (sessionUserId !== creatorId && !memberDetails) {
+//             alert("You do not have permission to view this itinerary.");
+//             navigate('/');
+//             return;
+//           }
+
+//           const loadedItin = data.itinerary_data;
+//           setItin(loadedItin);
+//         } catch (err) {
+//           console.error("Failed to load itinerary", err);
+//         }
+//       }

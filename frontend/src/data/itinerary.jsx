@@ -143,7 +143,10 @@ export async function loadCollaboratingItineraries(userId) {
   // Step 2: fetch all itins where the user is NOT the owner
   const { data: itins, error: itinsError } = await supabase
     .from('itins')
-    .select('*')
+    .select(`
+      *,
+      users:user_id ( email )
+    `)
     .in('id', itineraryIds)
     .neq('user_id', userId)
     .order('created_at', { ascending: false });
@@ -163,6 +166,7 @@ export async function loadCollaboratingItineraries(userId) {
     itin: row.itinerary_data,
     dateCreated: formatDate(row.created_at),
     owner: row.user_id,
+    ownerEmail: row.users.email,
   }));
 }
 

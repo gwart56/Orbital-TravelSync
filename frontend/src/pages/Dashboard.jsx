@@ -10,6 +10,7 @@ import "./Dashboard.css";
 import ItineraryModal from "../components/ItineraryComponents/ItineraryModal";
 import { createNewItinForUser, deleteItineraryById, loadAllItineraryForUser, loadCollaboratingItineraries } from "../data/itinerary";
 import { loadTravelDaysByItineraryId } from "../data/travelDays";
+import { findEmailByUserId } from "../lib/supabaseCollaborator";
 
 function DashboardNotLoggedIn() {
     return (
@@ -42,6 +43,15 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
             };
           })
         );
+
+        //NOTE: 'it' is in format {
+            // itinDbId: row.id,
+            // itin: row.itinerary_data,
+            // dateCreated: formatDate(row.created_at),
+            // owner: row.user_id,
+            // ownerEmail: row.users.email,
+            // numOfDays: numDays
+            //}
 
         const sorted = withDayCount.sort((a, b) => {
           const dateA = dayjs(a.itin.startDate, 'YYYY-MM-DD');
@@ -95,7 +105,7 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
                 <h4><strong>🕒</strong> {it.numOfDays} days</h4>
               </div>
               <div className="itin-detail owner text-muted">
-                <small><strong>Shared by:</strong> {it.owner}</small> {/* Optionally map owner to name later */}
+                <small><strong>Shared by:</strong> {it.ownerEmail}</small> {/* Optionally map owner to name later */}
               </div>
             </div>
           </div>
