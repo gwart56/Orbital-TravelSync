@@ -554,6 +554,40 @@ function ActivityPage() {
     ,[itinDbId, sessionUserId, navigate]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
 
+    useEffect(() => {//this is for realtime channel for itin
+        // Initial fetch when the component mounts or itinDbId changes
+        fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+    
+        const channel = supabase.channel(`itins-${itinDbId}`);
+        console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
+    
+        channel
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'itins',
+              filter: `id=eq.${itinDbId}`,
+            },
+            (payload) => {
+              console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
+              fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+            }
+          )
+          .subscribe((status) => {
+            console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
+          });
+    
+        // Cleanup function: This runs when hgId changes or component unmounts
+        return () => {
+          console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
+          if (channel) {
+            channel.unsubscribe();
+          }
+        };
+      }, [itinDbId, sessionUserId, navigate]);
+
       const isEditable = (() => {
         if (!itinMeta || !sessionUserId) return false;
         const creatorId = itinMeta.user_id;
