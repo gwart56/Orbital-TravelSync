@@ -75,12 +75,15 @@ export async function loadTravelDayById(id) {
 
 // UPDATE: Update travelday by id
 export async function updateTravelDayById(id, updatedTravelDay) {
+  console.log("ALLCHANNELS -UODATE A", supabase.getChannels());
     const { data, error } = await supabase
         .from('travelDays')
         .update(updatedTravelDay)
         .eq('id', id)
         .select(); // get updated row back (optional)
-
+        
+    console.log("ALLCHANNELS -UPDATE B", supabase.getChannels());
+    
     if (error) throw error;
 
     console.log("Updating supabase, travelDay with id: " + id);

@@ -3,7 +3,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { useState } from 'react';
 import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 
-export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit }) {
+export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit , isEditable}) {
   const [latLng, setLatLng] = useState(activity.latLng); //mainly for google maps api
   const { id, name, time, locName, locAddress } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
@@ -71,7 +71,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           </span>
         </div>
 
-        <div className="activity-button-row">
+        {isEditable && <div className="activity-button-row">
           <button className="activity-container-btn edit-btn" onClick={() => setIsEditing(true)}>
             ✏️ Edit
           </button>
@@ -82,7 +82,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
 
 
 
-        </div>
+        </div>}
 
         </>
       ) : (

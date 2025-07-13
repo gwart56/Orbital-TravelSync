@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MdDeleteForever } from 'react-icons/md';
 import dayjs from 'dayjs';
 
-export default function FlightContainer({ flight, handleSave, handleDelete }) {
+export default function FlightContainer({ flight, handleSave, handleDelete , isEditable}) {
   const {
     id,
     airline,
@@ -87,6 +87,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
             <span className={seatNumber ? "" : "text-placeholder"}>{seatNumber || "Not set"}</span>
           </div>}
 
+          
           <div className="mb-2 d-flex align-items-start">
             <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
             <span>
@@ -94,13 +95,13 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
             </span>
           </div>
 
-          <div className="flight-button-row">
+          {isEditable && <div className="flight-button-row">
             <button className="btn btn-sm btn-outline-primary" onClick={() => setIsEditing(true)}>✏️ Edit</button>
             <button className="btn btn-sm btn-danger" onClick={handleDelete}>
               <MdDeleteForever className="delete-icon" />
               Delete
             </button>
-          </div>
+          </div>}
         </>
       ) : (
         <form onSubmit={handleSubmit}>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';
 import { useAuthContext } from '../../lib/AuthContext';
 import './Header.css';
@@ -6,6 +6,7 @@ import './Header.css';
 export default function Header() {
   const { signOutUser, session } = useAuthContext();
   const user = session?.user;
+  const navigate = useNavigate();
   const userName = user?.user_metadata?.name || user?.email;
 
   async function handleLogout() {

@@ -126,3 +126,76 @@ export async function deleteItineraryById(itinDbId) {
 
   console.log("Successfully deleted itinerary with ID:", itinDbId);
 }
+
+//LOAD: collaborating itins
+export async function loadCollaboratingItineraries(userId) {
+  // Step 1: get all itinerary IDs the user is a member of
+  const { data: memberRows, error: memberError } = await supabase
+    .from('itinerary_members')
+    .select('itinerary_id')
+    .eq('user_id', userId);
+
+  if (memberError) throw memberError;
+
+  const itineraryIds = memberRows.map(row => row.itinerary_id);
+  if (itineraryIds.length === 0) return [];
+
+  // Step 2: fetch all itins where the user is NOT the owner
+  const { data: itins, error: itinsError } = await supabase
+    .from('itins')
+    .select(`
+      *,
+      users:user_id ( email )
+    `)
+    .in('id', itineraryIds)
+    .neq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (itinsError) throw itinsError;
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleString('en-SG', {
+      year: 'numeric', month: 'short', day: '2-digit',
+      hour: 'numeric', minute: '2-digit', hour12: true
+    });
+  };
+
+  return itins.map(row => ({
+    itinDbId: row.id,
+    itin: row.itinerary_data,
+    dateCreated: formatDate(row.created_at),
+    owner: row.user_id,
+    ownerEmail: row.users.email,
+  }));
+}
+
+// Load itineraries BUT ALSO WITH MEMBERS USER IDS
+export async function loadItineraryRowById(itinDbId) {
+  const { data, error } = await supabase
+    .from('itins')
+    .select('*, itinerary_members ( user_id, role )')
+    .eq('id', itinDbId)
+    .single();
+
+  if (error) throw error;
+
+  //returns data in this form:
+//   {
+//     id: "abc123",
+//     user_id: "creator-user-id",
+//     title: "Israel trip",
+//     itinerary_data: {
+//         id: "abc123",
+//         name: "Israel trip",
+//         startDate: "2025-08-01",
+//         numOfDays: 5
+//     },
+//     created_at: "2025-07-01T12:00:00.000Z",
+//     itinerary_members: [
+//         { user_id: "collab-user-id-1" },
+//         { user_id: "collab-user-id-2" }
+//     ]
+//   }
+  return data;
+}
