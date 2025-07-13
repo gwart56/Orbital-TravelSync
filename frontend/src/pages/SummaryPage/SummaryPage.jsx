@@ -68,9 +68,9 @@ function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
 }
 
 //each TravelDayContent contains Day No., Date, ActivityContent 
-function TravelDayContent({itinDbId, itin}) {
+function TravelDayContent({itinDbId, itin, confirmedHotelsArr}) {
   const [travelDays, setTravelDays] = useState([]);
-  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  // const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
   useEffect( () => {//FETCH TRAVELDAYS
         const fetchTDs = async () => {
           try {
@@ -84,19 +84,19 @@ function TravelDayContent({itinDbId, itin}) {
       }
       ,[itinDbId]);
   
-    useEffect( () => {//FETCH COnfirmed HOTELS
-        const fetchCHs = async () => {
-          try {
-            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
-            setConfirmedHotelsArr(loadedCHs);
-          } catch (err) {
-            console.error("Failed to load confirmed hotels", err);
-          }
-        }
-        fetchCHs();
-      }
-      ,[itinDbId]);
-  console.log("CONFIRMED HOTELS", confirmedHotelsArr);
+  //   useEffect( () => {//FETCH COnfirmed HOTELS
+  //       const fetchCHs = async () => {
+  //         try {
+  //           const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+  //           setConfirmedHotelsArr(loadedCHs);
+  //         } catch (err) {
+  //           console.error("Failed to load confirmed hotels", err);
+  //         }
+  //       }
+  //       fetchCHs();
+  //     }
+  //     ,[itinDbId]);
+  // console.log("CONFIRMED HOTELS", confirmedHotelsArr);
 
 
   const dayElements = travelDays.length==0
@@ -202,21 +202,48 @@ function FlightContent({flights}) {
           </span>
         </div>
 
-        <div className="mb-3 d-flex align-items-start">
+        <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Arrival:</strong>
           <span className={f.arrivalTime ? "" : "text-placeholder"}>
             {f.arrivalTime ? dayjs(f.arrivalTime).format('DD MMM YYYY, HH:mm') : "Not set"}
           </span>
         </div>
 
-          {f.seatNumber && <div className="mb-3 d-flex align-items-start">
+        {f.seatNumber && <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Seat Number:</strong>
           <span className={f.seatNumber ? "" : "text-placeholder"}>{f.seatNumber || "Not set"}</span>
         </div>}
+
+        
+        <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+          <span className={f.price ? "" : "text-placeholder"}>
+            {f.isReturn
+              ? "Return Flight"
+              : f.price
+                ? `$${f.price}`
+                : "Not set"}
+          </span>
+        </div>
+
       </div>
     )
   )
   return flightElements;
+}
+
+function expenditure({ flights, hotels }) {
+  const totalFlightCost = flights.reduce((sum, f) => sum + (f.price || 0), 0);
+  const totalHotelCost = hotels.reduce((sum, h) => sum + (h.price || 0), 0);
+  const totalExpenditure = totalFlightCost + totalHotelCost;
+
+  return (
+    <div className="expenditure-summary">
+      <h5>Total Flight Cost: ${totalFlightCost.toFixed(2)}</h5>
+      <h5>Total Hotel Cost: ${totalHotelCost.toFixed(2)}</h5>
+      <h4 className="text-primary">Total Expenditure: ${totalExpenditure.toFixed(2)}</h4>
+    </div>
+  );
 }
 
 export function SummaryPage() {
@@ -224,12 +251,26 @@ export function SummaryPage() {
     const [flights, setFlights] = useState(null);
     const [itinMeta, setItinMeta] = useState(null);   // holds user_id and itinerary_members
     const {session} = useAuthContext();
-      const sessionUser = session?.user; // get user of current session
-      const sessionUserId = sessionUser?.id; //get userId
+    const sessionUser = session?.user; // get user of current session
+    const sessionUserId = sessionUser?.id; //get userId
+    const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
 
   const navigate = useNavigate();
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
+        const fetchCHs = async () => {
+          try {
+            const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+            setConfirmedHotelsArr(loadedCHs);
+          } catch (err) {
+            console.error("Failed to load confirmed hotels", err);
+          }
+        }
+        fetchCHs();
+      }
+      ,[itinDbId]);
 
   useEffect( () => {
       const fetchFlights = async () => {
@@ -295,7 +336,7 @@ export function SummaryPage() {
     return (
         <div className="background-image summary-background d-flex flex-column align-items-center">
             <Header />
-            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️ Summary</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>📝 Summary</h1>
             {itin && flights ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
@@ -304,9 +345,10 @@ export function SummaryPage() {
                 />
 
                 <div className="activity-page-top-buttons">
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
                   <button className="custom-btn activities-btn" onClick={()=>navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
                   <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}>🛫 To Flights</button>
+                  <button className="custom-btn darkened-summary-btn">📝 To Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
                 </div>
@@ -326,8 +368,17 @@ export function SummaryPage() {
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                         itinDbId={itinDbId}
+                        confirmedHotelsArr={confirmedHotelsArr}
                         itin={itin}
                     /> 
+                </div>
+
+                <div className='bg-light p-4 rounded m-3'>
+                  <h4>Expenditure Summary</h4>
+                  {expenditure({ 
+                    flights, 
+                    hotels: confirmedHotelsArr
+                  })}
                 </div>
 
               </>)

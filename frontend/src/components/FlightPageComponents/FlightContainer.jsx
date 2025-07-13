@@ -12,10 +12,15 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
     arrivalAirport,
     departureTime,
     arrivalTime,
-    seatNumber
+    seatNumber,
+    price,
+    isReturn
   } = flight;
 
   const [isEditing, setIsEditing] = useState(false);
+  const [localIsReturn, setLocalIsReturn] = useState(isReturn); // track return flight checkbox
+  const [localPrice, setLocalPrice] = useState(price);           // track price
+
 
   const labelStyle = { minWidth: "120px", display: "inline-block" };
 
@@ -30,7 +35,9 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
       arrivalAirport: formData.get('arrivalAirport') || '',
       departureTime: formData.get('departureTime') || '',
       arrivalTime: formData.get('arrivalTime') || '',
-      seatNumber: formData.get('seatNumber') || ''
+      seatNumber: formData.get('seatNumber') || '',
+      price: localIsReturn ? 0 : localPrice,
+      isReturn: localIsReturn
     };
 
     handleSave(id, updatedData);
@@ -68,17 +75,25 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
             </span>
           </div>
 
-          <div className="mb-3 d-flex align-items-start">
+          <div className="mb-2 d-flex align-items-start">
             <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Arrival:</strong>
             <span className={arrivalTime ? "" : "text-placeholder"}>
               {arrivalTime ? dayjs(arrivalTime).format('DD MMM YYYY, HH:mm') : "Not set"}
             </span>
           </div>
 
-           {seatNumber && <div className="mb-3 d-flex align-items-start">
+           {seatNumber && <div className="mb-2 d-flex align-items-start">
             <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Seat Number:</strong>
             <span className={seatNumber ? "" : "text-placeholder"}>{seatNumber || "Not set"}</span>
           </div>}
+
+          
+          <div className="mb-2 d-flex align-items-start">
+            <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+            <span>
+              {isReturn ? "Return Flight" : (price ? `$${price}` : "Not set")}
+            </span>
+          </div>
 
           {isEditable && <div className="flight-button-row">
             <button className="btn btn-sm btn-outline-primary" onClick={() => setIsEditing(true)}>✏️ Edit</button>
@@ -100,6 +115,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
               required
             />
           </div>
+          
           <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Flight Number:</strong>
             <input
@@ -110,6 +126,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
               required
             />
           </div>
+
           <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Departure Airport:</strong>
             <input
@@ -120,6 +137,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
             //   required
             />
           </div>
+
           <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Arrival Airport:</strong>
             <input
@@ -130,6 +148,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
             //   required
             />
           </div>
+
           <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Departure Time:</strong>
             <input
@@ -140,6 +159,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
               required
             />
           </div>
+
           <div className="mb-3 d-flex align-items-center">
             <strong style={labelStyle}>Arrival Time:</strong>
             <input
@@ -150,6 +170,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
               required
             />
           </div>
+
           <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Seat Number:</strong>
             <input
@@ -161,6 +182,38 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
             //   required
             />
           </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <strong style={labelStyle}>Price:</strong>
+            <input
+              className="form-control form-control-sm"
+              type="number"
+              name="price"
+              value={localIsReturn ? 0 : localPrice}
+              disabled={localIsReturn}
+              onChange={(e) => setLocalPrice(e.target.value)}
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <input
+              className="form-check-input me-2"
+              type="checkbox"
+              id="returnFlightCheckbox"
+              checked={localIsReturn}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setLocalIsReturn(checked);
+                if (checked) setLocalPrice(0); // force price to 0 if return flight
+              }}
+            />
+            <label className="form-check-label" htmlFor="returnFlightCheckbox">
+              Return Flight
+            </label>
+          </div>
+
           <div className="d-flex gap-2 justify-content-end">
             <button type="submit" className="btn btn-sm btn-success">Save</button>
             <button type="button" className="btn btn-sm btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>

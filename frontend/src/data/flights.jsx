@@ -18,7 +18,9 @@ export function newFlight({
   gate = '', //optional?
   durationMinutes = null, //optional?
   seatNumber = '', //optional?
-  notes = '' //optional?
+  notes = '', //optional?
+  isReturn = false, // default false
+  price = 0, // default price
 }) {
   return {
     id: genId(),
@@ -36,7 +38,9 @@ export function newFlight({
     // gate,
     // durationMinutes,
     seatNumber,
-    // notes
+    // notes,
+    isReturn,
+    price,
   };
 }
 

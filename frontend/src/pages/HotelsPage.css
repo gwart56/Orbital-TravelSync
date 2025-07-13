@@ -89,6 +89,29 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
+.darkened-hotels-btn {
+  background-color: #cccccc;        /* muted grey */
+  color: #666666;                   /* darker text to show it's inactive */
+  cursor: not-allowed;              /* classic "disabled" cursor */
+  opacity: 0.8;
+  box-shadow: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  min-width: 160px;
+  text-align: center;
+  pointer-events: none;             /* disables all clicks */
+}
+
+/* Optional: No hover effect at all */
+.darkened-hotels-btn:hover {
+  background-color: #cccccc;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
 /* Primary (To Activities) */
 .activities-btn {
   background-color: #f39c12;

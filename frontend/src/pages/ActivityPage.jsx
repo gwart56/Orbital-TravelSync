@@ -615,7 +615,13 @@ function ActivityPage() {
     return (
         <div className="background-image d-flex flex-column align-items-center">
             <Header />
-            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>✈️TravelSync</h1>
+            <h1 className="welcome-text text-primary" style={{margin: "20px", marginTop:"80px"}}>🎯 Activities</h1>
+            {/* {loadingMessage && (
+              <div className="loading-overlay">
+                <span className="spinner-border mb-2 mx-2" role="status"></span>
+                <p>{loadingMessage}</p>
+              </div>
+            )} */}
             <LoadingMessage loadingMessage={loadingMessage}/>
             <AddCollaboratorForm itineraryId={itinDbId} />
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
@@ -627,6 +633,7 @@ function ActivityPage() {
                 />
 
                 <div className="activity-page-top-buttons">
+                  <button className="custom-nav-btn darkened-activities-btn">🎯 To Activities</button>
                   <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
                   <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> 🛫 To Flights</button>
                   <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>

@@ -421,7 +421,7 @@ export function HotelsPage() {
         <div className="hotel-background-image">
             <Header />
             <h1 className="text-primary" style={{ margin: "20px", marginTop: "80px", marginBottom: "40px" }}>
-                ✈️TravelSync
+                🏨 Hotels
             </h1>
             <LoadingMessage loadingMessage={loadingMessage}/>
             {itin? (
@@ -435,6 +435,9 @@ export function HotelsPage() {
                     <div className="custom-button-group">
                         <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
                             🎯 To Activities
+                        </button>
+                        <button className="custom-btn darkened-hotels-btn">
+                            🏢 To Hotels
                         </button>
                         <button className="custom-nav-btn flights-btn" onClick={() => navigate(`/flights/${itinDbId}`)}>
                             🛫 To Flights
