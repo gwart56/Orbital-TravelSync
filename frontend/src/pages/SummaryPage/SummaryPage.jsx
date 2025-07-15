@@ -44,7 +44,7 @@ function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   
   const activityElements = activities.filter(a => a.name).length==0
   ? (<div className="d-flex activity-row">
-      <h4 className="mb-2 fw-semibold">No activities</h4>
+      <h4 className="mb-2 fw-semibold">Nothing planned for this day 😴</h4>
     </div>
 
     )
@@ -115,41 +115,30 @@ function TravelDayContent({itinDbId, itin, confirmedHotelsArr}) {
 
       return ( //i lazy to make container component
         <div className="travel-day-container-sum" key={d.id}>
-          <div className="d-flex" style={{flex:"1", flexDirection:"column", alignItems:"flex-end"}}>  
-          <div className="day-header">
-            <h5 className="mx-3">Day {index + 1}</h5>
+          <div className="travel-day-left" style={{ flex: "1", alignItems: "flex-start" }}>
+            <div className="day-header">
+              <h2>Day {index + 1}</h2>
+            </div>
+            <h5 className="day-subtext">📅 {latestdate}</h5>
+            {confirmedHotel?.name ? (
+              <div className="day-subtext hotel-info">
+                <span>Hotel That Night:</span>
+                <div>{confirmedHotel.name}</div>
+              </div>
+            ) : (
+              <h5 className="day-subtext no-hotel">No Hotel Confirmed</h5>
+            )}
           </div>
 
-          <h6 className="mx-3">
-             Date: {latestdate}
-          </h6>
-
-         {/* {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && ( */}
-            <h6 className="">
-              {confirmedHotel?.name ? 'Hotel That Night:' : ''} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
-            </h6>
-
-          {/*{checkOutHotel && (
-            <h6 className="">
-               Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
-            </h6>
-          )}
-
-          {checkInHotel && (
-            <h6 className="">
-               Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
-            </h6>
-          )} */}
-          </div>
-          <div style={{flex:"2"}}>
+          <div className="activity-section" style={{ flex: "2" }}>
             <ActivityContent
-                checkInHotel={checkInHotel}
-                checkOutHotel={checkOutHotel}
-                dayId={d.id}
+              checkInHotel={checkInHotel}
+              checkOutHotel={checkOutHotel}
+              dayId={d.id}
             />
           </div>
-          
         </div>
+
       );}
     );
 

@@ -377,10 +377,108 @@
   border-radius: 16px;
   padding: 30px;
   margin: 30px auto;
-  min-width: 600px;
-  max-width: 1000px;
+  width: 95vw;
+  max-width: 600px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   animation: fadeInUp 0.4s ease-in-out;
-  display:flex;
+
+  display: flex;
   flex-direction: row;
+  gap: 40px; /* space between day info and activities */
+}
+
+.travel-day-container-sum h2 {
+  color: black;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0);
+}
+
+.travel-day-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* Important: keep text left-aligned */
+  flex: 1;
+  min-width: 180px;
+  max-width: 250px;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.hotel-info {
+  display: block;            /* Prevent unwanted flex centering */
+  width: 100%;               /* Full width so it stays left-aligned */
+  word-break: break-word;
+  white-space: normal;
+  text-align: left;          /* Explicit left text alignment */
+}
+
+/* Main container for each day */
+.travel-day-container-sum {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px auto;
+  width: 95%;
+  max-width: 800px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  gap: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.travel-day-container-sum:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 768px) {
+  .travel-day-container-sum {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+}
+
+/* Left side: Day Info */
+.travel-day-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 180px;
+}
+
+.day-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 8px;
+}
+
+.day-subtext {
+  font-size: 1rem;
+  color: #555;
+  margin: 4px 0;
+}
+
+.hotel-info {
+  margin-top: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.hotel-info span {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Activity section just takes full available width */
+.activity-section {
+  width: 100%;
+}
+
+/* Style for No Hotel Confirmed */
+.day-subtext.no-hotel {
+  color: #dc3545; /* Bootstrap danger red */
+  font-weight: 600;
 }
