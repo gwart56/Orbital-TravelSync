@@ -472,7 +472,7 @@ export function HotelsPage() {
                 </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}
         
-        <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button>
+        {/* <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );

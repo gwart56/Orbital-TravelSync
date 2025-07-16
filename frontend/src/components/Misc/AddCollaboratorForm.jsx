@@ -19,7 +19,7 @@ function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, i
             <option value="viewer">Viewer</option>
             <option value="editor">Editor</option>
           </select> 
-        : <p className="mx-2"><strong>Role: </strong> {c.role} </p>}
+        : <p className="mx-2 mt-2"><strong>Role: </strong> {c.role} </p>}
         {isEditable && <button className="btn btn-danger mx-2 mb-2" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>Remove</button>}
       </div>
     </div>

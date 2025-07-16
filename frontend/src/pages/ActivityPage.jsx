@@ -189,13 +189,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
         }
       }
 
-  useEffect( () => {//FETCH TRAVELDAYS
-      fetchTDs();
-    }
-    ,[itinDbId]);
-
-  useEffect( () => {//FETCH COnfirmed HOTELS
-      const fetchCHs = async () => {
+  const fetchCHs = async () => {
         try {
           const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
           setConfirmedHotelsArr(loadedCHs);
@@ -203,6 +197,13 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
           console.error("Failed to load confirmed hotels", err);
         }
       }
+
+  useEffect( () => {//FETCH TRAVELDAYS
+      fetchTDs();
+    }
+    ,[itinDbId]);
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
       fetchCHs();
     }
     ,[itinDbId]);
@@ -671,7 +672,7 @@ function ActivityPage() {
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
               </div>
-            <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button>
+            {/* <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );

@@ -10,7 +10,7 @@ import ConfirmModal from '../../components/Misc/ConfirmModal';
 // import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
 import FlightContainer from '../../components/FlightPageComponents/FlightContainer';
 import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById, newFlight, addFlightsIntoDB } from '../../data/flights';
-import { loadItineraryById } from '../../data/itinerary';
+import { loadItineraryById, updateItineraryById } from '../../data/itinerary';
 import { useAuthContext } from '../../lib/AuthContext';
 import { LoadingMessage } from '../../components/Misc/LoadingMessage';
 import { fetchItin } from '../../utils/fetchingForPage';
@@ -230,6 +230,7 @@ function FlightPage() {
           <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
             itin={itin}
             onSave={saveItinToDB}
+            isEditable={isEditable}
           />
           <div className="flight-page-top-buttons">
             <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
