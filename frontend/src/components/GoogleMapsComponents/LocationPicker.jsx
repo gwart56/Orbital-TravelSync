@@ -9,7 +9,7 @@ const containerStyle = {
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
-export default function LocationPicker({ act, onClose, onSave }) {
+export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
     const initialPosition = act.latLng; 
     // null;
     // temporarily commented TODO: IMPLEMENT ACTIVITY LATLNG
@@ -57,7 +57,7 @@ export default function LocationPicker({ act, onClose, onSave }) {
           // const components = results[0]?.address_components || [];
           // const premiseComponent = components.find(c => c.types.includes("premise"));
           // const name = premiseComponent?.long_name || "";
-          const name = "";
+          const name = prevLocation.locName;
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
