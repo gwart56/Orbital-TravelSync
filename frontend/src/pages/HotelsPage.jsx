@@ -18,6 +18,7 @@ import { useAuthContext } from "../lib/AuthContext";
 import { LoadingMessage } from "../components/Misc/LoadingMessage";
 import { fetchItin } from "../utils/fetchingForPage";
 import { supabase } from "../lib/supabaseClient";
+import { CollaboratorButton } from "../components/Misc/AddCollaboratorForm";
 
 function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId, setLoadingMessage, isEditable}) { //CONTENT FOR ONE HOTEL GROUP
     const [hotels, setHotels] = useState([]);
@@ -406,17 +407,22 @@ export function HotelsPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
     
+    let isOwner = false;
+
     const isEditable = (() => {
-        if (!itinMeta || !sessionUserId) return false;
-            const creatorId = itinMeta.user_id;
-            const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
-            if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-                console.log("YES EDITABLE");
-                return true;
-            }
-            console.log("NO NOT EDITABLE");
-            return false;
-        })(); //determines whether page is editable or not
+      if (!itinMeta || !sessionUserId) return false;
+      const creatorId = itinMeta.user_id;
+      const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+      if (sessionUserId === creatorId) {
+        isOwner = true;
+      }
+      if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+        console.log("YES EDITABLE");
+        return true;
+      }
+      console.log("NO NOT EDITABLE");
+      return false;
+    })(); //determines whether page is editable or not
     
     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
         try {
@@ -463,6 +469,8 @@ export function HotelsPage() {
                         </button>
                         {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
                     </div>
+
+                    <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
                     <HotelGroupsContent itin={itin} setItin={setItin} itinDbId={itinDbId} isEditable={isEditable} setLoadingMessage={setLoadingMessage}/>
                     <div className="custom-button-wrapper">

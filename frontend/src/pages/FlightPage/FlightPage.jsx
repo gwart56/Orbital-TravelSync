@@ -15,6 +15,7 @@ import { useAuthContext } from '../../lib/AuthContext';
 import { LoadingMessage } from '../../components/Misc/LoadingMessage';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
+import { CollaboratorButton } from '../../components/Misc/AddCollaboratorForm';
 // import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
@@ -196,17 +197,22 @@ function FlightPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
   
+  let isOwner = false;
+
   const isEditable = (() => {
-        if (!itinMeta || !sessionUserId) return false;
-            const creatorId = itinMeta.user_id;
-            const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
-            if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-                console.log("YES EDITABLE");
-                return true;
-            }
-            console.log("NO NOT EDITABLE");
-            return false;
-        })(); //determines whether page is editable or not
+    if (!itinMeta || !sessionUserId) return false;
+    const creatorId = itinMeta.user_id;
+    const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+    if (sessionUserId === creatorId) {
+      isOwner = true;
+    }
+    if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+      console.log("YES EDITABLE");
+      return true;
+    }
+    console.log("NO NOT EDITABLE");
+    return false;
+  })(); //determines whether page is editable or not
 
   const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
             try {
@@ -240,6 +246,8 @@ function FlightPage() {
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
           </div>
+
+          <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
           <FlightContent itinDbId={itinDbId} setLoadingMessage={setLoadingMessage} isEditable={isEditable}/>
         </>
