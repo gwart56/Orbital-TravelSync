@@ -17,7 +17,7 @@ import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertIte
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 import { LoadingMessage } from '../components/Misc/LoadingMessage';
 import { useAuthContext } from '../lib/AuthContext';
-import { AddCollaboratorForm } from '../components/Misc/AddCollaboratorForm';
+import { CollaboratorButton } from '../components/Misc/AddCollaboratorForm';
 import { supabase } from '../lib/supabaseClient';
 import {v4 as genId} from "uuid";
 import { fetchItin } from '../utils/fetchingForPage';
@@ -623,7 +623,7 @@ function ActivityPage() {
               </div>
             )} */}
             <LoadingMessage loadingMessage={loadingMessage}/>
-            <AddCollaboratorForm itineraryId={itinDbId} />
+            <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id}/>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
