@@ -437,7 +437,7 @@ export function HotelsPage() {
                             🎯 To Activities
                         </button>
                         <button className="custom-btn darkened-hotels-btn">
-                            🏢 To Hotels
+                            🏨 To Hotels
                         </button>
                         <button className="custom-nav-btn flights-btn" onClick={() => navigate(`/flights/${itinDbId}`)}>
                             🛫 To Flights

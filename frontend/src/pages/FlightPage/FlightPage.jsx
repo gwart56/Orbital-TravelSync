@@ -99,12 +99,9 @@ function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
 
   const flightElements = localFlights.length === 0
     ? <div className="empty-itinerary-warning text-center">
-      <h4>
-        ✈️ No flights added yet.
-      </h4>
-      <p>
-         Click below to add one
-      </p>
+      <h4>🛫 No flights added yet.</h4>
+      <p>Start planning your journey by adding your first flight below!</p>
+
     </div>
     : localFlights
         .sort((a, b) => dayjs(a.departureTime).unix() - dayjs(b.departureTime).unix())

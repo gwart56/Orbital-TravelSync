@@ -12,6 +12,7 @@ import { loadFlightsByItineraryId } from '../../data/flights';
 import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
 import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
+import { FaPlane, FaHotel, FaWallet } from "react-icons/fa";
 import { useAuthContext } from '../../lib/AuthContext';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
@@ -47,7 +48,7 @@ function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   
   const activityElements = activities.filter(a => a.name).length==0
   ? (<div className="d-flex activity-row">
-      <h4 className="mb-2 fw-semibold">No activities</h4>
+      <h4 className="mb-2 fw-semibold">Nothing planned for this day 😴</h4>
     </div>
 
     )
@@ -118,41 +119,30 @@ function TravelDayContent({itinDbId, itin, confirmedHotelsArr}) {
 
       return ( //i lazy to make container component
         <div className="travel-day-container-sum" key={d.id}>
-          <div className="d-flex" style={{flex:"1", flexDirection:"column", alignItems:"flex-end"}}>  
-          <div className="day-header">
-            <h5 className="mx-3">Day {index + 1}</h5>
+          <div className="travel-day-left" style={{ flex: "1", alignItems: "flex-start" }}>
+            <div className="day-header">
+              <h2>Day {index + 1}</h2>
+            </div>
+            <h5 className="day-subtext">📅 {latestdate}</h5>
+            {confirmedHotel?.name ? (
+              <div className="day-subtext hotel-info">
+                <span>Hotel That Night:</span>
+                <div>{confirmedHotel.name}</div>
+              </div>
+            ) : (
+              <h5 className="day-subtext no-hotel">No Hotel Confirmed</h5>
+            )}
           </div>
 
-          <h6 className="mx-3">
-             Date: {latestdate}
-          </h6>
-
-         {/* {((!checkInHotel && !checkOutHotel) || (confirmedHotel)) && ( */}
-            <h6 className="">
-              {confirmedHotel?.name ? 'Hotel That Night:' : ''} {confirmedHotel?.name || 'No Hotel Confirmed Yet'}
-            </h6>
-
-          {/*{checkOutHotel && (
-            <h6 className="">
-               Check-Out at {checkOutHotel?.checkOutTime}: {checkOutHotel?.name}
-            </h6>
-          )}
-
-          {checkInHotel && (
-            <h6 className="">
-               Check-In at {checkInHotel?.checkInTime}: {checkInHotel?.name}
-            </h6>
-          )} */}
-          </div>
-          <div style={{flex:"2"}}>
+          <div className="activity-section" style={{ flex: "2" }}>
             <ActivityContent
-                checkInHotel={checkInHotel}
-                checkOutHotel={checkOutHotel}
-                dayId={d.id}
+              checkInHotel={checkInHotel}
+              checkOutHotel={checkOutHotel}
+              dayId={d.id}
             />
           </div>
-          
         </div>
+
       );}
     );
 
@@ -174,7 +164,7 @@ function FlightContent({flights}) {
     )
     :flights.map(f=>
   (
-      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
+      <div className="summary-page-flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Airline:</strong>
           <span className={f.airline ? "" : "text-placeholder"}>{f.airline || "Not set"}</span>
@@ -215,16 +205,21 @@ function FlightContent({flights}) {
         </div>}
 
         
-        <div className="mb-2 d-flex align-items-start">
-          <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
-          <span className={f.price ? "" : "text-placeholder"}>
-            {f.isReturn
-              ? "Return Flight"
-              : f.price
-                ? `$${f.price}`
-                : "Not set"}
-          </span>
-        </div>
+        {f.isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}></strong>
+              <span className="text-success">This is a return flight</span>
+            </div>
+          )}
+
+          {!f.isReturn && (
+            <div className="mb-2 d-flex align-items-start">
+              <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Price:</strong>
+              <span className={f.price ? "" : "text-placeholder"}>
+                {f.price ? `$${f.price}` : "Not set"}
+              </span>
+            </div>
+          )}
 
       </div>
     )
@@ -238,10 +233,24 @@ function expenditure({ flights, hotels }) {
   const totalExpenditure = totalFlightCost + totalHotelCost;
 
   return (
-    <div className="expenditure-summary">
-      <h5>Total Flight Cost: ${totalFlightCost.toFixed(2)}</h5>
-      <h5>Total Hotel Cost: ${totalHotelCost.toFixed(2)}</h5>
-      <h4 className="text-primary">Total Expenditure: ${totalExpenditure.toFixed(2)}</h4>
+    <div className="expenditure-summary-container fade-in">
+      <h3 className="summary-title">Expenditure Summary</h3>
+      <div className="summary-item">
+        <FaPlane className="summary-icon flight" />
+        <span>Total Flight Cost:</span>
+        <strong>${totalFlightCost.toFixed(2)}</strong>
+      </div>
+      <div className="summary-item">
+        <FaHotel className="summary-icon hotel" />
+        <span>Total Hotel Cost:</span>
+        <strong>${totalHotelCost.toFixed(2)}</strong>
+      </div>
+      <div className="summary-divider"></div>
+      <div className="summary-total">
+        <FaWallet className="summary-icon total" />
+        <span>Total Expenditure:</span>
+        <strong>${totalExpenditure.toFixed(2)}</strong>
+      </div>
     </div>
   );
 }
@@ -354,7 +363,7 @@ export function SummaryPage() {
                 </div>
 
                 <div 
-                className='bg-light p-4 rounded m-3'
+                className='summary-flight-container fade-in'
                 >
                   <h4>Flight Details</h4>
                     <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -363,7 +372,7 @@ export function SummaryPage() {
                 </div>
                 
                 <div 
-                className='bg-light p-4 rounded m-3'
+                className='summary-itinerary-container fade-in'
                 >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -373,13 +382,10 @@ export function SummaryPage() {
                     /> 
                 </div>
 
-                <div className='bg-light p-4 rounded m-3'>
-                  <h4>Expenditure Summary</h4>
-                  {expenditure({ 
-                    flights, 
-                    hotels: confirmedHotelsArr
-                  })}
-                </div>
+                {expenditure({ 
+                  flights, 
+                  hotels: confirmedHotelsArr
+                })}   
 
               </>)
               : (<h3 className="text-secondary">Loading Summary...</h3>)}

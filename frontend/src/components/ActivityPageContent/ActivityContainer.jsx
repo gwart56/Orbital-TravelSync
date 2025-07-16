@@ -79,9 +79,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             <MdDeleteForever className="delete-icon" />
             Delete
           </button>
-
-
-
         </div>}
 
         </>

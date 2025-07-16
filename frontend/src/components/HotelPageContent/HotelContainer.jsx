@@ -65,7 +65,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable}) => {
               type="number"
               name="price"
               defaultValue={hotel.price}
-              placeholder="e.g. $200"
+              placeholder="e.g. 200"
               min="0"
               step="0.01"
               required
