@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from "./supabaseClient";
+import { deleteUserFromCloneTable, upsertUserToCloneTable } from './AuthHelpers';
+
 
 
 const AuthContext = createContext();
@@ -42,6 +44,9 @@ export function AuthContextProvider({children}) {
                 console.error('error: ', error.message);
                 return {success: false, error: error.message}; //returns object which contains the error
             }
+            if (data?.user) {
+                await upsertUserToCloneTable(data.user); // INCASE USER DONT EXIST IN CLONE TABLE
+            }
             return {success: true, data};
     }
 
@@ -60,6 +65,8 @@ export function AuthContextProvider({children}) {
             console.error('Error deleting user:', error)
             return null
         }
+
+        await deleteUserFromCloneTable(userId);
 
         console.log('Deleted user:', data)
         return data;

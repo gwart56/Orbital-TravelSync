@@ -5,7 +5,7 @@ import { MdEdit } from "react-icons/md";
 import "./ItineraryInfo.css";
 import dayjs from 'dayjs';
 
-function ItineraryDateInput({ itin, onSave }){
+function ItineraryDateInput({ itin, onSave, isEditable }){
   const [editing, setEditing] = useState(false);
   const [newStartDate, setNewStartDate] = useState(itin.startDate);
 
@@ -17,7 +17,7 @@ function ItineraryDateInput({ itin, onSave }){
   return (
     <>
       {!editing ? (
-        <h3 onClick={() => setEditing(true)} style={{ cursor: 'pointer' }} className="start-date">
+        <h3 onClick={() => isEditable?setEditing(true):setEditing(false)} style={{ cursor: 'pointer' }} className="start-date">
           📆 Adventure Begins: {dayjs(itin.startDate, "YYYY-MM-DD").format("D MMMM YYYY")}
         </h3>
       ) : (
@@ -37,7 +37,7 @@ function ItineraryDateInput({ itin, onSave }){
   );
 }
 
-function ItineraryNameInput({ itin, onSave }){
+function ItineraryNameInput({ itin, onSave , isEditable}){
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(itin.name);
 
@@ -49,7 +49,7 @@ function ItineraryNameInput({ itin, onSave }){
   return (
     <>
       {!editing ? (
-        <h1 onClick={() => setEditing(true)} className="trip-title">
+        <h1 onClick={() => isEditable?setEditing(true):setEditing(false)} className="trip-title">
           {itin.name}
         </h1>
       ) : (
@@ -71,7 +71,7 @@ function ItineraryNameInput({ itin, onSave }){
   );
 }
 
-export default function ItineraryInfo({ itin, onSave }) {
+export default function ItineraryInfo({ itin, onSave , isEditable}) {
   // const [editing, setEditing] = useState(false);
   // const [newStartDate, setNewStartDate] = useState(itin.startDate);
 
@@ -85,10 +85,12 @@ export default function ItineraryInfo({ itin, onSave }) {
       <ItineraryNameInput
         itin={itin}
         onSave={onSave}
+        isEditable={isEditable}
       />
       <ItineraryDateInput 
         itin={itin}
         onSave={onSave}
+        isEditable={isEditable}
       />
     </>
   );

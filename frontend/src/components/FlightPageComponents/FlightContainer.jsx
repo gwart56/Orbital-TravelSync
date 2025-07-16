@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MdDeleteForever } from 'react-icons/md';
 import dayjs from 'dayjs';
 
-export default function FlightContainer({ flight, handleSave, handleDelete }) {
+export default function FlightContainer({ flight, handleSave, handleDelete , isEditable}) {
   const {
     id,
     airline,
@@ -103,7 +103,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
             </div>
           )}
 
-          <div className="activity-button-row">
+          {isEditable && <div className="activity-button-row">
             <button className="activity-container-btn edit-btn" onClick={() => setIsEditing(true)}>
               ✏️ Edit
             </button>
@@ -111,7 +111,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete }) {
               <MdDeleteForever className="delete-icon" />
               Delete
             </button>
-          </div>
+          </div>}
         </>
       ) : (
         <form onSubmit={handleSubmit}>

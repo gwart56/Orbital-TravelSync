@@ -13,6 +13,9 @@ import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
 import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
 import { FaPlane, FaHotel, FaWallet } from "react-icons/fa";
+import { useAuthContext } from '../../lib/AuthContext';
+import { fetchItin } from '../../utils/fetchingForPage';
+import { supabase } from '../../lib/supabaseClient';
 
 function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   const [activities, setActivities] = useState([]);
@@ -255,6 +258,10 @@ function expenditure({ flights, hotels }) {
 export function SummaryPage() {
     const [itin, setItin] = useState(null); //initialize itin to null
     const [flights, setFlights] = useState(null);
+    const [itinMeta, setItinMeta] = useState(null);   // holds user_id and itinerary_members
+    const {session} = useAuthContext();
+    const sessionUser = session?.user; // get user of current session
+    const sessionUserId = sessionUser?.id; //get userId
     const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
@@ -275,20 +282,54 @@ export function SummaryPage() {
       ,[itinDbId]);
 
   useEffect( () => {
-      const fetchItin = async () => {
+      const fetchFlights = async () => {
         try {
-          const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
-          setItin(loadedItin);
+          // const loadedItin = await loadItineraryById(itinDbId); //wait to get itin class obj by id from supabase
+          // setItin(loadedItin);
           const loadedFlights = await loadFlightsByItineraryId(itinDbId);
           setFlights(loadedFlights);
         } catch (err) {
-          console.error("Failed to load itinerary", err);
+          console.error("Failed to load flights", err);
         }
       }
-      fetchItin();
+      fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+      fetchFlights();
     }
-    ,[itinDbId]); //re-fetch the moment the itin id in url changes 
+    ,[itinDbId, sessionUserId, navigate]); //re-fetch the moment the itin id in url changes 
     //***(this is bcuz the component stays mounted even if u change url)
+    useEffect(() => {//this is for realtime channel for itin
+            // Initial fetch when the component mounts or itinDbId changes
+            fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+        
+            const channel = supabase.channel(`itins-${itinDbId}`);
+            console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
+        
+            channel
+              .on(
+                'postgres_changes',
+                {
+                  event: '*',
+                  schema: 'public',
+                  table: 'itins',
+                  filter: `id=eq.${itinDbId}`,
+                },
+                (payload) => {
+                  console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
+                  fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+                }
+              )
+              .subscribe((status) => {
+                console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
+              });
+        
+            // Cleanup function: This runs when hgId changes or component unmounts
+            return () => {
+              console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
+              if (channel) {
+                channel.unsubscribe();
+              }
+            };
+          }, [itinDbId, sessionUserId, navigate]);
 
     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
             try {
