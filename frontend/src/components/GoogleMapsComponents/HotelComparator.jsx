@@ -219,7 +219,7 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
                     >
                         <div style={{ maxWidth: "250px" }}>
                             <h6>{hotelDetails.name}</h6>
-                            {hotelDetails.price && <p><strong>Price: </strong>{hotelDetails.price}</p>}
+                            {<p><strong>Price: </strong>${hotelDetails.price}</p>}
                             {hotelDetails.rating && <p><strong>Rating: </strong>{hotelDetails.rating}</p>}
                             <p style={{ fontSize: "12px" }}>{hotelDetails.address}</p>
                             {hotelDetails.link ? (
