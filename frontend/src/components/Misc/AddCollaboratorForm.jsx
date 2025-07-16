@@ -5,7 +5,7 @@ function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, i
     const [collabRole, setCollabRole] = useState(c.role);
     return <div key={c.userId}>
       <div className="d-flex justify-content-center">
-        <p className="mx-2"><strong>Email: </strong> {c.email} </p>
+        <p className="mx-2 mt-2"><strong>Email: </strong> {c.email} </p>
         {isEditable ? 
           <select
             style={{maxWidth: "100px"}}
@@ -82,7 +82,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
         role: role,
         email: normalizedEmail || "Unknown",
       }]);
-      setStatus(`✅ Collaborator added as ${role}.`);
+      setStatus(`✅ Collaborator \'${normalizedEmail}\' added as ${role}.`);
       setEmail("");
     } catch (error) {
       console.error("Error adding collaborator:", error);
@@ -98,7 +98,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
   };
 
   const handleDeleteCollaborator = async (userId, email) => {
-    setStatus("Looking up user...");
+    setStatus("Deleting user...");
     const normalizedEmail = email?email.trim().toLowerCase():"Unknown";
 
     const alreadyExists = await checkIfCollaboratorExists(itineraryId, userId);
@@ -110,7 +110,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
     try {
       await deleteCollaboratorById(itineraryId, userId);
       setCollaborators(prev => prev.filter(c => c.userId != userId));
-      setStatus(`✅ Collaborator ${normalizedEmail} deleted.`);
+      setStatus(`✅ Collaborator \'${normalizedEmail}\' deleted.`);
       setEmail("");
     } catch (error) {
       console.error("Error deleting collaborator:", error);
@@ -119,7 +119,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
   };
 
   const handleUpdateRole = async (userId, email, newRole) => {
-    setStatus("Looking up user...");
+    setStatus(`Updating role of user to ${newRole}...`);
     const normalizedEmail = email?email.trim().toLowerCase():"Unknown";
 
     const alreadyExists = await checkIfCollaboratorExists(itineraryId, userId);
@@ -131,7 +131,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
     try {
       await updateCollaboratorRole(itineraryId, userId, newRole);
       setCollaborators(prev => prev.map(c => c.userId == userId?{...c, role:newRole}:c));
-      setStatus(`✅ Collaborator ${normalizedEmail} role updated.`);
+      setStatus(`✅ Updated role of collaborator \'${normalizedEmail}\'.`);
       setEmail("");
     } catch (error) {
       console.error("Error updating collaborator:", error);
@@ -164,21 +164,19 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
           {collabElements}
 
           {isEditable && <div className="modal-body">
+            <div className="p-3 bg-light rounded">
             <h6>Invite New Collaborators</h6>
-            <div className="mb-3">
-              <label className="form-label">Email address</label>
+            <div className="mb-3 d-flex">
+              <label className="form-label mt-2">Email</label>
               <input
                 type="email"
-                className="form-control"
+                className="form-control mx-3"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
               />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Role</label>
               <select
+                style={{maxWidth: "100px"}}
                 className="form-select"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -187,7 +185,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
                 <option value="editor">Editor</option>
               </select>
             </div>
-
+            </div>
             {status && <p className="text-muted mt-2">{status}</p>}
           </div>}
 
