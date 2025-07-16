@@ -1,30 +1,31 @@
 import { useEffect, useState } from "react";
 import { addCollaborator, findUserByEmail, checkIfCollaboratorExists, loadCollaboratorsForItinerary, deleteCollaboratorById, updateCollaboratorRole, findEmailByUserId } from "../../lib/supabaseCollaborator";
 
-function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole}) {
+function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, isEditable}) {
     const [collabRole, setCollabRole] = useState(c.role);
     return <div key={c.userId}>
       <div className="d-flex justify-content-center">
         <p className="mx-2"><strong>Email: </strong> {c.email} </p>
-        <select
-          style={{maxWidth: "100px"}}
-          className="form-select mb-2"
-          value={collabRole}
-          onChange={(e) => {
-            const newRole = e.target.value;
-            handleUpdateRole(c.userId, c.email, newRole); 
-            setCollabRole(newRole);}}
-        >
-          <option value="viewer">Viewer</option>
-          <option value="editor">Editor</option>
-        </select>
-        {/* <span><strong>Role: </strong> {c.role}</span> */}
-        <button className="btn btn-danger mx-2 mb-2" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>Remove</button>
+        {isEditable ? 
+          <select
+            style={{maxWidth: "100px"}}
+            className="form-select mb-2"
+            value={collabRole}
+            onChange={(e) => {
+              const newRole = e.target.value;
+              handleUpdateRole(c.userId, c.email, newRole); 
+              setCollabRole(newRole);}}
+          >
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+          </select> 
+        : <p className="mx-2"><strong>Role: </strong> {c.role} </p>}
+        {isEditable && <button className="btn btn-danger mx-2 mb-2" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>Remove</button>}
       </div>
     </div>
 }
 
-export function AddCollaboratorModal({ itineraryId, onClose, creatorId}) {
+export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditable}) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("viewer");
   const [status, setStatus] = useState("");
@@ -143,6 +144,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId}) {
       c={c}
       handleDeleteCollaborator={handleDeleteCollaborator}
       handleUpdateRole={handleUpdateRole}
+      isEditable={isEditable}
   />)
 
   return (
@@ -154,11 +156,14 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId}) {
             <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
 
-          <p><strong>Owner: </strong> {owner?.email}</p>
+          <div className="d-flex justify-content-center">
+            <p className="mx-2"><strong>Email: </strong> {owner?.email} </p>
+            <p className="mx-2"><strong>Role: </strong> Owner </p>
+          </div>
 
           {collabElements}
 
-          <div className="modal-body">
+          {isEditable && <div className="modal-body">
             <h6>Invite New Collaborators</h6>
             <div className="mb-3">
               <label className="form-label">Email address</label>
@@ -184,11 +189,11 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId}) {
             </div>
 
             {status && <p className="text-muted mt-2">{status}</p>}
-          </div>
+          </div>}
 
           <div className="modal-footer border-0">
             <button className="btn btn-secondary" onClick={handleClose}>Cancel</button>
-            <button className="btn btn-primary" onClick={handleAddCollaborator}>Invite</button>
+            {isEditable && <button className="btn btn-primary" onClick={handleAddCollaborator}>Invite</button>}
           </div>
         </div>
       </div>
@@ -196,11 +201,11 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId}) {
   );
 }
 
-export function CollaboratorButton({itineraryId, creatorId}){
+export function CollaboratorButton({itineraryId, creatorId, isEditable}){
     const [show, setShow] = useState(false);
 
     return <>
-      <button className="btn btn-info" onClick={()=>setShow(true)}>Collaborators</button>
-      {show && <AddCollaboratorModal itineraryId={itineraryId} onClose={()=>setShow(false)} creatorId={creatorId}/>}
+      <button className="custom-btn home-btn" onClick={()=>setShow(true)}>👥 Collaborators</button>
+      {show && <AddCollaboratorModal itineraryId={itineraryId} onClose={()=>setShow(false)} creatorId={creatorId} isEditable={isEditable}/>}
       </>
 }

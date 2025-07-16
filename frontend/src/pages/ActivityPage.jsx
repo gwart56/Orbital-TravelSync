@@ -575,6 +575,19 @@ function ActivityPage() {
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'itinerary_members',
+              filter: `itinerary_id=eq.${itinDbId}`,
+            },
+            (payload) => {
+              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+            }
+          )
           .subscribe((status) => {
             console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
@@ -588,10 +601,15 @@ function ActivityPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
 
+      let isOwner = false;
+
       const isEditable = (() => {
         if (!itinMeta || !sessionUserId) return false;
         const creatorId = itinMeta.user_id;
         const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+        if (sessionUserId === creatorId) {
+          isOwner = true;
+        }
         if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
           console.log("YES EDITABLE");
           return true;
@@ -623,7 +641,6 @@ function ActivityPage() {
               </div>
             )} */}
             <LoadingMessage loadingMessage={loadingMessage}/>
-            <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id}/>
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
@@ -639,6 +656,8 @@ function ActivityPage() {
                   <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                 </div>
+
+                <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   itin={itin}
