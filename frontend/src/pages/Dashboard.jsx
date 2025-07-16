@@ -11,6 +11,7 @@ import ItineraryModal from "../components/ItineraryComponents/ItineraryModal";
 import { createNewItinForUser, deleteItineraryById, loadAllItineraryForUser, loadCollaboratingItineraries } from "../data/itinerary";
 import { loadTravelDaysByItineraryId } from "../data/travelDays";
 import { findEmailByUserId } from "../lib/supabaseCollaborator";
+import { supabase } from "../lib/supabaseClient";
 
 function DashboardNotLoggedIn() {
     return (
@@ -29,8 +30,7 @@ function DashboardNotLoggedIn() {
 function CollaboratingItineraryLinks({ userId, navigate }) {
   const [itinsArray, setItins] = useState(null);
 
-  useEffect(() => {
-    const fetchCollaboratingItins = async () => {
+  const fetchCollaboratingItins = async () => {
       try {
         const loaded = await loadCollaboratingItineraries(userId);
 
@@ -63,10 +63,45 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
       } catch (err) {
         console.error("Failed to load collaborating itineraries:", err);
       }
-    };
+  };
 
+
+  useEffect(() => {
     fetchCollaboratingItins();
-  }, []);
+  }, [userId]);
+
+  useEffect(() => {//this is for realtime channel for itin
+    // Initial fetch when the component mounts or itinDbId changes
+    fetchCollaboratingItins();      
+    const channel = supabase.channel(`itinerary_members-${userId}`);
+    console.log(`[Realtime] Subscribing to itinerary_members-${userId}`);
+
+    channel
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'itinerary_members',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+          fetchCollaboratingItins();
+        }
+      )
+      .subscribe((status) => {
+        console.log(`[Realtime] itinerary_members-${userId} channel status:`, status);
+      });
+
+    // Cleanup function: This runs when hgId changes or component unmounts
+    return () => {
+      console.log(`[Cleanup] Removing itin channel for ${userId}`);
+      if (channel) {
+        channel.unsubscribe();
+      }
+    };
+  }, [userId]);
 
   const goToActivityPage = (itinDbId) => {
     navigate(`/activities/${itinDbId}`);

@@ -16,6 +16,7 @@ import { FaPlane, FaHotel, FaWallet } from "react-icons/fa";
 import { useAuthContext } from '../../lib/AuthContext';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
+import { CollaboratorButton } from '../../components/Misc/AddCollaboratorForm';
 
 function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   const [activities, setActivities] = useState([]);
@@ -318,6 +319,19 @@ export function SummaryPage() {
                   fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
                 }
               )
+              .on(
+                'postgres_changes',
+                {
+                  event: '*',
+                  schema: 'public',
+                  table: 'itinerary_members',
+                  filter: `itinerary_id=eq.${itinDbId}`,
+                },
+                (payload) => {
+                  console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+                  fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+                }
+              )
               .subscribe((status) => {
                 console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
               });
@@ -330,6 +344,23 @@ export function SummaryPage() {
               }
             };
           }, [itinDbId, sessionUserId, navigate]);
+
+    let isOwner = false;
+
+    const isEditable = (() => {
+      if (!itinMeta || !sessionUserId) return false;
+      const creatorId = itinMeta.user_id;
+      const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+      if (sessionUserId === creatorId) {
+        isOwner = true;
+      }
+      if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+        console.log("YES EDITABLE");
+        return true;
+      }
+      console.log("NO NOT EDITABLE");
+      return false;
+    })(); //determines whether page is editable or not
 
     const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
             try {
@@ -351,6 +382,7 @@ export function SummaryPage() {
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
                   itin={itin}
                   onSave={saveItinToDB}
+                  isEditable={false}
                 />
 
                 <div className="activity-page-top-buttons">
@@ -361,6 +393,8 @@ export function SummaryPage() {
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
                 </div>
+
+                <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
                 <div 
                 className='summary-flight-container fade-in'

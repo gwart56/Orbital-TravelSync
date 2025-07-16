@@ -170,6 +170,19 @@ function FlightPage() {
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'itinerary_members',
+              filter: `itinerary_id=eq.${itinDbId}`,
+            },
+            (payload) => {
+              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+            }
+          )
           .subscribe((status) => {
             console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
