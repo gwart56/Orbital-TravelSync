@@ -12,6 +12,7 @@ import { loadFlightsByItineraryId } from '../../data/flights';
 import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
 import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
+import { FaPlane, FaHotel, FaWallet } from "react-icons/fa";
 
 function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   const [activities, setActivities] = useState([]);
@@ -160,7 +161,7 @@ function FlightContent({flights}) {
     )
     :flights.map(f=>
   (
-      <div className="flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
+      <div className="summary-page-flight-container border rounded p-3 my-3" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }} key={f.id}>
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "120px" }}>Airline:</strong>
           <span className={f.airline ? "" : "text-placeholder"}>{f.airline || "Not set"}</span>
@@ -229,10 +230,24 @@ function expenditure({ flights, hotels }) {
   const totalExpenditure = totalFlightCost + totalHotelCost;
 
   return (
-    <div className="expenditure-summary">
-      <h5>Total Flight Cost: ${totalFlightCost.toFixed(2)}</h5>
-      <h5>Total Hotel Cost: ${totalHotelCost.toFixed(2)}</h5>
-      <h4 className="text-primary">Total Expenditure: ${totalExpenditure.toFixed(2)}</h4>
+    <div className="expenditure-summary-container fade-in">
+      <h3 className="summary-title">Expenditure Summary</h3>
+      <div className="summary-item">
+        <FaPlane className="summary-icon flight" />
+        <span>Total Flight Cost:</span>
+        <strong>${totalFlightCost.toFixed(2)}</strong>
+      </div>
+      <div className="summary-item">
+        <FaHotel className="summary-icon hotel" />
+        <span>Total Hotel Cost:</span>
+        <strong>${totalHotelCost.toFixed(2)}</strong>
+      </div>
+      <div className="summary-divider"></div>
+      <div className="summary-total">
+        <FaWallet className="summary-icon total" />
+        <span>Total Expenditure:</span>
+        <strong>${totalExpenditure.toFixed(2)}</strong>
+      </div>
     </div>
   );
 }
@@ -307,7 +322,7 @@ export function SummaryPage() {
                 </div>
 
                 <div 
-                className='bg-light p-4 rounded m-3 fade-in'
+                className='summary-flight-container fade-in'
                 >
                   <h4>Flight Details</h4>
                     <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -316,7 +331,7 @@ export function SummaryPage() {
                 </div>
                 
                 <div 
-                className='bg-light p-4 rounded m-3 fade-in'
+                className='summary-itinerary-container fade-in'
                 >
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
@@ -326,13 +341,10 @@ export function SummaryPage() {
                     /> 
                 </div>
 
-                <div className='bg-light p-4 rounded m-3 fade-in'>
-                  <h4>Expenditure Summary</h4>
-                  {expenditure({ 
-                    flights, 
-                    hotels: confirmedHotelsArr
-                  })}
-                </div>
+                {expenditure({ 
+                  flights, 
+                  hotels: confirmedHotelsArr
+                })}   
 
               </>)
               : (<h3 className="text-secondary">Loading Summary...</h3>)}

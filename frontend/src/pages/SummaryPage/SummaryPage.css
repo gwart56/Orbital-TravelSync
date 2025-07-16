@@ -482,3 +482,142 @@
   color: #dc3545; /* Bootstrap danger red */
   font-weight: 600;
 }
+
+.summary-page-flight-container {
+  background-color: #f4f9ff;
+  border-left: 6px solid #007bff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  width: 100%;
+  min-width: 600px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+  /* Add smooth animation */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-page-flight-container:hover {
+  transform: translateY(-4px); /* Moves the card slightly upward */
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+/* Glassmorphism Container */
+.expenditure-summary-container {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin: 24px auto;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.expenditure-summary-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* Title */
+.summary-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #007bff !important; /* Bright blue for emphasis */
+  text-shadow: none !important; /* Remove heavy shadow */
+  margin-bottom: 24px;
+}
+
+/* Cleaner optional subtle shadow (if you want depth) */
+.summary-title.with-shadow {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Individual Items */
+.summary-item, .summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin: 12px 0;
+}
+
+.summary-item strong, .summary-total strong {
+  font-weight: 700;
+  color: #222;
+}
+
+/* Divider */
+.summary-divider {
+  height: 2px;
+  width: 80%;
+  margin: 16px auto;
+  background: linear-gradient(90deg, #007bff, #4a90e2);
+  border-radius: 2px;
+}
+
+/* Highlight Total */
+.summary-total {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #007bff;
+}
+
+/* Icons */
+.summary-icon {
+  margin-right: 10px;
+  font-size: 1.4rem;
+}
+
+.summary-icon.flight {
+  color: #4a90e2;
+}
+
+.summary-icon.hotel {
+  color: #28a745;
+}
+
+.summary-icon.total {
+  color: #007bff;
+}
+
+.summary-flight-container {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin: 24px auto;
+  max-width: 1200px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-flight-container h4 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #007bff; /* Bright blue */
+  margin-bottom: 24px;
+}
+
+.summary-itinerary-container {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px 24px;
+  margin: 24px auto;
+  max-width: 1200px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-itinerary-container h4 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #007bff; /* Bright blue */
+  margin-bottom: 24px;
+}
