@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import './AddCollaboratorForm.css';
 import { addCollaborator, findUserByEmail, checkIfCollaboratorExists, loadCollaboratorsForItinerary, deleteCollaboratorById, updateCollaboratorRole, findEmailByUserId } from "../../lib/supabaseCollaborator";
 
 function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, isEditable}) {
@@ -20,7 +21,7 @@ function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, i
             <option value="editor">Editor</option>
           </select> 
         : <p className="mx-2 mt-2"><strong>Role: </strong> {c.role} </p>}
-        {isEditable && <button className="btn btn-danger mx-2 mb-2" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>Remove</button>}
+        {isEditable && <button className="btn btn-danger mx-2 mb-2 fw-bold" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>X</button>}
       </div>
     </div>
 }
@@ -61,6 +62,10 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
     ,[creatorId]); // Re-fetch collabs when itinId changes
 
   const handleAddCollaborator = async () => {
+    if (!email) {
+      setStatus("❌ Please enter an email");
+      return;
+    }
     setStatus("Looking up user...");
     const normalizedEmail = email.trim().toLowerCase();
     const user = await findUserByEmail(normalizedEmail);
@@ -156,12 +161,14 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
             <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
 
-          <div className="d-flex justify-content-center">
-            <p className="mx-2"><strong>Email: </strong> {owner?.email} </p>
-            <p className="mx-2"><strong>Role: </strong> Owner </p>
-          </div>
+          <div className="p-2 bg-light rounded m-3">
+            <div className="d-flex justify-content-center">
+              <p className="mx-2"><strong>Email: </strong> {owner?.email} </p>
+              <p className="mx-2"><strong>Role: </strong> Owner </p>
+            </div>
 
-          {collabElements}
+            {collabElements}
+          </div>
 
           {isEditable && <div className="modal-body">
             <div className="p-3 bg-light rounded">
@@ -203,7 +210,7 @@ export function CollaboratorButton({itineraryId, creatorId, isEditable}){
     const [show, setShow] = useState(false);
 
     return <>
-      <button className="custom-btn home-btn" onClick={()=>setShow(true)}>👥 Collaborators</button>
+      <button className="cta-glass-button" onClick={()=>setShow(true)}>👥 Collaborators</button>
       {show && <AddCollaboratorModal itineraryId={itineraryId} onClose={()=>setShow(false)} creatorId={creatorId} isEditable={isEditable}/>}
       </>
 }

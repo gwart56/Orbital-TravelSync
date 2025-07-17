@@ -16,7 +16,7 @@ export function RouteRender({ origin, destination }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [totalDistance, setTotalDistance] = useState("");
   const [totalDuration, setTotalDuration] = useState("");
-  const [showSteps, setShowSteps] = useState(false);
+  const [showStepsModal, setShowStepsModal] = useState(false);
   const [transitMode, setTransitMode] = useState("TRANSIT");
 
   const { isLoaded, loadError } = useJsApiLoader({
@@ -57,10 +57,6 @@ export function RouteRender({ origin, destination }) {
 
         const loadedTotalDuration = leg.duration.text; // e.g. "23 mins"
         const loadedTotalDistance = leg.distance.text; // e.g. "5.1 km"
-
-        // console.log("Steps:", loadedSteps);
-        // console.log("Total Duration:", totalDuration);
-        // console.log("Total Distance:", totalDistance);
 
         setSteps(loadedSteps);
         setTotalDistance(loadedTotalDistance);
@@ -103,37 +99,51 @@ export function RouteRender({ origin, destination }) {
 
         {directions && 
         <>
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}
-            // options={{
-            //     draggable: false,
-            //     zoomControl: false,
-            //     scrollwheel: false,
-            //     disableDoubleClickZoom: true,
-            // }}
-        >
+        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
             <DirectionsRenderer directions={directions} />
         </GoogleMap>
-        <button onClick={() => setShowSteps(prev => !prev)} className="btn btn-primary m-2">
-            {!showSteps? 'Show Steps': 'Hide Steps'}
+        <button onClick={() => setShowStepsModal(true)} className="btn btn-primary m-2">
+            Show Steps
         </button>
-        {showSteps && steps && steps.map((step, i) => (
-            <div key={i} style={{ marginBottom: "10px" }} className="bg-light rounded">
-            <div dangerouslySetInnerHTML={{ __html: step.instruction }} />
-            <div>{step.duration} • {step.distance}</div>
-            {step.travelMode === "TRANSIT" && step.transitDetails && (
-                <div className="text-muted d-flex flex-row justify-content-center gap-2" style={{ fontSize: "0.9em" }}>
-                <div><strong>Route:</strong> {step.transitDetails.line.short_name || step.transitDetails.line.name}</div>
-                <div><strong>From:</strong> {step.transitDetails.departure_stop.name}</div>
-                <div><strong>To:</strong> {step.transitDetails.arrival_stop.name}</div>
-                <div><strong>Stops:</strong> {step.transitDetails.num_stops}</div>
-                </div>
-            )}
-            </div>
-        ))}
         {totalDistance && <p><strong>Total Distance: </strong> {totalDistance}</p>}
         {totalDuration && <p><strong>Total Duration: </strong> {totalDuration}</p>}
         </>}
         {errorMessage && <p className="text-danger">{errorMessage}</p>}
+
+        {/* Modal for displaying steps */}
+        {showStepsModal && (
+            <div className="modal" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Route Steps</h5>
+                            <button type="button" className="btn-close" onClick={() => setShowStepsModal(false)}></button>
+                        </div>
+                        <div className="modal-body">
+                            {steps && steps.map((step, i) => (
+                                <div key={i} style={{ marginBottom: "10px" }} className="bg-light rounded p-2">
+                                    <div dangerouslySetInnerHTML={{ __html: step.instruction }} />
+                                    <div>{step.duration} • {step.distance}</div>
+                                    {step.travelMode === "TRANSIT" && step.transitDetails && (
+                                        <div className="text-muted d-flex flex-row justify-content-center gap-2" style={{ fontSize: "0.9em" }}>
+                                            <div><strong>Route:</strong> {step.transitDetails.line.short_name || step.transitDetails.line.name}</div>
+                                            <div><strong>From:</strong> {step.transitDetails.departure_stop.name}</div>
+                                            <div><strong>To:</strong> {step.transitDetails.arrival_stop.name}</div>
+                                            <div><strong>Stops:</strong> {step.transitDetails.num_stops}</div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowStepsModal(false)}>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
     </div>
   );
 }
