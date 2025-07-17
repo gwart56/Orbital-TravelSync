@@ -5,6 +5,10 @@ import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
 import './HotelGroupInfo.css';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Extend dayjs with the plugin
+dayjs.extend(customParseFormat);
 
 //may not use
 function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confirmedHotel}){
