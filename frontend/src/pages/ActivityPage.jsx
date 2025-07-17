@@ -21,6 +21,7 @@ import { CollaboratorButton } from '../components/Misc/AddCollaboratorForm';
 import { supabase } from '../lib/supabaseClient';
 import {v4 as genId} from "uuid";
 import { fetchItin } from '../utils/fetchingForPage';
+import PresenceIndicator from '../components/RealtimeComponents/PresenceIndicator';
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
 function ActivityContent({dayId, setLoadingMessage, isEditable}) {
@@ -602,31 +603,31 @@ function ActivityPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
 
-      let isOwner = false;
+    let isOwner = false;
 
-      const isEditable = (() => {
-        if (!itinMeta || !sessionUserId) return false;
-        const creatorId = itinMeta.user_id;
-        const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
-        if (sessionUserId === creatorId) {
-          isOwner = true;
-        }
-        if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-          console.log("YES EDITABLE");
-          return true;
-        }
-        console.log("NO NOT EDITABLE");
-        return false;
-      })(); //determines whether page is editable or not
+    const isEditable = (() => {
+      if (!itinMeta || !sessionUserId) return false;
+      const creatorId = itinMeta.user_id;
+      const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+      if (sessionUserId === creatorId) {
+        isOwner = true;
+      }
+      if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+        console.log("YES EDITABLE");
+        return true;
+      }
+      console.log("NO NOT EDITABLE");
+      return false;
+    })(); //determines whether page is editable or not
 
-      const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
-        try {
-          await updateItineraryById(itinDbId, itin);
-          setItin(itin);
-          console.log('SAVED ITIN TO DB!');
-        } catch (err) {
-          console.error('Failed to update Itinerary...', err);
-        }
+    const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+      try {
+        await updateItineraryById(itinDbId, itin);
+        setItin(itin);
+        console.log('SAVED ITIN TO DB!');
+      } catch (err) {
+        console.error('Failed to update Itinerary...', err);
+      }
     }
 
 
@@ -659,6 +660,7 @@ function ActivityPage() {
                 </div>
 
                 <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
+                <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   itin={itin}

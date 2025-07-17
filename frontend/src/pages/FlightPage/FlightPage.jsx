@@ -16,6 +16,7 @@ import { LoadingMessage } from '../../components/Misc/LoadingMessage';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
 import { CollaboratorButton } from '../../components/Misc/AddCollaboratorForm';
+import PresenceIndicator from '../../components/RealtimeComponents/PresenceIndicator';
 // import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
@@ -248,6 +249,7 @@ function FlightPage() {
           </div>
 
           <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
+          <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
           <FlightContent itinDbId={itinDbId} setLoadingMessage={setLoadingMessage} isEditable={isEditable}/>
         </>

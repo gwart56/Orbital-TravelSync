@@ -19,6 +19,7 @@ import { LoadingMessage } from "../components/Misc/LoadingMessage";
 import { fetchItin } from "../utils/fetchingForPage";
 import { supabase } from "../lib/supabaseClient";
 import { CollaboratorButton } from "../components/Misc/AddCollaboratorForm";
+import PresenceIndicator from "../components/RealtimeComponents/PresenceIndicator";
 
 function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId, setLoadingMessage, isEditable}) { //CONTENT FOR ONE HOTEL GROUP
     const [hotels, setHotels] = useState([]);
@@ -471,6 +472,7 @@ export function HotelsPage() {
                     </div>
 
                     <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
+                    <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
                     <HotelGroupsContent itin={itin} setItin={setItin} itinDbId={itinDbId} isEditable={isEditable} setLoadingMessage={setLoadingMessage}/>
                     <div className="custom-button-wrapper">
