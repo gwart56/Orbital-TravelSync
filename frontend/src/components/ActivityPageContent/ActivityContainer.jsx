@@ -90,9 +90,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             <MdDeleteForever className="delete-icon" />
             Delete
           </button>
-
-
-
         </div>}
 
         </>
@@ -163,7 +160,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             <LocationPicker
               onSave={(loc, pos) => handleLocationSave(loc, pos)}
               onClose={() => setIsPickingLocation(false)}
-              location={location}
+              prevLocation={location}
               setLocation={setLocation}
               act={activity}
             />

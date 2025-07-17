@@ -13,6 +13,16 @@ export async function addCollaborator(itineraryId, collaboratorUserId, role = "v
   return data;
 }
 
+export async function deleteCollaboratorById(itineraryId, collaboratorUserId) {
+  const { data, error } = await supabase
+    .from("itinerary_members")
+    .delete()
+    .eq('user_id', collaboratorUserId)
+    .eq('itinerary_id', itineraryId);
+  if (error) throw error;
+  return data;
+}
+
 export async function findUserByEmail(email) {
   const { data, error } = await supabase
     .from("users") // mirror of auth.users
@@ -40,6 +50,7 @@ export async function findEmailByUserId(userId) {
     return null;
   }
 
+  console.log(data);
   return data;
 }
 
@@ -54,3 +65,33 @@ export async function checkIfCollaboratorExists(itineraryId, userId) {
   if (error) throw error;
   return !!data;
 }
+
+// Loads all collaborators for a given itinerary, including their email and role
+export async function loadCollaboratorsForItinerary(itineraryId) {
+  const { data, error } = await supabase
+    .from("itinerary_members")
+    .select("user_id, role, users(email)")
+    .eq("itinerary_id", itineraryId);
+
+  if (error) throw error;
+
+  // Format the result: { userId, role, email }
+  return data.map((row) => ({
+    userId: row.user_id,
+    role: row.role,
+    email: row.users?.email || "Unknown",
+  }));
+}
+
+export async function updateCollaboratorRole(itineraryId, collaboratorUserId, newRole) {
+  const { data, error } = await supabase
+    .from("itinerary_members")
+    .update([{
+      role: newRole,
+    }])
+    .eq('user_id', collaboratorUserId)
+    .eq('itinerary_id', itineraryId);
+  if (error) throw error;
+  return data;
+}
+

@@ -16,7 +16,7 @@ import { addItemToArray, deleteItemFromArrayById, editItemInArrayById, insertIte
 import { addActivityIntoDB, deleteactivityById, loadActivitiesByTravelDaysId, newActivity, updateactivityById } from '../data/activities';
 import { LoadingMessage } from '../components/Misc/LoadingMessage';
 import { useAuthContext } from '../lib/AuthContext';
-import { AddCollaboratorForm } from '../components/Misc/AddCollaboratorForm';
+import { CollaboratorButton } from '../components/Misc/AddCollaboratorForm';
 import { supabase } from '../lib/supabaseClient';
 import {v4 as genId} from "uuid";
 import { fetchItin } from '../utils/fetchingForPage';
@@ -188,13 +188,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
         }
       }
 
-  useEffect( () => {//FETCH TRAVELDAYS
-      fetchTDs();
-    }
-    ,[itinDbId]);
-
-  useEffect( () => {//FETCH COnfirmed HOTELS
-      const fetchCHs = async () => {
+  const fetchCHs = async () => {
         try {
           const loadedCHs = await loadAllConfirmedHotelsByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
           setConfirmedHotelsArr(loadedCHs);
@@ -202,6 +196,13 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
           console.error("Failed to load confirmed hotels", err);
         }
       }
+
+  useEffect( () => {//FETCH TRAVELDAYS
+      fetchTDs();
+    }
+    ,[itinDbId]);
+
+  useEffect( () => {//FETCH COnfirmed HOTELS
       fetchCHs();
     }
     ,[itinDbId]);
@@ -574,6 +575,19 @@ function ActivityPage() {
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'itinerary_members',
+              filter: `itinerary_id=eq.${itinDbId}`,
+            },
+            (payload) => {
+              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+            }
+          )
           .subscribe((status) => {
             console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
@@ -587,10 +601,15 @@ function ActivityPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
 
+      let isOwner = false;
+
       const isEditable = (() => {
         if (!itinMeta || !sessionUserId) return false;
         const creatorId = itinMeta.user_id;
         const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+        if (sessionUserId === creatorId) {
+          isOwner = true;
+        }
         if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
           console.log("YES EDITABLE");
           return true;
@@ -622,7 +641,6 @@ function ActivityPage() {
               </div>
             )} */}
             <LoadingMessage loadingMessage={loadingMessage}/>
-            <AddCollaboratorForm itineraryId={itinDbId} />
             {itin ? ( //**makes sure itin is not null first before loading all the info and content
               <>
                 <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
@@ -633,11 +651,13 @@ function ActivityPage() {
 
                 <div className="activity-page-top-buttons">
                   <button className="custom-nav-btn darkened-activities-btn">🎯 To Activities</button>
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏢 To Hotels</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
                   <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> 🛫 To Flights</button>
                   <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                 </div>
+
+                <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   itin={itin}
@@ -651,7 +671,7 @@ function ActivityPage() {
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
               </div>
-            <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button>
+            {/* <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );

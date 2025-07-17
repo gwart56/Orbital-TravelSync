@@ -3,7 +3,7 @@ import { GoogleMap, useJsApiLoader, Marker, Autocomplete, InfoWindow } from "@re
 
 const containerStyle = {
     width: "100%",
-    height: "400px"
+    height: "60vh"
 };
 
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
@@ -193,26 +193,29 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
                     ));
 
     return (
-      <div className="p-3 m-3 bg-light rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP
-        position:'fixed',
-        top: '2vh',
-        left: '10vw',
-        width: '80vw',
-        maxHeight: '85vh',
-        backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
-        // display: 'flex',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        zIndex: 1050 
-      }}>
-        <div className=" -lg" role="document" onClick={onClose}>
-          <div className="" onClick={e => e.stopPropagation()}>
-            <div className="">
-              <h5 className="">Edit Location <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button></h5>
+      <div className="modal fade show d-block" tabIndex={-1}
+      // style={{ // ALL THIS STYLES TO MAKE IT POP UP
+      //   position:'fixed',
+      //   top: '2vh',
+      //   left: '10vw',
+      //   width: '80vw',
+      //   maxHeight: '85vh',
+      //   backgroundColor: 'rgba(0,0,0,0.5)', /* dark background mayb change ltr idk*/
+      //   // display: 'flex',
+      //   // justifyContent: 'center',
+      //   // alignItems: 'center',
+      //   zIndex: 1050 
+      // }}
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered" role="document" onClick={onClose} style={{ maxWidth: "80vw", maxHeight: "80vh" }}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header border-0 pb-0">
+              <h5 className="modal-title">Edit Location </h5>
+              <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
             </div>
-            <h6>*Note: Manually inputed addresses may not be marked on map accurately</h6>
-            <div className="-body">
-              <div className="mb-3">
+            <div className="modal-body">
+              <h6>*Note: Manually inputed addresses may not be marked on map accurately</h6>
+              <div className="">
                   <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
                     <label htmlFor={`type-select`} className="">🏨 Search Nearby Hotels:</label>
                         <select
@@ -329,7 +332,7 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
                     )}
               </GoogleMap>
             </div>
-            <div className="modal-footer">
+            <div className="modal-footer border-0 pt-0">
               <button type="button" className="btn btn-success m-2" onClick={handleSave}><strong>Choose Location</strong></button>
               <button type="button" className="btn btn-secondary m-2" onClick={onClose}>Cancel</button>
             </div>

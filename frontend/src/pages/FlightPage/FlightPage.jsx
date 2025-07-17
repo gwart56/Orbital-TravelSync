@@ -10,11 +10,12 @@ import ConfirmModal from '../../components/Misc/ConfirmModal';
 // import { loadItineraryById, updateItineraryById } from '../../lib/supabaseItinerary';
 import FlightContainer from '../../components/FlightPageComponents/FlightContainer';
 import { loadFlightsByItineraryId, deleteFlightById, createNewFlight, updateFlightById, newFlight, addFlightsIntoDB } from '../../data/flights';
-import { loadItineraryById } from '../../data/itinerary';
+import { loadItineraryById, updateItineraryById } from '../../data/itinerary';
 import { useAuthContext } from '../../lib/AuthContext';
 import { LoadingMessage } from '../../components/Misc/LoadingMessage';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
+import { CollaboratorButton } from '../../components/Misc/AddCollaboratorForm';
 // import { loadItineraryById } from '../../lib/supabaseItinerary';
 
 function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
@@ -99,12 +100,9 @@ function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
 
   const flightElements = localFlights.length === 0
     ? <div className="empty-itinerary-warning text-center">
-      <h4>
-        ✈️ No flights added yet.
-      </h4>
-      <p>
-         Click below to add one
-      </p>
+      <h4>🛫 No flights added yet.</h4>
+      <p>Start planning your journey by adding your first flight below!</p>
+
     </div>
     : localFlights
         .sort((a, b) => dayjs(a.departureTime).unix() - dayjs(b.departureTime).unix())
@@ -173,6 +171,19 @@ function FlightPage() {
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'itinerary_members',
+              filter: `itinerary_id=eq.${itinDbId}`,
+            },
+            (payload) => {
+              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
+            }
+          )
           .subscribe((status) => {
             console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
@@ -186,17 +197,22 @@ function FlightPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
   
+  let isOwner = false;
+
   const isEditable = (() => {
-        if (!itinMeta || !sessionUserId) return false;
-            const creatorId = itinMeta.user_id;
-            const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
-            if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-                console.log("YES EDITABLE");
-                return true;
-            }
-            console.log("NO NOT EDITABLE");
-            return false;
-        })(); //determines whether page is editable or not
+    if (!itinMeta || !sessionUserId) return false;
+    const creatorId = itinMeta.user_id;
+    const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+    if (sessionUserId === creatorId) {
+      isOwner = true;
+    }
+    if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+      console.log("YES EDITABLE");
+      return true;
+    }
+    console.log("NO NOT EDITABLE");
+    return false;
+  })(); //determines whether page is editable or not
 
   const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
             try {
@@ -220,6 +236,7 @@ function FlightPage() {
           <ItineraryInfo //THIS ALLOWS USER TO EDIT NAME AND START DATE OF ITIN
             itin={itin}
             onSave={saveItinToDB}
+            isEditable={isEditable}
           />
           <div className="flight-page-top-buttons">
             <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
@@ -229,6 +246,8 @@ function FlightPage() {
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
           </div>
+
+          <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
 
           <FlightContent itinDbId={itinDbId} setLoadingMessage={setLoadingMessage} isEditable={isEditable}/>
         </>

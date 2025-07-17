@@ -151,8 +151,8 @@
 }
 
 .darkened-activities-btn {
-  background-color: #cccccc;        /* muted grey */
-  color: #666666;                   /* darker text to show it's inactive */
+  background-color: #cccccc !important ;      /* muted grey */
+  color: #666666 !important;            /* darker text to show it's inactive */
   cursor: not-allowed;              /* classic "disabled" cursor */
   opacity: 0.8;
   box-shadow: none;
