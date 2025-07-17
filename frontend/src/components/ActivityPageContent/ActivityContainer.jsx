@@ -60,7 +60,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           </span>
         </div>
 
-        <div className="mb-3 d-flex align-items-start">
+        <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
           <span
             className={`text-truncate ${location.locAddress ? "" : "text-placeholder"}`}
@@ -68,6 +68,17 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             title={location.locAddress}
           >
             {location.locAddress || "Select on map or enter manually"}
+          </span>
+        </div>
+
+        <div className="mb-3 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Price:</strong>
+          <span 
+            className={activity.price ? "" : "text-placeholder"}
+            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
+            title={activity.price}
+          >
+            ${activity.price || "0.00"}
           </span>
         </div>
 
@@ -134,6 +145,20 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               placeholder="e.g. 123 Normal Rd"
             />
           </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <strong style={labelStyle}>Price:</strong>
+            <input
+              className="form-control form-control-sm"
+              type="number"
+              name="price"
+              defaultValue={activity.price || 0}
+              min="0"
+              step="0.01"
+              placeholder="e.g. 20.00"
+            />
+          </div>
+
           {isPickingLocation ? (
             <LocationPicker
               onSave={(loc, pos) => handleLocationSave(loc, pos)}

@@ -12,19 +12,20 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-export function newActivity(travelDayId, name, time, locName, locAddress) {
+export function newActivity(travelDayId, name, time, locName, locAddress, price) {
     return {
         id: genId(),
         travelDayId,
         name,
         time,
         locName,
-        locAddress
+        locAddress,
+        price: 0 //default price is 0
     };
 }
 
 export async function createNewActivity(travelDayId) {
-    const newAct = newActivity(travelDayId, "", "", "", "");
+    const newAct = newActivity(travelDayId, "", "", "", "", 0);
     await addActivityIntoDB(newAct);
     return newAct;
 }

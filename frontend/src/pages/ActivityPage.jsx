@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 // import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -116,8 +115,8 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   async function handleSave(id, data) {
     setLoadingMessage("Saving...");
     console.log("saved: id-" + id , data);
-    const {name, time, locName, locAddress} = data;
-    const newAct = newActivity(dayId, name, time, locName, locAddress);
+    const {name, time, locName, locAddress, price} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress, price);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");
@@ -136,7 +135,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   async function handleAdd() {
     setLoadingMessage("Adding...");
     console.log("added new activity");
-    const newAct = newActivity(dayId, "", "", "", "");
+    const newAct = newActivity(dayId, "", "", "", "", 0);
     const newActArr = addItemToArray(activities, newAct);
     await addActivityIntoDB(newAct);
     setLoadingMessage("");

@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 // import { loadItineraryById, updateItineraryById } from "../lib/supabaseItinerary";
 import HotelContainer from "../components/HotelPageContent/HotelContainer";
 import { addHGToArr, addHotelGrpsIntoDB, addHotelsIntoDB, addHotelToArr, deleteHGFromArr, deleteHotelById, deleteHotelFromArr, deleteHotelGroupById, doesHGOverlap, editHotelInArr, getAllConfirmedHotelsFromArr, loadAllConfirmedHotelsByItineraryId, loadHotelGroupsByItineraryId, loadHotelsByGroupId, newHotel, newHotelGroup, updateHotelById, updateHotelGroupById } from "../data/hotel";
-import { setItinHotels } from "../data/activity";
 import HGInfo from "../components/HotelPageContent/HotelGroupInfo";
 import ConfirmedHotelGroup from "../components/HotelPageContent/ConfirmedHotelGroup";
 // import { AutoSaveButton } from "../components/Misc/AutoSaver";
