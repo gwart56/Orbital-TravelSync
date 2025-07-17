@@ -7,7 +7,6 @@ import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate, loadAllConfirmedHotelsByItineraryId } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
-import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
 import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';

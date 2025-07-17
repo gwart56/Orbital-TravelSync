@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { MdDeleteForever } from "react-icons/md";
 import { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header/Header';
-import {addActivityArray, editActivityArray, deleteActivityArray, insertDayIntoArray, setItinDays, swapDaysInArray} from '../data/activity';
 import ItineraryInfo from '../components/ItineraryComponents/ItineraryInfo';
 // import { loadItineraryById, updateItineraryById } from '../lib/supabaseItinerary';
 import { useNavigate, useParams } from 'react-router-dom';
