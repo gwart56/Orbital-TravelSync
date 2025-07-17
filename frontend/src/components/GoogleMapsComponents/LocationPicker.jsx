@@ -15,7 +15,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
     // temporarily commented TODO: IMPLEMENT ACTIVITY LATLNG
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
-    const [latLng, setLatLng] = useState(centerDefault);
+    const [latLng, setLatLng] = useState(initialPosition || centerDefault);
     const [location, setLocation] = useState(null);
     const [activityType, setActivityType] = useState('');
     const [nearbyActivities, setNearbyActivities] = useState([]);
@@ -76,6 +76,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
         };
         setMapCenter(newPos);
         setMarkerPosition(newPos);
+        setLatLng(newPos);
         const locName = (place.name);
         const locAddress = (place.formatted_address);
         setLocation({locName, locAddress})

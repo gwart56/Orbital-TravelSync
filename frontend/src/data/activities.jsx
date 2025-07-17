@@ -12,14 +12,15 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-export function newActivity(travelDayId, name, time, locName, locAddress) {
+export function newActivity(travelDayId, name, time, locName, locAddress, latLng) {
     return {
         id: genId(),
         travelDayId,
         name,
         time,
         locName,
-        locAddress
+        locAddress,
+        latLng
     };
 }
 

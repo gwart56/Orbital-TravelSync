@@ -15,7 +15,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
     const formData = new FormData(event.currentTarget);
     const dataObj = Object.fromEntries(formData.entries());;
     setIsEditing(false);
-    handleSave(id, {...dataObj, latLng});
+    handleSave(id, {...dataObj, latLng: latLng});
   }
 
   function handleLocationSave(newLocation, pos) {
@@ -52,22 +52,22 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
           <span
-            className={`text-truncate ${location.locName ? "" : "text-placeholder"}`}
+            className={`text-truncate ${locName ? "" : "text-placeholder"}`}
             style={{ overflow: "hidden", whiteSpace: "nowrap" }}
-            title={location.locName}
+            title={locName}
           >
-            {location.locName || "No location yet"}
+            {locName || "No location yet"}
           </span>
         </div>
 
         <div className="mb-3 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
           <span
-            className={`text-truncate ${location.locAddress ? "" : "text-placeholder"}`}
+            className={`text-truncate ${locAddress ? "" : "text-placeholder"}`}
             style={{ overflow: "hidden", whiteSpace: "nowrap" }}
-            title={location.locAddress}
+            title={locAddress}
           >
-            {location.locAddress || "Select on map or enter manually"}
+            {locAddress || "Select on map or enter manually"}
           </span>
         </div>
 
@@ -125,8 +125,9 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               type="text"
               name="locAddress"
               value={location.locAddress}
-              onChange={(e) =>
-                setLocation((prev) => ({ ...prev, locAddress: e.target.value }))
+              onChange={(e) =>{
+                setLocation((prev) => ({ ...prev, locAddress: e.target.value }));
+                setLatLng(null);}
               }
               placeholder="e.g. 123 Normal Rd"
             />
@@ -150,7 +151,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           )}
           <div className="d-flex gap-2 justify-content-end">
             <button type="submit" className="btn btn-success btn-sm">Save</button>
-            <button type="button" className="btn btn-secondary btn-sm" onClick={() => setIsEditing(false)}>Cancel</button>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={() => {setIsEditing(false);setLocation({ locName, locAddress });}}>Cancel</button>
           </div>
         </form>
       )}
