@@ -61,3 +61,10 @@ input::placeholder {
   color: #888; /* Optional: softens the color for a placeholder feel */
 }
 
+.d-flex.align-items-start span {
+  display: block;                /* Wrap text inside container */
+  white-space: normal !important; /* Allow multiple lines */
+  word-break: break-word;         /* Break long words if needed */
+  overflow-wrap: break-word;      /* Force breaks for long strings */
+  text-align: left;               /* Align text left */
+}

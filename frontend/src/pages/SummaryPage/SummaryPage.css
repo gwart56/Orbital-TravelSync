@@ -346,31 +346,37 @@
 /*FOR SUMMARY PAGE----------------------------------------------------------------*/
 .activity-row {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start; /* Left align content */
+  align-items: flex-start;
   margin: 8px auto;
   max-width: 800px;
   background: #f8f9fa;
   padding: 12px 16px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  flex-wrap: wrap; /* ✅ Allow items to wrap */
+  gap: 8px; /* Space between time and name */
 }
 
+/* Time stays fixed width */
 .activity-time {
-  flex: 1;
+  flex: 0 0 60px; /* ✅ Fixed width for time */
   font-weight: 600;
   font-size: 1rem;
   color: #333;
   text-align: left;
 }
 
+/* Activity name takes remaining space and wraps */
 .activity-name {
-  flex: 5;
+  flex: 1; /* ✅ Fill remaining space */
   font-size: 1rem;
   color: #333;
   text-align: left;
-  padding-left: 16px;
+  word-break: break-word; /* ✅ Break long words if necessary */
+  white-space: normal;    /* ✅ Allow wrapping */
 }
+
 
 .travel-day-container-sum {
   background-color: rgba(255, 255, 255, 0.95);
@@ -502,6 +508,20 @@
   transform: translateY(-4px); /* Moves the card slightly upward */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
 }
+
+.summary-page-flight-container .d-flex {
+  align-items: flex-start; /* Already in your code, keeps labels aligned at the top */
+}
+
+.summary-page-flight-container span {
+  display: inline-block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: left; /* Ensures text inside span is aligned left */
+}
+
+
 
 /* Glassmorphism Container */
 .expenditure-summary-container {
