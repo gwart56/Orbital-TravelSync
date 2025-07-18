@@ -117,8 +117,8 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   async function handleSave(id, data) {
     setLoadingMessage("Saving...");
     console.log("saved: id-" + id , data);
-    const {name, time, locName, locAddress, latLng, price} = data;
-    const newAct = newActivity(dayId, name, time, locName, locAddress, latLng, price);
+    const {name, time, locName, locAddress, latLng, price, notes} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress, latLng, price, notes);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");
@@ -162,7 +162,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
           activity={a}
           handleSave={handleSave}
           handleDelete={handleDelete}
-          isEdit={false} //determines if activity container is being edited or not
+          isEdit={!a.name} //determines if activity container is being edited or not
           isEditable={isEditable}
         />
         { index < sortedActivities.length-1 &&

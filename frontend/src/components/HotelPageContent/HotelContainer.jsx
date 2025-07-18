@@ -4,7 +4,7 @@ import HotelPicker from "../GoogleMapsComponents/HotelPicker";
 import ConfirmModal from "../Misc/ConfirmModal";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwner}) => {
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(!hotel.name);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
   const [latLng, setLatLng] = useState(null);
@@ -26,7 +26,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
         checkInTime: formData.get("checkInTime"),
         checkOutTime: formData.get("checkOutTime"),
         rating: formData.get("rating"),
-        latLng: latLng
+        latLng: latLng,
+        notes: formData.get("notes")
     };
     onSave(updatedHotel);
     setIsEditing(false);
@@ -117,7 +118,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
             />
           </div>
 
-          <div className="mb-2">
+          <div className="mb-3">
             <strong>Address</strong> <span className="fst-italic">(Choose on map or enter manually)</span><strong>:</strong>
             <input
               type="text"
@@ -141,9 +142,20 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
               className="btn btn-outline-primary btn-sm ms-2 m-3"
               onClick={() => setIsPickingLocation(true)}
             >
-              Choose On Map
+              Choose Address On Map
             </button>
             )}
+
+          <div className="mb-2">
+            <strong>Notes: </strong>
+            <input
+              type="text"
+              name="notes"
+              defaultValue={hotel.notes}
+              placeholder="(Optional) e.g. free parking available"
+              className="form-control"
+            />
+          </div>
 
           <div className="d-flex gap-2 justify-content-center">
             <button type="submit" className="btn btn-success me-2">

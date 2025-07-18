@@ -12,7 +12,7 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-export function newActivity(travelDayId, name, time, locName, locAddress, latLng, price = 0) {
+export function newActivity(travelDayId, name, time, locName, locAddress, latLng, price = 0, notes = "") {
     return {
         id: genId(),
         travelDayId,
@@ -21,12 +21,13 @@ export function newActivity(travelDayId, name, time, locName, locAddress, latLng
         locName,
         locAddress,
         latLng,
-        price
+        price,
+        notes
     };
 }
 
 export async function createNewActivity(travelDayId) {
-    const newAct = newActivity(travelDayId, "", "", "", "", 0);
+    const newAct = newActivity(travelDayId, "", "", "", "");
     await addActivityIntoDB(newAct);
     return newAct;
 }
@@ -38,6 +39,7 @@ export async function addActivityIntoDB(activity) {// can accept one activity or
     .insert(activity);
 
     if (daysError) {
+        console.error('Failed to store activity:', activity);
         console.error('Failed to store activity:', daysError);
         throw daysError;
     }

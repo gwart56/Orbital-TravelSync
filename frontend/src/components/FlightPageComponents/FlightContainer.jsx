@@ -17,7 +17,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
     isReturn
   } = flight;
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(!flight.airline);
   const [localIsReturn, setLocalIsReturn] = useState(isReturn); // track return flight checkbox
   const [localPrice, setLocalPrice] = useState(price);           // track price
 

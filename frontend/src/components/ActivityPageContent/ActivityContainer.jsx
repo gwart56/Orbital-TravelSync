@@ -5,7 +5,7 @@ import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit , isEditable}) {
   const [latLng, setLatLng] = useState(activity.latLng); //mainly for google maps api
-  const { id, name, time, locName, locAddress, price } = activity;
+  const { id, name, time, locName, locAddress, price, notes } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
   const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
   const [isPickingLocation, setIsPickingLocation] = useState(false);
@@ -72,14 +72,24 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           </span>
         </div>
 
-        <div className="mb-3 d-flex align-items-start">
+        {price > 0 && <div className="mb-3 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>
             {price > 0 && "Price:"}
           </strong>
           <span>
             {price > 0 ? `$${price}` : <span className="text-success">This activity has no price</span>}
           </span>
-        </div>
+        </div>}
+
+        {notes && <div className="mb-2 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Notes:</strong>
+          <span
+            className={`text-truncate ${notes ? "" : "text-placeholder"}`}
+            title={notes}
+          >
+            {notes || "No notes"}
+          </span>
+        </div>}
 
         {isEditable && <div className="activity-button-row">
           <button className="activity-container-btn edit-btn" onClick={() => setIsEditing(true)}>
@@ -154,6 +164,17 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               step="0.01"
               placeholder="e.g. 50 (In SGD)"
               required
+            />
+          </div>
+
+          <div className="mb-2 d-flex align-items-center">
+            <strong style={labelStyle}>Notes:</strong>
+            <input
+              className="form-control form-control-sm"
+              type="text"
+              name="notes"
+              defaultValue={notes}
+              placeholder="(Optional) e.g. reserve tickets online 2 weeks in advance"
             />
           </div>
 

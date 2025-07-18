@@ -7,7 +7,7 @@ import { supabase } from "../lib/supabaseClient";
 dayjs.extend(isSameOrAfter); //FOR PLUGINS
 dayjs.extend(isSameOrBefore); //FOR PLUGINS
 
-export function newHotel(groupId, name, price, address, link, checkInDate, checkInTime, checkOutDate, checkOutTime, isConfirmed, rating, latLng) {
+export function newHotel(groupId, name, price, address, link, checkInDate, checkInTime, checkOutDate, checkOutTime, isConfirmed, rating, latLng, notes) {
     return {
         id: genId(),
         groupId,
@@ -21,7 +21,8 @@ export function newHotel(groupId, name, price, address, link, checkInDate, check
         checkOutTime: checkOutTime || "11:00", // default check-out time
         isConfirmed: isConfirmed ?? false, // default to false if not provided
         rating: rating || "",
-        latLng: latLng || null
+        latLng: latLng || null,
+        notes: notes || ""
     };
 }
 
