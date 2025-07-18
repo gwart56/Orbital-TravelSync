@@ -20,6 +20,8 @@ import { CollaboratorButton } from '../components/Misc/AddCollaboratorForm';
 import { supabase } from '../lib/supabaseClient';
 import {v4 as genId} from "uuid";
 import { fetchItin } from '../utils/fetchingForPage';
+import PresenceIndicator from '../components/RealtimeComponents/PresenceIndicator';
+import { RouteRender } from '../components/GoogleMapsComponents/RoutesRenderer';
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
 function ActivityContent({dayId, setLoadingMessage, isEditable}) {
@@ -115,8 +117,8 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   async function handleSave(id, data) {
     setLoadingMessage("Saving...");
     console.log("saved: id-" + id , data);
-    const {name, time, locName, locAddress, price} = data;
-    const newAct = newActivity(dayId, name, time, locName, locAddress, price);
+    const {name, time, locName, locAddress, latLng, price} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress, latLng, price);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");
@@ -142,25 +144,35 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
     setActivities(newActArr);
   }
 
+  const sortedActivities = [...activities]
+    .sort((a, b) => a.time.localeCompare(b.time)); //sorts the activities based on their timings
+
   const activityElements = activities.length==0
   ? (<div className="empty-activity-box text-center p-4 my-4 rounded shadow-sm fade-in">
       <div className="emoji mb-2" style={{ fontSize: "2rem" }}>😴</div>
       <h4 className="mb-2 fw-semibold">This day’s still empty</h4>
       <p className="mb-3 text-muted">Let’s add some fun plans to your itinerary 📝</p>
     </div>
-
     )
-  :[...activities]
-    .sort((a, b) => a.time.localeCompare(b.time)) //sorts the activities based on their timings
-    .map((a) => 
-      <ActivityContainer 
-        key={a.id}
-        activity={a}
-        handleSave={handleSave}
-        handleDelete={handleDelete}
-        isEdit={false} //determines if activity container is being edited or not
-        isEditable={isEditable}
-      />);
+  :sortedActivities //sorts the activities based on their timings
+    .map((a, index) => 
+      <div key={a.id}>
+        <ActivityContainer 
+          key={a.id}
+          activity={a}
+          handleSave={handleSave}
+          handleDelete={handleDelete}
+          isEdit={false} //determines if activity container is being edited or not
+          isEditable={isEditable}
+        />
+        { index < sortedActivities.length-1 &&
+          <RouteRender
+            origin={a.latLng}
+            destination={sortedActivities[index+1].latLng}
+          />
+        }
+      </div>
+      );
   return (
     <div className = "activity-grid js-activity-grid">
       <button className="new-activity-butt btn btn-success" onClick={handleAdd} disabled={!isEditable}>
@@ -601,31 +613,31 @@ function ActivityPage() {
         };
       }, [itinDbId, sessionUserId, navigate]);
 
-      let isOwner = false;
+    let isOwner = false;
 
-      const isEditable = (() => {
-        if (!itinMeta || !sessionUserId) return false;
-        const creatorId = itinMeta.user_id;
-        const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
-        if (sessionUserId === creatorId) {
-          isOwner = true;
-        }
-        if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-          console.log("YES EDITABLE");
-          return true;
-        }
-        console.log("NO NOT EDITABLE");
-        return false;
-      })(); //determines whether page is editable or not
+    const isEditable = (() => {
+      if (!itinMeta || !sessionUserId) return false;
+      const creatorId = itinMeta.user_id;
+      const memberDetails = itinMeta.itinerary_members?.find(m => m.user_id == sessionUserId);
+      if (sessionUserId === creatorId) {
+        isOwner = true;
+      }
+      if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
+        console.log("YES EDITABLE");
+        return true;
+      }
+      console.log("NO NOT EDITABLE");
+      return false;
+    })(); //determines whether page is editable or not
 
-      const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
-        try {
-          await updateItineraryById(itinDbId, itin);
-          setItin(itin);
-          console.log('SAVED ITIN TO DB!');
-        } catch (err) {
-          console.error('Failed to update Itinerary...', err);
-        }
+    const saveItinToDB = async (itin) => {//SAVES ITINERARY TO DATABASE
+      try {
+        await updateItineraryById(itinDbId, itin);
+        setItin(itin);
+        console.log('SAVED ITIN TO DB!');
+      } catch (err) {
+        console.error('Failed to update Itinerary...', err);
+      }
     }
 
 
@@ -658,6 +670,7 @@ function ActivityPage() {
                 </div>
 
                 <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
+                <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
                 <TravelDaysContent  //CONTAINER FOR ALL TRAVEL DAYS
                   itin={itin}

@@ -16,6 +16,7 @@ import { useAuthContext } from '../../lib/AuthContext';
 import { fetchItin } from '../../utils/fetchingForPage';
 import { supabase } from '../../lib/supabaseClient';
 import { CollaboratorButton } from '../../components/Misc/AddCollaboratorForm';
+import PresenceIndicator from '../../components/RealtimeComponents/PresenceIndicator';
 
 function ActivityContent({dayId, checkInHotel, checkOutHotel}) {
   const [activities, setActivities] = useState([]);
@@ -419,6 +420,7 @@ export function SummaryPage() {
                 </div>
 
                 <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
+                <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
                 <div 
                 className='summary-flight-container fade-in'
