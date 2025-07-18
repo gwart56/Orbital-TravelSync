@@ -111,7 +111,6 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
 
   return (
     <div className="itins-container">
-      <h2 style={{ fontWeight: "700", marginTop: "40px" }}>Shared With Me</h2>
       {itinsArray === null ? (
         <h3 className="text-secondary">Loading...</h3>
       ) : itinsArray.length === 0 ? (
@@ -337,6 +336,7 @@ function DashboardContent() {
         </h1>
         <h2 style={{ margin: "20px", fontWeight: "800", color: "#444", fontSize: "2.5rem" }}>My Itineraries</h2>
         <ItineraryLinks userId={userId} navigate={navigate}/>
+        <h2 style={{ margin: "20px", fontWeight: "800", color: "#444", fontSize: "2.5rem" }}>Itineraries Shared With Me</h2>
         <CollaboratingItineraryLinks userId={userId} navigate={navigate}/>
         <div className="d-flex mb-5">
             <button className="btn btn-danger m-3" onClick={handleClick}>Log Out</button>

@@ -40,7 +40,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           <span
             className={`text-truncate ${name ? "" : "text-placeholder"}`}
             title={name}
-            style={{ maxWidth: "100%" }} // or a fixed value
           >
             {name || "Untitled Activity"}
           </span>
@@ -57,7 +56,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
           <span
             className={`text-truncate ${location.locName ? "" : "text-placeholder"}`}
-            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
             title={location.locName}
           >
             {location.locName || "No location yet"}
@@ -68,7 +66,6 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
           <span
             className={`text-truncate ${location.locAddress ? "" : "text-placeholder"}`}
-            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
             title={location.locAddress}
           >
             {location.locAddress || "Select on map or enter manually"}
