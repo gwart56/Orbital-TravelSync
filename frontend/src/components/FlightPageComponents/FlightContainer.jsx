@@ -164,7 +164,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
           </div>
 
           <div className="mb-2 d-flex align-items-center">
-            <strong style={labelStyle}>Departure Time:</strong>
+            <strong style={labelStyle}>Departure:</strong>
             <input
               className="form-control form-control-sm"
               type="datetime-local"
@@ -175,7 +175,7 @@ export default function FlightContainer({ flight, handleSave, handleDelete , isE
           </div>
 
           <div className="mb-3 d-flex align-items-center">
-            <strong style={labelStyle}>Arrival Time:</strong>
+            <strong style={labelStyle}>Arrival:</strong>
             <input
               className="form-control form-control-sm"
               type="datetime-local"
