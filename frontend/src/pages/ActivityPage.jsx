@@ -115,8 +115,8 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
   async function handleSave(id, data) {
     setLoadingMessage("Saving...");
     console.log("saved: id-" + id , data);
-    const {name, time, locName, locAddress} = data;
-    const newAct = newActivity(dayId, name, time, locName, locAddress);
+    const {name, time, locName, locAddress, price} = data;
+    const newAct = newActivity(dayId, name, time, locName, locAddress, price);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");

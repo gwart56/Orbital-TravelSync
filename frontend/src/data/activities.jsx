@@ -12,19 +12,20 @@ import {v4 as genId} from "uuid";
 //     locAddress;
 // }
 
-export function newActivity(travelDayId, name, time, locName, locAddress) {
+export function newActivity(travelDayId, name, time, locName, locAddress, price = 0) {
     return {
         id: genId(),
         travelDayId,
         name,
         time,
         locName,
-        locAddress
+        locAddress,
+        price
     };
 }
 
 export async function createNewActivity(travelDayId) {
-    const newAct = newActivity(travelDayId, "", "", "", "");
+    const newAct = newActivity(travelDayId, "", "", "", "", 0);
     await addActivityIntoDB(newAct);
     return newAct;
 }
@@ -63,6 +64,22 @@ export async function loadactivityById(id) {
     .select('*')
     .eq('id', id)
     .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function loadActivitiesByItineraryId(itineraryId) {
+    const { data, error } = await supabase
+        .from('activities')
+        .select(`
+            *,
+            travelDays!inner(id, itineraryId)
+        `)
+        .eq('travelDays.itineraryId', itineraryId)
+        .order('time', { ascending: true }); // Optional: order by time
+      
+    console.log("Activities fetched for itineraryId:", itineraryId, data);
 
     if (error) throw error;
     return data;
