@@ -7,11 +7,10 @@ import ItineraryInfo from '../../components/ItineraryComponents/ItineraryInfo';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllConfirmedHotelsFromArr, getHotelCheckInOutForDate, getHotelForDate, loadAllConfirmedHotelsByItineraryId } from '../../data/hotel';
 // import { AutoSaveButton } from '../components/Misc/AutoSaver';
-import { Activity } from '../../data/activity';
 import { loadFlightsByItineraryId } from '../../data/flights';
 import { loadItineraryById, updateItineraryById} from '../../data/itinerary';
 import { loadTravelDaysByItineraryId} from '../../data/travelDays';
-import { loadActivitiesByTravelDaysId, newActivity } from '../../data/activities';
+import { loadActivitiesByTravelDaysId, newActivity, loadActivitiesByItineraryId } from '../../data/activities';
 import { FaPlane, FaHotel, FaWallet } from "react-icons/fa";
 import { useAuthContext } from '../../lib/AuthContext';
 import { fetchItin } from '../../utils/fetchingForPage';
@@ -229,30 +228,42 @@ function FlightContent({flights}) {
   return flightElements;
 }
 
-function expenditure({ flights, hotels }) {
+function expenditure({ flights, hotels, activities }) {
   const totalFlightCost = flights.reduce((sum, f) => sum + (f.price || 0), 0);
   const totalHotelCost = hotels.reduce((sum, h) => sum + (h.price || 0), 0);
-  const totalExpenditure = totalFlightCost + totalHotelCost;
+  const totalActivitycost = activities.reduce((sum, a) => sum + (a.price || 0), 0);
+  const totalExpenditure = totalFlightCost + totalHotelCost + totalActivitycost;
 
   return (
     <div className="expenditure-summary-container fade-in">
       <h3 className="summary-title">Expenditure Summary</h3>
+
+      <div className="summary-item">
+        <FaWallet className="summary-icon expenditure" />
+        <span>Total Activities Cost:</span>
+        <strong>${totalActivitycost.toFixed(2)}</strong>
+      </div>
+      
       <div className="summary-item">
         <FaPlane className="summary-icon flight" />
         <span>Total Flight Cost:</span>
         <strong>${totalFlightCost.toFixed(2)}</strong>
       </div>
+
       <div className="summary-item">
         <FaHotel className="summary-icon hotel" />
         <span>Total Hotel Cost:</span>
         <strong>${totalHotelCost.toFixed(2)}</strong>
       </div>
+
       <div className="summary-divider"></div>
+
       <div className="summary-total">
         <FaWallet className="summary-icon total" />
         <span>Total Expenditure:</span>
         <strong>${totalExpenditure.toFixed(2)}</strong>
       </div>
+
     </div>
   );
 }
@@ -373,6 +384,19 @@ export function SummaryPage() {
             }
         }
 
+    const [activities, setActivities] = useState([]);
+    const fetchActs = async () => {
+            try {
+              const loadedActs = await loadActivitiesByItineraryId(itinDbId); //wait to get itin class obj by id from supabase
+              setActivities(loadedActs);
+            } catch (err) {
+              console.error("Failed to load activities", err);
+            }
+          }
+    useEffect( () => {//FETCH ACTIVITIES for the current itinDbId
+          fetchActs();
+        }
+        ,[itinDbId]); // Re-fetch activities when dayId changes
 
     return (
         <div className="background-image summary-background d-flex flex-column align-items-center">
@@ -420,7 +444,8 @@ export function SummaryPage() {
 
                 {expenditure({ 
                   flights, 
-                  hotels: confirmedHotelsArr
+                  hotels: confirmedHotelsArr,
+                  activities
                 })}   
 
               </>)

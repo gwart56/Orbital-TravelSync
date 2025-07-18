@@ -5,7 +5,7 @@ import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit , isEditable}) {
   const [latLng, setLatLng] = useState(activity.latLng); //mainly for google maps api
-  const { id, name, time, locName, locAddress } = activity;
+  const { id, name, time, locName, locAddress, price } = activity;
   const [isEditing, setIsEditing] = useState(isEdit);
   const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
   const [isPickingLocation, setIsPickingLocation] = useState(false);
@@ -37,7 +37,10 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
         <>
         <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Activity:</strong>
-          <span className={name ? "" : "text-placeholder"} title={name}>
+          <span
+            className={`text-truncate ${name ? "" : "text-placeholder"}`}
+            title={name}
+          >
             {name || "Untitled Activity"}
           </span>
         </div>
@@ -53,21 +56,28 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Location:</strong>
           <span
             className={`text-truncate ${locName ? "" : "text-placeholder"}`}
-            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
             title={locName}
           >
             {locName || "No location yet"}
           </span>
         </div>
 
-        <div className="mb-3 d-flex align-items-start">
+        <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Address:</strong>
           <span
             className={`text-truncate ${locAddress ? "" : "text-placeholder"}`}
-            style={{ overflow: "hidden", whiteSpace: "nowrap" }}
             title={locAddress}
           >
             {locAddress || "Select on map or enter manually"}
+          </span>
+        </div>
+
+        <div className="mb-3 d-flex align-items-start">
+          <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>
+            {price > 0 && "Price:"}
+          </strong>
+          <span>
+            {price > 0 ? `$${price}` : <span className="text-success">This activity has no price</span>}
           </span>
         </div>
 
@@ -118,7 +128,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             />
           </div>
           
-          <div className="mb-3 d-flex align-items-center">
+          <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Address:</strong>
             <input
               className="form-control form-control-sm"
@@ -132,6 +142,21 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
               placeholder="e.g. 123 Normal Rd"
             />
           </div>
+
+          <div className="mb-3 d-flex align-items-center">
+            <strong style={labelStyle}>Price:</strong>
+            <input
+              className="form-control form-control-sm"
+              type="number"
+              name="price"
+              defaultValue={price}
+              min="0"
+              step="0.01"
+              placeholder="e.g. 50 (In SGD)"
+              required
+            />
+          </div>
+
           {isPickingLocation ? (
             <LocationPicker
               onSave={(loc, pos) => handleLocationSave(loc, pos)}

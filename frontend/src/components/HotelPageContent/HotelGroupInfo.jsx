@@ -1,7 +1,6 @@
 //might be overkill to make this component idk (JUST FOR EDITING NAME(maybe date next time) OF HOTEL GRP)
 
 import { useEffect, useState } from 'react';
-import { updateItinName, updateItinStartDate } from '../../data/activity';
 import { MdEdit } from "react-icons/md";
 import dayjs from 'dayjs';
 import './HotelGroupInfo.css';
@@ -18,6 +17,9 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confi
     setStartHG(dayjs(newStartDate, 'YYYY-MM-DD').format('DD-MM-YYYY'));
     setEditing(false);
   };
+
+  console.log('HG START DATE', hg.startDate);
+  console.log('HG START DATE', dayjs(hg.startDate, 'DD-MM-YYYY'));
 
   return (
     <>

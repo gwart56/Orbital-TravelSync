@@ -61,3 +61,16 @@ input::placeholder {
   color: #888; /* Optional: softens the color for a placeholder feel */
 }
 
+.flight-container .d-flex {
+  align-items: flex-start; /* Already in your code, keeps labels aligned at the top */
+}
+
+.flight-container span {
+  display: inline-block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-align: left; /* Ensures text inside span is aligned left */
+}
+
+
