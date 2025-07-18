@@ -20,7 +20,7 @@ export function newActivity(travelDayId, name, time, locName, locAddress, price 
         time,
         locName,
         locAddress,
-        price, // default price if not provided
+        price
     };
 }
 
@@ -64,6 +64,22 @@ export async function loadactivityById(id) {
     .select('*')
     .eq('id', id)
     .single();
+
+    if (error) throw error;
+    return data;
+}
+
+export async function loadActivitiesByItineraryId(itineraryId) {
+    const { data, error } = await supabase
+        .from('activities')
+        .select(`
+            *,
+            travelDays!inner(id, itineraryId)
+        `)
+        .eq('travelDays.itineraryId', itineraryId)
+        .order('time', { ascending: true }); // Optional: order by time
+      
+    console.log("Activities fetched for itineraryId:", itineraryId, data);
 
     if (error) throw error;
     return data;
