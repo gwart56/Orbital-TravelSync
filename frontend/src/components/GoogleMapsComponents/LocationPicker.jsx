@@ -16,7 +16,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
     const [latLng, setLatLng] = useState(initialPosition || centerDefault);
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState(prevLocation);
     const [activityType, setActivityType] = useState('');
     const [nearbyActivities, setNearbyActivities] = useState([]);
     const [selectedAct, setSelectedAct] = useState(null);
@@ -49,7 +49,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
       }
     },[isLoaded]);
     
-    const updateAddressFromCoords = (latLng) => {//update address from coords of pin
+    const updateAddressFromCoords = (latLng, givenName) => {//update address from coords of pin
       if (!geocoder) return; //if geocoder not ready, do nothing
       geocoder.current.geocode({ location: latLng }, (results, status) => {
       if (status === "OK" && results[0]) {
@@ -57,7 +57,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
           // const components = results[0]?.address_components || [];
           // const premiseComponent = components.find(c => c.types.includes("premise"));
           // const name = premiseComponent?.long_name || "";
-          const name = prevLocation.locName;
+          const name = givenName || prevLocation.locName;
           inputRef.current.value = address;
           setLocation({ locName: name, locAddress: address });
         }
@@ -79,7 +79,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
         setLatLng(newPos);
         const locName = (place.name);
         const locAddress = (place.formatted_address);
-        setLocation({locName, locAddress})
+        setLocation({locName, locAddress});
       }
     };
 
@@ -145,7 +145,7 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
         const actPos = {lat: act.geometry.location.lat(),lng: act.geometry.location.lng()};
         setMarkerPosition(actPos);
         setLatLng(actPos);
-        updateAddressFromCoords(actPos);
+        // updateAddressFromCoords(actPos);
 
         const request = {
             placeId: act.place_id,
@@ -156,7 +156,11 @@ export default function LocationPicker({ act, onClose, onSave , prevLocation}) {
 
         service.getDetails(request, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            setActDetails(place);
+              setActDetails(place);
+              const locName = (place.name);
+              const locAddress = (place.formatted_address);
+              setLocation({locName, locAddress});
+              inputRef.current.value = locAddress;
             } else {
             console.warn("getDetails failed:", status);
             setActDetails(null);
