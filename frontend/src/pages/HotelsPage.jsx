@@ -21,7 +21,7 @@ import { supabase } from "../lib/supabaseClient";
 import { CollaboratorButton } from "../components/Misc/AddCollaboratorForm";
 import PresenceIndicator from "../components/RealtimeComponents/PresenceIndicator";
 
-function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId, setLoadingMessage, isEditable}) { //CONTENT FOR ONE HOTEL GROUP
+function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId, setLoadingMessage, isEditable, isOwner}) { //CONTENT FOR ONE HOTEL GROUP
     const [hotels, setHotels] = useState([]);
     const [confirmedHotel, setConfirmedHotel] = useState(undefined);
     const [isComparingLocations, setIsComparingLocations] = useState(false);
@@ -173,6 +173,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
                 onDelete={deleteHotel}
                 onConfirm={handleConfirmClick}
                 isEditable={isEditable}
+                isOwner={isOwner}
             />
         </div>));
 
@@ -216,7 +217,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
     );
 }
 
-function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage}) {
+function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) {
     const [hotelGrps, setHotelGroups] = useState([]);
 
     const fetchHGs = async () => {
@@ -312,6 +313,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage}) {
                 deleteHG={() => deleteHG(hg.id)}
                 isEditable={isEditable}
                 setLoadingMessage={setLoadingMessage}
+                isOwner={isOwner}
             />
         </div>
     ));
@@ -474,7 +476,7 @@ export function HotelsPage() {
                     <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
                     <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
-                    <HotelGroupsContent itin={itin} setItin={setItin} itinDbId={itinDbId} isEditable={isEditable} setLoadingMessage={setLoadingMessage}/>
+                    <HotelGroupsContent itin={itin} setItin={setItin} itinDbId={itinDbId} isEditable={isEditable} setLoadingMessage={setLoadingMessage} isOwner={isOwner}/>
                     <div className="custom-button-wrapper">
                         <button className='back-btn themed-button' onClick={()=>navigate('/')}>🏡 Back To Home</button>
                         {/* <button className='save-btn themed-button' onClick={()=>saveToDB(itin)}>💾 Save</button> */}

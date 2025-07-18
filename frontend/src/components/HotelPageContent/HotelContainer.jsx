@@ -3,7 +3,7 @@ import { useState } from "react";
 import HotelPicker from "../GoogleMapsComponents/HotelPicker";
 import ConfirmModal from "../Misc/ConfirmModal";
 
-const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable}) => {
+const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwner}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [location, setLocation] = useState( hotel.address );
   const [isPickingLocation, setIsPickingLocation] = useState(false);
