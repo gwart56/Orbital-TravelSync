@@ -25,6 +25,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
     const [confirmedHotel, setConfirmedHotel] = useState(undefined);
     const [isComparingLocations, setIsComparingLocations] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    
 
     const fetchH = async () => {
             try {
@@ -176,12 +177,14 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
             />
         </div>));
 
+          console.log('hotel page', isEditable);
+
     return (
         <>
             <div className="hg-container">               
                 {confirmedHotel ? (
                     <>
-                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG} confirmedHotel={confirmedHotel}/>
+                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG} confirmedHotel={confirmedHotel} isEditable={false}/>
                     <ConfirmedHotelGroup //THIS CONTAINER ONLY APPEARS WHEN THERS CONFIRMED HOTEL
                         confirmedHotel={confirmedHotel}
                         updateHotel={updateHotel}
@@ -191,7 +194,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
                     </>
                 ) : (//THIS IS FOR UNCONFIRMED HOTELS, 
                 <> 
-                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG}/>
+                    <HGInfo hg={hotelGrp} renameHG={renameHG} setEndHG={setEndHG} setStartHG={setStartHG} isEditable={isEditable}/>
                     {hotelsElements}
                     {isComparingLocations && <HotelComparator
                         key={`hotel-comparator-${hgId}`} // <-- helps force full remount

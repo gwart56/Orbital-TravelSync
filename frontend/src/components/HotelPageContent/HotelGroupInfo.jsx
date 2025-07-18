@@ -10,7 +10,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
 //may not use
-function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confirmedHotel}){
+function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confirmedHotel, isEditable}){
   const [editing, setEditing] = useState(false);
   
   const handleSave = () => {
@@ -18,21 +18,17 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confi
     setEditing(false);
   };
 
-  console.log('HG START DATE', hg.startDate);
-  console.log('HG START DATE', dayjs(hg.startDate, 'DD-MM-YYYY'));
-
   return (
     <>
       {//THIS IS SO THAT YOU CANNOT EDIT START AND END DATES WHEN YOU CONFIRM A HOTEL
       confirmedHotel?( 
         <>
           <h3>🟢 Check-in: {dayjs(hg.startDate, 'DD-MM-YYYY').format('D MMMM YYYY')} </h3>
-          {/* <button className="btn btn-light" onClick={() => setEditing(true)}> Edit<MdEdit /></button></h3> */}
         </>
       )
-      :!editing? (
+      :!(editing)? (
         <>
-          <h3 className="editable-start-date" onClick={() => setEditing(true)}>
+          <h3 className="editable-start-date" onClick={() => isEditable?setEditing(true):setEditing(false)}>
             🟢 Check-in: {dayjs(hg.startDate, 'DD-MM-YYYY').format('D MMMM YYYY')}
           </h3>
         </>
@@ -56,7 +52,7 @@ function HGStartDateInput({ hg, setStartHG, newStartDate, setNewStartDate, confi
   );
 }
 
-function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHotel }){
+function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHotel , isEditable}){
   const [editing, setEditing] = useState(false);
 
   const handleSave = () => {
@@ -73,9 +69,9 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHote
         </>
       )
 
-      :!editing ? (
+      :!(editing)? (
         <>
-          <h3 className="editable-end-date" onClick={() => setEditing(true)}>
+          <h3 className="editable-end-date" onClick={() => isEditable?setEditing(true):setEditing(false)}>
             🔴 Check-out: {dayjs(hg.endDate, 'DD-MM-YYYY').format('D MMMM YYYY')}
           </h3>
         </>
@@ -100,7 +96,7 @@ function HGEndDateInput({ hg, setEndHG, newEndDate, setNewEndDate, confirmedHote
   );
 }
 
-function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel }) {
+function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel, isEditable}) {
 
   const [startDate, setNewStartDate] = useState(dayjs(hg.startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
   
@@ -112,9 +108,6 @@ function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel }) {
 
 
   useEffect(() => {
-    // console.log(startDate)
-    // console.log(endDate)
-    // console.log(dayjs(startDate).isAfter(dayjs(endDate)));
     if (startDate && endDate && dayjs(startDate).isSameOrAfter(dayjs(endDate))) {
       setNewEndDate(dayjs(startDate, 'YYYY-MM-DD').add(1, 'day')); // Auto-correct
       setEndHG(dayjs(startDate, 'YYYY-MM-DD').add(1, 'day').format('DD-MM-YYYY'));
@@ -128,6 +121,7 @@ function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel }) {
         newStartDate={startDate}
         setNewStartDate={setNewStartDate}
         confirmedHotel={confirmedHotel}
+        isEditable={isEditable}
       />
       <HGEndDateInput
         hg={hg}
@@ -135,11 +129,12 @@ function HGDateRangePicker({hg, setEndHG, setStartHG, confirmedHotel }) {
         newEndDate={endDate}
         setNewEndDate={setNewEndDate}
         confirmedHotel={confirmedHotel}
+        isEditable={isEditable}
       />
   </>);
 }
 
-function HGNameInput({ hg, renameHG }){
+function HGNameInput({ hg, renameHG , isEditable}){
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(hg.name);
 
@@ -150,13 +145,13 @@ function HGNameInput({ hg, renameHG }){
 
   return (
     <>
-      {!editing ? (
+      {!(editing)? (
         <h3 
           className="editable-name"
-          onClick={() => setEditing(true)}
+          onClick={() => isEditable?setEditing(true):setEditing(false)}
         >
           {hg.name}
-          <MdEdit className="edit-icon" />
+          {isEditable && <MdEdit className="edit-icon" />}
         </h3>
       ) : (
         <h3>
@@ -181,11 +176,12 @@ function HGNameInput({ hg, renameHG }){
   );
 }
 
-export default function HGInfo({ hg, setEndHG, renameHG, setStartHG, confirmedHotel }) {
+export default function HGInfo({ hg, setEndHG, renameHG, setStartHG, confirmedHotel , isEditable}) {
+  console.log('hotel group info', isEditable);
   return (
     <div>
       <div>
-        <HGNameInput hg={hg} renameHG={renameHG} />
+        <HGNameInput hg={hg} renameHG={renameHG} isEditable={isEditable}/>
       </div>
       <div>
         <HGDateRangePicker
@@ -193,6 +189,7 @@ export default function HGInfo({ hg, setEndHG, renameHG, setStartHG, confirmedHo
           setEndHG={setEndHG}
           setStartHG={setStartHG}
           confirmedHotel={confirmedHotel}
+          isEditable={isEditable}
         />
       </div>
     </div>
