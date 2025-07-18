@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Extend dayjs with the plugin
+dayjs.extend(customParseFormat);
 
 export default function ItineraryModal({ onCreate, onClose }) {
     const [name, setName] = useState("");

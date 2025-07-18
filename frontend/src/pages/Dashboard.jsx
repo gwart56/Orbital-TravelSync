@@ -166,10 +166,10 @@ function ItineraryLinks({userId, navigate}) {
         try {
             const newItin = await createNewItinForUser(userId, 
                 name, 
-                dayjs(startDate, 'YYYY-MM-DD'),  //format the startDate
+                dayjs(startDate, 'YYYY-MM-DD').format('YYYY-MM-DD'),  //format the startDate
                 numDays);
             console.log('successfully created new itinerary');
-            console.log(newItin);
+            console.log('newitin', newItin);
             goToActivityPage(newItin.id);
         } catch (err) {
           console.error('Failed to create new Itinerary...', err);
