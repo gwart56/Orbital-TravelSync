@@ -81,6 +81,22 @@ export default function ConfirmedHotelGroup({confirmedHotel, updateHotel, setCon
                 </span>
             </div>
 
+            <div className="d-flex align-items-center">
+                <strong className="me-1" style={{ minWidth: "50px" }}>Notes:</strong>
+                <span
+                    className={`text-truncate ${!confirmedHotel.notes ? 'fst-italic text-muted' : ''}`}
+                    style={{
+                    maxWidth: "700px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                    }}
+                    title={confirmedHotel.notes || '-'}
+                >
+                    {confirmedHotel.notes || '-'}
+                </span>
+            </div>
+
             {/* TODO: add an edit button and also allow user to view previous hotels*/}
             <div className="d-flex gap-2 m-3">
 

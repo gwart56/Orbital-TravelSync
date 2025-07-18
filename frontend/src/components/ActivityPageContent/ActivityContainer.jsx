@@ -72,7 +72,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
           </span>
         </div>
 
-        {price > 0 && <div className="mb-3 d-flex align-items-start">
+        {price > 0 && <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>
             {price > 0 && "Price:"}
           </strong>
@@ -84,7 +84,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
         {notes && <div className="mb-2 d-flex align-items-start">
           <strong className="me-2 flex-shrink-0" style={{ width: "100px" }}>Notes:</strong>
           <span
-            className={`text-truncate ${notes ? "" : "text-placeholder"}`}
+            className={`text-truncate ${notes ? "fst-italic" : "text-placeholder"}`}
             title={notes}
           >
             {notes || "No notes"}
@@ -153,7 +153,7 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
             />
           </div>
 
-          <div className="mb-3 d-flex align-items-center">
+          <div className="mb-2 d-flex align-items-center">
             <strong style={labelStyle}>Price:</strong>
             <input
               className="form-control form-control-sm"

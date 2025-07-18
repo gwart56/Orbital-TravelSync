@@ -146,8 +146,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
             </button>
             )}
 
-          <div className="mb-2">
-            <strong>Notes: </strong>
+          <div className="mb-2 d-flex">
+            <strong className="mx-3 mt-2">Notes: </strong>
             <input
               type="text"
               name="notes"
