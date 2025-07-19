@@ -464,7 +464,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
             </h5>
           )}
 
-          <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
+          {isEditable && <div className="swap-section m-2 d-flex align-items-center gap-2 justify-content-center">
             <label htmlFor={`swap-select-${index}`} className="">🔁 Swap Day with:</label>
             <select
               id={`swap-select-${index}`}
@@ -496,7 +496,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
             >
               Swap Days
             </button>
-          </div>
+          </div>}
 
 
           <ActivityContent
