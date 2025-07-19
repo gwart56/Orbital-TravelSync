@@ -22,6 +22,7 @@ function ItineraryDateInput({ itin, onSave, isEditable }){
         </h3>
       ) : (
         <h3>
+          <em>
           📆 Adventure Begins: 
           <input
             type="date"
@@ -31,6 +32,7 @@ function ItineraryDateInput({ itin, onSave, isEditable }){
           />
           <button className="btn btn-light" onClick={handleSave}>Save</button>
           <button className="btn btn-light" onClick={() => setEditing(false)}>Cancel</button>
+          </em>
         </h3>
       )}
     </>
