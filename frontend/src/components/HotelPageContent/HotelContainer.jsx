@@ -6,6 +6,7 @@ import ConfirmModal from "../Misc/ConfirmModal";
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwner}) => {
   const [isEditing, setIsEditing] = useState(!hotel.name);
   const [location, setLocation] = useState( hotel.address );
+  const [name, setName] = useState(hotel.name);
   const [isPickingLocation, setIsPickingLocation] = useState(false);
   const [latLng, setLatLng] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -19,7 +20,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
     const formData = new FormData(e.target);
     const updatedHotel = {
         ...hotel,
-        name: formData.get("name"),
+        name: name,
         price: formData.get("price"),
         address: formData.get("address"),
         link: formData.get("link"),
@@ -33,13 +34,14 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
     setIsEditing(false);
   };
 
-   function handleLocationSave(newLocation, pos) { //args: {locName, locAddress} , {lat, lng}
+   function handleLocationSave(newLocation, pos, name) { //args: {locName, locAddress} , {lat, lng} , name
     if (!newLocation) {
       return;
     }
     console.log(newLocation);
     setLocation(newLocation.locAddress);
     setLatLng(pos);
+    setName(name);
     setIsPickingLocation(false);
   }
 
@@ -53,7 +55,8 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
             <input
               type="text"
               name="name"
-              defaultValue={hotel.name}
+              value={name}
+              onChange={(e) => {setName(e.target.value);}}
               placeholder="e.g. Marina Bay Sands"
               className="form-control d-inline w-auto"
               required
@@ -132,9 +135,10 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
 
           {isPickingLocation ? (
             <HotelPicker
-              onSave={(loc, pos) => handleLocationSave(loc, pos)}
+              onSave={(loc, pos, name) => handleLocationSave(loc, pos, name)}
               onClose={() => setIsPickingLocation(false)}
               hotel={hotel}
+              name={name}
             />
           ) : (
             <button

@@ -9,8 +9,9 @@ const containerStyle = {
 const centerDefault = { lat: 1.3521, lng: 103.8198 }; // Singapore default
 const libraries = ["places"]; //for libs
 
-export default function HotelPicker({ hotel, onClose, onSave }) {
+export default function HotelPicker({ hotel, onClose, onSave, name }) {
     const initialPosition = hotel.latLng;
+    const [chosenName, setChosenName] = useState(name);
     const [mapCenter, setMapCenter] = useState(initialPosition || centerDefault);
     const [markerPosition, setMarkerPosition] = useState(initialPosition || centerDefault);
     const [latLng, setLatLng] = useState(initialPosition || centerDefault);
@@ -54,9 +55,8 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
           // const components = results[0]?.address_components || [];
           // const premiseComponent = components.find(c => c.types.includes("premise"));
           // const name = premiseComponent?.long_name || "Dropped Pin";
-          const name = "";
           inputRef.current.value = address;
-          setLocation({ locName: name, locAddress: address });
+          setLocation({ locName: chosenName, locAddress: address });
         }
       });
     }
@@ -140,7 +140,7 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
         const hotelPos = {lat: hotel.geometry.location.lat(),lng: hotel.geometry.location.lng()};
         setMarkerPosition(hotelPos);
         setLatLng(hotelPos);
-        updateAddressFromCoords(hotelPos);
+        // updateAddressFromCoords(hotelPos);
         
         setSelectedHotel(hotel);
         
@@ -152,7 +152,12 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
 
         service.getDetails(request, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            setHotelDetails(place);
+              setHotelDetails(place);
+              const locName = (place.name);
+              const locAddress = (place.formatted_address);
+              setLocation({locName, locAddress});
+              setChosenName(locName);
+              inputRef.current.value = locAddress;
             } else {
             console.warn("getDetails failed:", status);
             setHotelDetails(null);
@@ -163,7 +168,7 @@ export default function HotelPicker({ hotel, onClose, onSave }) {
 
 
     const handleSave = () => {
-      onSave( location , latLng );
+      onSave( location , latLng , chosenName);
       onClose();
     };
 
