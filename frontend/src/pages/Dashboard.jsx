@@ -12,6 +12,7 @@ import { createNewItinForUser, deleteItineraryById, loadAllItineraryForUser, loa
 import { loadTravelDaysByItineraryId } from "../data/travelDays";
 import { findEmailByUserId } from "../lib/supabaseCollaborator";
 import { supabase } from "../lib/supabaseClient";
+import ConfirmModal from '../components/Misc/ConfirmModal';
 
 function DashboardNotLoggedIn() {
     return (
@@ -186,6 +187,8 @@ function ItineraryLinks({userId, navigate}) {
         }
     }
 
+    const [deletingItinId, setDeletingItinId] = useState(null);
+
     useEffect(() => {
         const fetchItins = async () => {
             try {
@@ -251,18 +254,13 @@ function ItineraryLinks({userId, navigate}) {
                     className="d-flex gap-2"
                     onClick={(e) => e.stopPropagation()} // allow delete without triggering edit
                     >
-                        <button
-                            className="delete-act-butt btn btn-danger align-items-center"
-                            onClick={() => {
-                            const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
-                            if (confirmDelete) {
-                                deleteItinerary(it.itinDbId);
-                            }
-                            }}
-                        >
-                            <span>Delete </span> 
-                            <MdDeleteForever size={20} />
-                        </button>
+                      <button
+                          className="delete-act-butt btn btn-danger align-items-center"
+                          onClick={() => setDeletingItinId(it.itinDbId)}
+                      >
+                          <span>Delete </span>
+                          <MdDeleteForever size={20} />
+                      </button>
                     </div>
                 </div>
             </div>)}
@@ -273,6 +271,19 @@ function ItineraryLinks({userId, navigate}) {
             <div className="itins-container">
                 {itinsElements}
             </div>
+            {/* Confirm modal outside the list */}
+            {deletingItinId && (
+              <ConfirmModal
+                message={`Are you sure you want to delete "${
+                  itinsArray.find((it) => it.itinDbId === deletingItinId)?.itin.name
+                }"?`}
+                onConfirm={() => {
+                  deleteItinerary(deletingItinId);
+                  setDeletingItinId(null);
+                }}
+                onCancel={() => setDeletingItinId(null)}
+              />
+            )}
             <button className="btn btn-primary btn-lg px-4 mt-4 mb-4 fade-in-up" onClick={() => setIsModalOpen(true)}>
                 Create New Itinerary
             </button>

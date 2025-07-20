@@ -157,7 +157,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content shadow-lg">
           <div className="modal-header border-0">
-            <h5 className="modal-title">Collaborators</h5>
+            <h5 className="modal-title" style={{ textAlign: 'center', width: '100%' }}>👥 Collaborators</h5>
             <button type="button" className="btn-close" onClick={handleClose}></button>
           </div>
 
