@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import './AddCollaboratorForm.css';
 import { addCollaborator, findUserByEmail, checkIfCollaboratorExists, loadCollaboratorsForItinerary, deleteCollaboratorById, updateCollaboratorRole, findEmailByUserId } from "../../lib/supabaseCollaborator";
+import ConfirmModal from "./ConfirmModal";
 
 function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, isEditable}) {
     const [collabRole, setCollabRole] = useState(c.role);
+    const [showDelete, setShowDelete] = useState(false);
     return <div key={c.userId}>
       <div className="d-flex justify-content-center">
+        {showDelete && <ConfirmModal
+                      message={`Delete collaborator ${c.email}?`}
+                      onConfirm={()=>handleDeleteCollaborator(c.userId, c.email)}
+                      onCancel={() => setShowDelete(false)}
+                    />}
         <p className="mx-2 mt-2"><strong>Email: </strong> {c.email} </p>
         {isEditable ? 
           <select
@@ -21,7 +28,7 @@ function CollaboratorContainer({c, handleDeleteCollaborator, handleUpdateRole, i
             <option value="editor">Editor</option>
           </select> 
         : <p className="mx-2 mt-2"><strong>Role: </strong> {c.role} </p>}
-        {isEditable && <button className="btn btn-danger mx-2 mb-2 fw-bold" onClick={()=>handleDeleteCollaborator(c.userId, c.email)}>X</button>}
+        {isEditable && <button className="btn btn-danger mx-2 mb-2 fw-bold" onClick={() => setShowDelete(true)}>X</button>}
       </div>
     </div>
 }

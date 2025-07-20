@@ -662,10 +662,10 @@ function ActivityPage() {
                 />
 
                 <div className="activity-page-top-buttons">
-                  <button className="custom-nav-btn darkened-activities-btn">🎯 To Activities</button>
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
-                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> 🛫 To Flights</button>
-                  <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 To Summary</button>
+                  <button className="custom-nav-btn darkened-activities-btn">🎯 Activities</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 Hotels</button>
+                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}> 🛫 Flights</button>
+                  <button className="custom-btn summary-btn" onClick={()=>navigate(`/summary/${itinDbId}`)}> 📝 Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                 </div>
 

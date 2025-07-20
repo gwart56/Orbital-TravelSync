@@ -458,16 +458,16 @@ export function HotelsPage() {
 
                     <div className="custom-button-group">
                         <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>
-                            🎯 To Activities
+                            🎯 Activities
                         </button>
                         <button className="custom-btn darkened-hotels-btn">
-                            🏨 To Hotels
+                            🏨 Hotels
                         </button>
                         <button className="custom-nav-btn flights-btn" onClick={() => navigate(`/flights/${itinDbId}`)}>
-                            🛫 To Flights
+                            🛫 Flights
                         </button>
                         <button className="custom-nav-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>
-                            📝 To Summary
+                            📝 Summary
                         </button>
                         <button className="custom-nav-btn hotels-home-btn" onClick={() => navigate('/')}>
                             🏡 Back To Home

@@ -230,7 +230,7 @@ function FlightPage() {
     <div className="flight-background-image d-flex flex-column align-items-center">
       <Header />
 
-      <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flight Planner</h1>
+      <h1 className="welcome-text text-primary" style={{ marginTop: "80px" }}>🛫 Flights</h1>
       <LoadingMessage loadingMessage={loadingMessage}/>
       {itin ? (
         <>
@@ -240,10 +240,10 @@ function FlightPage() {
             isEditable={isEditable}
           />
           <div className="flight-page-top-buttons">
-            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
-            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
-            <button className="custom-nav-btn darkened-flights-btn">🛫 To Flights</button>
-            <button className="custom-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 To Summary</button>
+            <button className="custom-nav-btn activities-btn" onClick={() => navigate(`/activities/${itinDbId}`)}>🎯 Activities</button>
+            <button className="custom-nav-btn hotels-btn" onClick={() => navigate(`/hotels/${itinDbId}`)}>🏨 Hotels</button>
+            <button className="custom-nav-btn darkened-flights-btn">🛫 Flights</button>
+            <button className="custom-btn summary-btn" onClick={() => navigate(`/summary/${itinDbId}`)}>📝 Summary</button>
             <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
             {/* <AutoSaveButton itin={itin} saveToDB={saveToDB} /> */}
           </div>

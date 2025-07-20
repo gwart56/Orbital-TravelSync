@@ -411,10 +411,10 @@ export function SummaryPage() {
                 />
 
                 <div className="activity-page-top-buttons">
-                  <button className="custom-btn activities-btn" onClick={()=>navigate(`/activities/${itinDbId}`)}>🎯 To Activities</button>
-                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 To Hotels</button>
-                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}>🛫 To Flights</button>
-                  <button className="custom-btn darkened-summary-btn">📝 To Summary</button>
+                  <button className="custom-btn activities-btn" onClick={()=>navigate(`/activities/${itinDbId}`)}>🎯 Activities</button>
+                  <button className="custom-btn hotels-btn" onClick={()=>navigate(`/hotels/${itinDbId}`)}>🏨 Hotels</button>
+                  <button className="custom-btn flights-btn" onClick={()=>navigate(`/flights/${itinDbId}`)}>🛫 Flights</button>
+                  <button className="custom-btn darkened-summary-btn">📝 Summary</button>
                   <button className='custom-btn home-btn' onClick={()=>navigate('/')}>🏠 Back To Home</button>
                   {/* <AutoSaveButton itin={itin} saveToDB={saveToDB}/> */}
                 </div>
