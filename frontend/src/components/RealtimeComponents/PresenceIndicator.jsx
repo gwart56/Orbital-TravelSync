@@ -1,10 +1,11 @@
 // components/PresenceIndicator.js
+import { supabase } from '../../lib/supabaseClient';
 import './PresenceIndicator.css';
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabaseClient';
 
 export default function PresenceIndicator({ itinDbId , sessionUser}) {
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isTimeOut, setIsTimeOut] = useState(false);
 
     useEffect(() => {
       if (!sessionUser || !itinDbId) return;
@@ -34,9 +35,10 @@ export default function PresenceIndicator({ itinDbId , sessionUser}) {
           console.log('Users left:', leftPresences);
         })
         .subscribe(async (status) => {
+          console.log(`[Realtime] presence channel status:`, status);
           if (status === 'SUBSCRIBED') {
+            setIsTimeOut(false);
             // Track the current user's presence
-            console.log(`[Realtime] PRESENCE CHANNEL ${itinDbId} channel status:`, status);
             await presenceChannel.track({
               user_id: sessionUser.id,
               email: sessionUser.email,
@@ -44,6 +46,9 @@ export default function PresenceIndicator({ itinDbId , sessionUser}) {
               avatar: sessionUser.user_metadata?.avatar_url,
               online_at: new Date().toISOString()
             });
+          } 
+          if (status === 'TIMED_OUT') {
+            setIsTimeOut(true);
           }
         });
 
@@ -57,17 +62,22 @@ export default function PresenceIndicator({ itinDbId , sessionUser}) {
       <div className="online-users">
         {onlineUsers.map((user, index) => (
             <div 
-                key={user.user_id}
+                key={user.user_id || index}
                 className="user-badge"
-                style={{ '--user-index': index }}
+                style={{ '--user-index': `${index}` }}
                 data-email={user.email}
                 title={user.name}
             >
-            {user.name.charAt(0).toUpperCase()}
+            {(user.name?.charAt(0) || '?').toUpperCase()}
             </div>
         ))}
         </div>
-      {onlineUsers.length==0?<small>
+      {isTimeOut?<><p className='text-danger'>
+        Realtime Collaboration
+      </p><p className='text-danger'>
+        Currently Unavailable
+      </p></>
+      :onlineUsers.length==0?<small>
         Loading...
       </small>
       :<small className="text-muted">

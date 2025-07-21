@@ -79,7 +79,6 @@ export function RouteRender({ origin, destination }) {
     <div>
         <div className="d-flex justify-content-center mb-2">
             <select
-                id={`type-select`}
                 className="form-select form-select-sm mx-2"
                 value={transitMode}
                 style={{ maxWidth: "200px" }}

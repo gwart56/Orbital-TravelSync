@@ -302,7 +302,7 @@ function DashboardContent() {
     const userId = user?.id; //get userId
     const userName = user?.user_metadata?.name || user?.email; //user name
     useEffect(() => {
-        console.log("user", user);
+        // console.log("user", user);
         console.log("NAME of current session's user: ", userName);
     }, [user, userName]);
 

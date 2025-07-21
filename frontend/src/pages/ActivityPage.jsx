@@ -167,6 +167,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
         />
         { index < sortedActivities.length-1 &&
           <RouteRender
+            key={genId()}
             origin={a.latLng}
             destination={sortedActivities[index+1].latLng}
           />

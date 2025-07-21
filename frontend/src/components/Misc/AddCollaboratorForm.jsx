@@ -157,6 +157,7 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
       handleDeleteCollaborator={handleDeleteCollaborator}
       handleUpdateRole={handleUpdateRole}
       isEditable={isEditable}
+      key={c.userId}
   />)
 
   return (
