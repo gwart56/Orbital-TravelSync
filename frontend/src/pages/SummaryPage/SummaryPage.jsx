@@ -269,13 +269,13 @@ function expenditure({ flights, hotels, activities }) {
 }
 
 export function SummaryPage() {
-    const [itin, setItin] = useState(null); //initialize itin to null
-    const [flights, setFlights] = useState(null);
-    const [itinMeta, setItinMeta] = useState(null);   // holds user_id and itinerary_members
-    const {session} = useAuthContext();
-    const sessionUser = session?.user; // get user of current session
-    const sessionUserId = sessionUser?.id; //get userId
-    const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
+  const [itin, setItin] = useState(null); //initialize itin to null
+  const [flights, setFlights] = useState(null);
+  const [itinMeta, setItinMeta] = useState(null);   // holds user_id and itinerary_members
+  const {session} = useAuthContext();
+  const sessionUser = session?.user; // get user of current session
+  const sessionUserId = sessionUser?.id; //get userId
+  const [confirmedHotelsArr, setConfirmedHotelsArr] = useState([]);
 
   const { id: itinDbId } = useParams(); //get the itinDbId from the URL
 
@@ -422,18 +422,14 @@ export function SummaryPage() {
                 <CollaboratorButton itineraryId={itinDbId} creatorId={itinMeta?.user_id} isEditable={isOwner}/>
                 <PresenceIndicator itinDbId={itinDbId} sessionUser={sessionUser}/>
 
-                <div 
-                className='summary-flight-container fade-in'
-                >
+                <div className='summary-flight-container fade-in'>
                   <h4>Flight Details</h4>
                     <FlightContent  //CONTAINER FOR ALL TRAVEL DAYS
                         flights={flights}
                     /> 
                 </div>
                 
-                <div 
-                className='summary-itinerary-container fade-in'
-                >
+                <div className='summary-itinerary-container fade-in'>
                   <h4>Summary Of Itinerary</h4>
                     <TravelDayContent  //CONTAINER FOR ALL TRAVEL DAYS
                         itinDbId={itinDbId}
@@ -452,7 +448,7 @@ export function SummaryPage() {
               : (<h3 className="text-secondary">Loading Summary...</h3>)}
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
-                {/* <button className="save-btn themed-button" onClick={() => saveToDB(itin)}>💾 Save</button> */}
+                {/* <button className="print-btn themed-button" onClick={() => window.print()}>🖨️ Print</button> */}
               </div>
         </div>
     );
