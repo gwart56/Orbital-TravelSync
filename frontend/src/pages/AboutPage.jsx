@@ -39,7 +39,7 @@ function AboutPage() {
               <ul className="list-group list-group-flush fs-5 mb-4">
                 <li className="list-group-item border-0 bg-transparent">🔍 Juggling endless tabs for hotel prices</li>
                 <li className="list-group-item border-0 bg-transparent">📅 Struggling to align schedules</li>
-                <li className="list-group-item border-0 bg-transparent">💸 Awkwardly splitting expenses</li>
+                <li className="list-group-item border-0 bg-transparent">💸 Difficulty in tracking expense</li>
               </ul>
 
               <p className="mb-3 fs-5">TravelSync makes it easier with:</p>
@@ -62,9 +62,9 @@ function AboutPage() {
 
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             {[
-              { title: 'Smart Hotel Booking', desc: 'Aggregate prices and locations from top sites', color: '#2ECC71' },
+              { title: 'Hotel Comparison', desc: 'Compare hotels in one location', color: '#2ECC71' },
               { title: 'Shared Itineraries', desc: 'Add activities and sync plans in real-time', color: '#3498DB' },
-              { title: 'Expense Splitting', desc: 'Split costs fairly in any currency', color: '#F1C40F' },
+              { title: 'Expense Tracking', desc: 'Split costs fairly in any currency', color: '#F1C40F' },
               { title: 'Interactive Maps', desc: 'See hotels and attractions visually', color: '#9B59B6' }
             ].map((feature, i) => (
               <div className="col" key={i}>

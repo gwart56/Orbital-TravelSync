@@ -24,7 +24,7 @@ Ultimately, we want TravelSync to make information gathering and sharing, especi
 
 5. Travel Time (extension): be able to display the expected time taken to travel from location 1 to location 2, so that it is easier to plan what time to depart from location 1\.  
 
-6. Expense Splitting (extension): allows users to select which person pays for which items, or to just even split the bill.  
+6. Expense tracker (extension): show users how much they have spent
 
 **Deploying Project Prototype**  
 To check out our website use this link: //put link here
