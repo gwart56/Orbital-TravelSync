@@ -87,6 +87,11 @@ export function AddCollaboratorModal({ itineraryId, onClose, creatorId, isEditab
       return;
     }
 
+    if(user?.id == creatorId) {
+      setStatus("⚠️ User is the owner.");
+      return;
+    }
+
     try {
       await addCollaborator(itineraryId, user.id, role);
       setCollaborators(prev => [...prev, {
