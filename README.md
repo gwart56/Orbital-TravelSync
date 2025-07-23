@@ -27,7 +27,7 @@ Ultimately, we want TravelSync to make information gathering and sharing, especi
 6. Expense tracker (extension): show users how much they have spent
 
 **Deploying Project Prototype**  
-To check out our website use this link: //put link here
+To check out our website use this link: https://orbital-travelsync.vercel.app/
 
 **Tech Stack**  
 The application is built using the following technologies:
