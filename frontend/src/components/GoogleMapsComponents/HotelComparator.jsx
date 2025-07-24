@@ -15,6 +15,8 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [hotelDetails, setHotelDetails] = useState(null);
 
+    console.log("COMPARED HOTELS",comparedHotels);
+
 
     //AutoComp => for search bar
     //geocoder => for pin -> address
@@ -52,6 +54,24 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
         }
       });
     }
+
+    // const addressToLatLng = (address) => {//for converting manual Text to latLng
+    //   if (!geocoder.current || !address) return null;
+
+    //   geocoder.current.geocode({ address }, (results, status) => {
+    //     if (status === "OK" && results[0]) {
+    //       const location = results[0].geometry.location;
+    //       const latLng = {
+    //         lat: location.lat(),
+    //         lng: location.lng(),
+    //       };
+    //       console.log("Geocoded LatLng:", latLng);
+    //       return latLng;
+    //     } else {
+    //       console.error("Geocode failed:", status);
+    //     }
+    //   });
+    // };
     
 
     const handlePlaceChanged = () => {// this sets the marker position and map center position
@@ -78,6 +98,8 @@ export default function HotelComparator({ initialPosition, onClose, comparedHote
     if (loadError) return <div>Error loading Google Maps</div>;
     if (!isLoaded) return <div>Loading Map...</div>;
 
+    // const maybeComparableHotels = comparedHotels.filter(h=>h.address).map(h=>h.latLng?h:{...h, latLng: addressToLatLng(h.address)});
+    // console.log("Geocoded", maybeComparableHotels);
     const comparableHotels = comparedHotels.filter(h=>h.latLng);
     if (comparableHotels.length == 0) {
       return <div className="p-3 m-3 bg-info rounded" style={{ // ALL THIS STYLES TO MAKE IT POP UP

@@ -2,6 +2,7 @@ import { useState } from "react";
 // import LocationPicker from "../GoogleMapsComponents/LocationPicker";
 import HotelPicker from "../GoogleMapsComponents/HotelPicker";
 import ConfirmModal from "../Misc/ConfirmModal";
+import { addressToLatLng } from "../../utils/addressToLatLng";
 
 const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwner}) => {
   const [isEditing, setIsEditing] = useState(!hotel.name);
@@ -15,24 +16,30 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
     setIsEditing(true);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // prevent form refresh
-    const formData = new FormData(e.target);
-    const updatedHotel = {
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+
+      const updatedHotel = {
         ...hotel,
         name: name,
         price: formData.get("price"),
-        address: formData.get("address"),
+        address: location,
         link: formData.get("link"),
         checkInTime: formData.get("checkInTime"),
         checkOutTime: formData.get("checkOutTime"),
         rating: formData.get("rating"),
         latLng: latLng,
         notes: formData.get("notes")
+      };
+
+      onSave(updatedHotel);
+      setIsEditing(false);
     };
-    onSave(updatedHotel);
-    setIsEditing(false);
-  };
+
+
+  
 
    function handleLocationSave(newLocation, pos, name) { //args: {locName, locAddress} , {lat, lng} , name
     if (!newLocation) {
@@ -168,7 +175,7 @@ const HotelContainer = ({ hotel, onSave, onDelete, onConfirm , isEditable, isOwn
             <button
                 type="button"
                 className="btn btn-secondary"
-                onClick={() => setIsEditing(false)}
+                onClick={() => {setIsEditing(false);setName(hotel.name);setLocation(hotel.address);}}
             >
                 Cancel
             </button>

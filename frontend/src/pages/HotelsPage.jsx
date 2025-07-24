@@ -19,6 +19,7 @@ import { fetchItin } from "../utils/fetchingForPage";
 import { supabase } from "../lib/supabaseClient";
 import { CollaboratorButton } from "../components/Misc/AddCollaboratorForm";
 import PresenceIndicator from "../components/RealtimeComponents/PresenceIndicator";
+import { addressToLatLng } from "../utils/addressToLatLng";
 
 function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, itinDbId, setLoadingMessage, isEditable, isOwner}) { //CONTENT FOR ONE HOTEL GROUP
     const [hotels, setHotels] = useState([]);
@@ -107,8 +108,13 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
 
     const updateHotel = async (targetId, updatedH) => {
         setLoadingMessage("Updating...");
-        const newHotelArr = editItemInArrayById(hotels, updatedH, targetId);
-        await updateHotelById(targetId, updatedH);
+        let finalLatLng = updatedH.latLng;
+        if (!finalLatLng && updatedH.address) {
+          const geocoder = new window.google.maps.Geocoder();
+          finalLatLng = await addressToLatLng(geocoder, updatedH.address);
+        }
+        const newHotelArr = editItemInArrayById(hotels, {...updatedH, latLng: finalLatLng}, targetId);
+        await updateHotelById(targetId, {...updatedH, latLng: finalLatLng});
         setHotels(newHotelArr);
         setLoadingMessage("");
     }

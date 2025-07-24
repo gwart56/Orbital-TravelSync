@@ -2,6 +2,7 @@ import './ActivityContainer.css';
 import { MdDeleteForever } from "react-icons/md";
 import { useState } from 'react';
 import LocationPicker from "../GoogleMapsComponents/LocationPicker";
+import { addressToLatLng } from '../../utils/addressToLatLng';
 
 export default function ActivityContainer({ activity, handleSave, handleDelete, isEdit , isEditable}) {
   const [latLng, setLatLng] = useState(activity.latLng); //mainly for google maps api
@@ -10,10 +11,11 @@ export default function ActivityContainer({ activity, handleSave, handleDelete, 
   const [location, setLocation] = useState({ locName, locAddress }); //mainly for google maps api
   const [isPickingLocation, setIsPickingLocation] = useState(false);
 
-  function saveActivity(event) {
+  async function saveActivity(event) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const dataObj = Object.fromEntries(formData.entries());;
+    const dataObj = Object.fromEntries(formData.entries());
+
     setIsEditing(false);
     handleSave(id, {...dataObj, latLng: latLng});
   }

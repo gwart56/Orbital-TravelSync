@@ -22,6 +22,7 @@ import {v4 as genId} from "uuid";
 import { fetchItin } from '../utils/fetchingForPage';
 import PresenceIndicator from '../components/RealtimeComponents/PresenceIndicator';
 import { RouteRender } from '../components/GoogleMapsComponents/RoutesRenderer';
+import { addressToLatLng } from '../utils/addressToLatLng';
 
 //each ActivityContent contains multiple ActivityContainers in a day (ROWS OF ACTIVITIES)
 function ActivityContent({dayId, setLoadingMessage, isEditable}) {
@@ -116,9 +117,16 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
 
   async function handleSave(id, data) {
     setLoadingMessage("Saving...");
-    console.log("saved: id-" + id , data);
     const {name, time, locName, locAddress, latLng, price, notes} = data;
-    const newAct = newActivity(dayId, name, time, locName, locAddress, latLng, price, notes);
+
+    let finalLatLng = latLng;
+    if (!finalLatLng && locAddress) {
+      const geocoder = new window.google.maps.Geocoder();
+      finalLatLng = await addressToLatLng(geocoder, locAddress);
+    }
+
+    const newAct = newActivity(dayId, name, time, locName, locAddress, finalLatLng, price, notes);
+    console.log("saved: id-" + id , newAct);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");
