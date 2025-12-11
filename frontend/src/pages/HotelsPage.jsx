@@ -49,7 +49,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
         fetchH();
     
         const channel = supabase.channel(`hotels-${hgId}`);
-        console.log(`[Realtime] Subscribing to hotels-${hgId}`);
+        // console.log(`[Realtime] Subscribing to hotels-${hgId}`);
     
         channel
           .on(
@@ -61,17 +61,17 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
               filter: `groupId=eq.${hgId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE hotel', payload);
+              // // console.log('[Realtime] INSERT/UPDATE/DELETE hotel', payload);
               fetchH();
             }
           )
           .subscribe((status) => {
-            console.log(`[Realtime] hotels-${hgId} channel status:`, status);
+            // // console.log(`[Realtime] hotels-${hgId} channel status:`, status);
           });
     
         // Cleanup function: This runs when hgId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing hotel channel for ${hgId}`);
+          // // console.log(`[Cleanup] Removing hotel channel for ${hgId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -134,7 +134,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
         const newHotelArr = [...hotels, newHot];
         setHotels(newHotelArr);
         setLoadingMessage("");
-        // console.log("added new hotel");
+        // // console.log("added new hotel");
     }
 
     //FOR EDITING HOTEL GROUP NAME, DATES ---------------------------------------------------
@@ -183,7 +183,7 @@ function HotelGrpContent({hotelGrp, hgId, deleteHG, hotelGrps, setHotelGroups, i
             />
         </div>));
 
-          console.log('hotel page', isEditable);
+          // // console.log('hotel page', isEditable);
 
     return (
         <>
@@ -244,7 +244,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
         fetchHGs();
     
         const channel = supabase.channel(`hotelGroups-${itinDbId}`);
-        console.log(`[Realtime] Subscribing to hotelGroups-${itinDbId}`);
+        // // console.log(`[Realtime] Subscribing to hotelGroups-${itinDbId}`);
     
         channel
           .on(
@@ -256,7 +256,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
               filter: `itineraryId=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT hotelGrp', payload);
+              // console.log('[Realtime] INSERT hotelGrp', payload);
               fetchHGs();
             }
           )
@@ -269,7 +269,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
               filter: `itineraryId=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] UPDATE hotelGrp', payload);
+              // console.log('[Realtime] UPDATE hotelGrp', payload);
               fetchHGs();
             }
           )
@@ -282,17 +282,17 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
               filter: `itineraryId=eq.${itinDbId}`
             },
             (payload) => {
-              console.log('[Realtime] DELETE hotelGrp', payload);
+              // console.log('[Realtime] DELETE hotelGrp', payload);
               fetchHGs();
             }
           )
           .subscribe((status) => {
-            console.log(`[Realtime] hotelGroups-${itinDbId} channel status:`, status);
+            // console.log(`[Realtime] hotelGroups-${itinDbId} channel status:`, status);
           });
     
         // Cleanup function: This runs when itinDbId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing travelDay channel for ${itinDbId}`);
+          // console.log(`[Cleanup] Removing travelDay channel for ${itinDbId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -332,7 +332,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
         const newHotelGrps = [...hotelGrps, newHotelGrp];
         await addHotelGrpsIntoDB(newHotelGrp);
         setHotelGroups(newHotelGrps);
-        console.log("added new hotel grp");
+        // console.log("added new hotel grp");
         setLoadingMessage("");
     }
 
@@ -341,7 +341,7 @@ function HotelGroupsContent({itinDbId, isEditable, setLoadingMessage, isOwner}) 
         const newHotelGrps = hotelGrps.filter(x => x.id !== hgId);
         await deleteHotelGroupById(hgId);
         setHotelGroups(newHotelGrps);
-        console.log("deleted hotel grp");
+        // console.log("deleted hotel grp");
         setLoadingMessage("");
     }
 
@@ -376,7 +376,7 @@ export function HotelsPage() {
         fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
     
         const channel = supabase.channel(`itins-${itinDbId}`);
-        console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
+        // console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
     
         channel
           .on(
@@ -388,7 +388,7 @@ export function HotelsPage() {
               filter: `id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
@@ -401,17 +401,17 @@ export function HotelsPage() {
               filter: `itinerary_id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
           .subscribe((status) => {
-            console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
+            // console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
     
         // Cleanup function: This runs when hgId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
+          // console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -428,10 +428,10 @@ export function HotelsPage() {
         isOwner = true;
       }
       if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-        console.log("YES EDITABLE");
+        // console.log("YES EDITABLE");
         return true;
       }
-      console.log("NO NOT EDITABLE");
+      // console.log("NO NOT EDITABLE");
       return false;
     })(); //determines whether page is editable or not
     
@@ -439,7 +439,7 @@ export function HotelsPage() {
         try {
             await updateItineraryById(itinDbId, itin);
             setItin(itin);
-            console.log('SAVED ITIN TO DB!');
+            // console.log('SAVED ITIN TO DB!');
         } catch (err) {
             console.error('Failed to update Itinerary...', err);
         }
@@ -492,7 +492,7 @@ export function HotelsPage() {
                 </> 
             ) : <h2 className="text-secondary">Loading Hotels....</h2>}
         
-        {/* <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
+        {/* <button onClick={() => {// console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => // console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );

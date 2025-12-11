@@ -50,7 +50,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
 
     // Create a new channel for the current dayId
     const channel = supabase.channel(`activities-${dayId}`);
-    console.log(`[Realtime] Subscribing to activities-${dayId}`);
+    // console.log(`[Realtime] Subscribing to activities-${dayId}`);
 
     channel
       .on(
@@ -62,7 +62,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
           filter: `travelDayId=eq.${dayId}`,
         },
         (payload) => {
-          console.log('[Realtime] INSERT activity', payload);
+          // console.log('[Realtime] INSERT activity', payload);
           fetchActs();
         }
       )
@@ -75,7 +75,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
           filter: `travelDayId=eq.${dayId}`,
         },
         (payload) => {
-          console.log('[Realtime] UPDATE activity', payload);
+          // console.log('[Realtime] UPDATE activity', payload);
           fetchActs();
         }
       )
@@ -88,24 +88,24 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
           filter: `travelDayId=eq.${dayId}`
         },
         (payload) => {
-          // console.log('[Realtime] DELETE payload raw', payload);
+          // // console.log('[Realtime] DELETE payload raw', payload);
           // Ensure the deleted activity was for the current dayId before re-fetching
           if (payload.old?.travelDayId === dayId) {
-            console.log('[Realtime] DELETE activity', payload);
+            // console.log('[Realtime] DELETE activity', payload);
             fetchActs();
           }
         }
       )
-      .on('close', (status) =>
-        console.log(`[Realtime] activities-${dayId} is closing....`, status)
-      )
+      .on('close', (status) =>{
+        // console.log(`[Realtime] activities-${dayId} is closing....`, status)
+      })
       .subscribe((status) => {
-      console.log(`[Realtime] activities-${dayId} channel status:`, status);
+      // console.log(`[Realtime] activities-${dayId} channel status:`, status);
     });
 
     // Cleanup function: This runs when dayId changes or component unmounts
     const cleanUpFunct = () => {
-      console.log(`[Cleanup] Removing activity channel for ${dayId}`);
+      // console.log(`[Cleanup] Removing activity channel for ${dayId}`);
       // Ensure the channel exists before trying to remove it
       if (channel) {
         channel.unsubscribe();
@@ -126,7 +126,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
     }
 
     const newAct = newActivity(dayId, name, time, locName, locAddress, finalLatLng, price, notes);
-    console.log("saved: id-" + id , newAct);
+    // console.log("saved: id-" + id , newAct);
     const newActArr = editItemInArrayById(activities, newAct, id);
     await updateactivityById(id, newAct);
     setLoadingMessage("");
@@ -135,7 +135,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
 
   async function handleDelete(id) {
     setLoadingMessage("Deleting...");
-    console.log("deleted: id-" + id);
+    // console.log("deleted: id-" + id);
     const newActArr = deleteItemFromArrayById(activities, id);
     await deleteactivityById(id);
     setLoadingMessage("");
@@ -144,7 +144,7 @@ function ActivityContent({dayId, setLoadingMessage, isEditable}) {
 
   async function handleAdd() {
     setLoadingMessage("Adding...");
-    console.log("added new activity");
+    // console.log("added new activity");
     const newAct = newActivity(dayId, "", "", "", "");
     const newActArr = addItemToArray(activities, newAct);
     await addActivityIntoDB(newAct);
@@ -233,7 +233,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
     fetchTDs();
 
     const channel = supabase.channel(`travelDays-${itinDbId}`);
-    console.log(`[Realtime] Subscribing to travelDays-${itinDbId}`);
+    // console.log(`[Realtime] Subscribing to travelDays-${itinDbId}`);
 
     channel
       .on(
@@ -245,7 +245,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
           filter: `itineraryId=eq.${itinDbId}`,
         },
         (payload) => {
-          console.log('[Realtime] INSERT travelDay', payload);
+          // console.log('[Realtime] INSERT travelDay', payload);
           fetchTDs();
         }
       )
@@ -258,7 +258,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
           filter: `itineraryId=eq.${itinDbId}`,
         },
         (payload) => {
-          console.log('[Realtime] UPDATE travelDay', payload);
+          // console.log('[Realtime] UPDATE travelDay', payload);
           fetchTDs();
         }
       )
@@ -272,9 +272,9 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
         },
         (payload) => {
           try {
-            // console.log('[Realtime] DELETE payload raw', payload);
+            // // console.log('[Realtime] DELETE payload raw', payload);
             if (payload.old?.itineraryId === itinDbId) {
-              console.log('[Realtime] DELETE travel day', payload);
+              // console.log('[Realtime] DELETE travel day', payload);
               fetchTDs();
             }
           } catch (err) {
@@ -283,12 +283,12 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
         }
       )
       .subscribe((status) => {
-        console.log(`[Realtime] travelDays-${itinDbId} channel status:`, status);
+        // console.log(`[Realtime] travelDays-${itinDbId} channel status:`, status);
       });
 
     // Cleanup function: This runs when itinDbId changes or component unmounts
     return () => {
-      console.log(`[Cleanup] Removing travelDay channel for ${itinDbId}`);
+      // console.log(`[Cleanup] Removing travelDay channel for ${itinDbId}`);
       if (channel) {
         channel.unsubscribe();
       }
@@ -386,7 +386,7 @@ function TravelDaysContent({itinDbId, itin, setLoadingMessage, isEditable, loadi
   async function handleDelete(travelDayId) {
     try {
       setLoadingMessage("Deleting...");
-      // console.log('traveldayid delete',travelDayId);
+      // // console.log('traveldayid delete',travelDayId);
       // Delete from DB
       await deleteTravelDayById(travelDayId);
 
@@ -554,8 +554,8 @@ function ActivityPage() {
       //     const itinMembers = data.itinerary_members;
       //     const memberDetails = itinMembers.find(m => m.user_id == sessionUserId);
 
-      //     console.log("session user", sessionUserId);
-      //     console.log("itin user id", creatorId);
+      //     // console.log("session user", sessionUserId);
+      //     // console.log("itin user id", creatorId);
 
       //     if (sessionUserId !== creatorId && !memberDetails) {
       //       alert("You do not have permission to view this itinerary.");
@@ -580,7 +580,7 @@ function ActivityPage() {
         fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
     
         const channel = supabase.channel(`itins-${itinDbId}`);
-        console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
+        // console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
     
         channel
           .on(
@@ -592,7 +592,7 @@ function ActivityPage() {
               filter: `id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
@@ -605,17 +605,17 @@ function ActivityPage() {
               filter: `itinerary_id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
           .subscribe((status) => {
-            console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
+            // console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
     
         // Cleanup function: This runs when hgId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
+          // console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -632,10 +632,10 @@ function ActivityPage() {
         isOwner = true;
       }
       if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-        console.log("YES EDITABLE");
+        // console.log("YES EDITABLE");
         return true;
       }
-      console.log("NO NOT EDITABLE");
+      // console.log("NO NOT EDITABLE");
       return false;
     })(); //determines whether page is editable or not
 
@@ -643,7 +643,7 @@ function ActivityPage() {
       try {
         await updateItineraryById(itinDbId, itin);
         setItin(itin);
-        console.log('SAVED ITIN TO DB!');
+        // console.log('SAVED ITIN TO DB!');
       } catch (err) {
         console.error('Failed to update Itinerary...', err);
       }
@@ -693,7 +693,7 @@ function ActivityPage() {
               <div className="button-row">
                 <button className="back-btn themed-button" onClick={() => navigate('/')}>🏠 Back To Home</button>
               </div>
-            {/* <button onClick={() => {console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
+            {/* <button onClick={() => {// console.log("ALLCHANNELS", supabase.getChannels()); supabase.getChannels().forEach(c => // console.log("CHANNEL", c.topic, c.state));}}>get channels</button> */}
             <div style={{height: "50px"}}/>
         </div>
     );

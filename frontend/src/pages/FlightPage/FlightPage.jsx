@@ -41,7 +41,7 @@ function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
           fetchFlights();
       
           const channel = supabase.channel(`flights-${itinDbId}`);
-          console.log(`[Realtime] Subscribing to flights-${itinDbId}`);
+          // console.log(`[Realtime] Subscribing to flights-${itinDbId}`);
       
           channel
             .on(
@@ -53,17 +53,17 @@ function FlightContent({itinDbId , isEditable, setLoadingMessage}) {
                 filter: `itineraryId=eq.${itinDbId}`,
               },
               (payload) => {
-                console.log('[Realtime] INSERT/UPDATE/DELETE flight', payload);
+                // console.log('[Realtime] INSERT/UPDATE/DELETE flight', payload);
                 fetchFlights();
               }
             )
             .subscribe((status) => {
-              console.log(`[Realtime] flights-${itinDbId} channel status:`, status);
+              // console.log(`[Realtime] flights-${itinDbId} channel status:`, status);
             });
       
           // Cleanup function: This runs when itinDbId changes or component unmounts
           return () => {
-            console.log(`[Cleanup] Removing flight channel for ${itinDbId}`);
+            // console.log(`[Cleanup] Removing flight channel for ${itinDbId}`);
             if (channel) {
               channel.unsubscribe();
             }
@@ -156,7 +156,7 @@ function FlightPage() {
         fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
     
         const channel = supabase.channel(`itins-${itinDbId}`);
-        console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
+        // console.log(`[Realtime] Subscribing to itins-${itinDbId}`);
     
         channel
           .on(
@@ -168,7 +168,7 @@ function FlightPage() {
               filter: `id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
@@ -181,17 +181,17 @@ function FlightPage() {
               filter: `itinerary_id=eq.${itinDbId}`,
             },
             (payload) => {
-              console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+              // console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
               fetchItin(itinDbId, setItin, setItinMeta, navigate, sessionUserId);
             }
           )
           .subscribe((status) => {
-            console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
+            // console.log(`[Realtime] itins-${itinDbId} channel status:`, status);
           });
     
         // Cleanup function: This runs when hgId changes or component unmounts
         return () => {
-          console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
+          // console.log(`[Cleanup] Removing itin channel for ${itinDbId}`);
           if (channel) {
             channel.unsubscribe();
           }
@@ -208,10 +208,10 @@ function FlightPage() {
       isOwner = true;
     }
     if (sessionUserId === creatorId || (memberDetails && memberDetails.role === 'editor')) {
-      console.log("YES EDITABLE");
+      // console.log("YES EDITABLE");
       return true;
     }
-    console.log("NO NOT EDITABLE");
+    // console.log("NO NOT EDITABLE");
     return false;
   })(); //determines whether page is editable or not
 
@@ -219,7 +219,7 @@ function FlightPage() {
             try {
               await updateItineraryById(itinDbId, itin);
               setItin(itin);
-              console.log('SAVED ITIN TO DB!');
+              // console.log('SAVED ITIN TO DB!');
             } catch (err) {
               console.error('Failed to update Itinerary...', err);
             }

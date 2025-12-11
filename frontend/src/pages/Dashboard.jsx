@@ -75,7 +75,7 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
     // Initial fetch when the component mounts or itinDbId changes
     fetchCollaboratingItins();      
     const channel = supabase.channel(`itinerary_members-${userId}`);
-    console.log(`[Realtime] Subscribing to itinerary_members-${userId}`);
+    // console.log(`[Realtime] Subscribing to itinerary_members-${userId}`);
 
     channel
       .on(
@@ -87,17 +87,17 @@ function CollaboratingItineraryLinks({ userId, navigate }) {
           filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
+          // console.log('[Realtime] INSERT/UPDATE/DELETE itin members', payload);
           fetchCollaboratingItins();
         }
       )
       .subscribe((status) => {
-        console.log(`[Realtime] itinerary_members-${userId} channel status:`, status);
+        // console.log(`[Realtime] itinerary_members-${userId} channel status:`, status);
       });
 
     // Cleanup function: This runs when hgId changes or component unmounts
     return () => {
-      console.log(`[Cleanup] Removing itin channel for ${userId}`);
+      // console.log(`[Cleanup] Removing itin channel for ${userId}`);
       if (channel) {
         channel.unsubscribe();
       }
@@ -169,8 +169,8 @@ function ItineraryLinks({userId, navigate}) {
                 name, 
                 dayjs(startDate, 'YYYY-MM-DD').format('YYYY-MM-DD'),  //format the startDate
                 numDays);
-            console.log('successfully created new itinerary');
-            console.log('newitin', newItin);
+            // console.log('successfully created new itinerary');
+            // console.log('newitin', newItin);
             goToActivityPage(newItin.id);
         } catch (err) {
           console.error('Failed to create new Itinerary...', err);
@@ -180,7 +180,7 @@ function ItineraryLinks({userId, navigate}) {
     const deleteItinerary = async (itinDbId) => {
         try {
             await deleteItineraryById(itinDbId);
-            console.log('successfully deleted new itinerary');
+            // console.log('successfully deleted new itinerary');
             navigate('/');
         } catch (err) {
             console.error('Failed to create new Itinerary...', err);
@@ -302,15 +302,15 @@ function DashboardContent() {
     const userId = user?.id; //get userId
     const userName = user?.user_metadata?.name || user?.email; //user name
     useEffect(() => {
-        // console.log("user", user);
-        console.log("NAME of current session's user: ", userName);
+        // // console.log("user", user);
+        // console.log("NAME of current session's user: ", userName);
     }, [user, userName]);
 
     async function handleClick() {
         try {
             await signOutUser();
             navigate('/login');
-            console.log("signed out");
+            // console.log("signed out");
         } catch (error) {
             console.error('error: ', error.message);
         }
@@ -363,7 +363,7 @@ function DashboardContent() {
 export default function Dashboard(){
     const {session} = useAuthContext();
     const user = session?.user;
-    console.log("Confirmed at:", session?.user?.email_confirmed_at);
+    // console.log("Confirmed at:", session?.user?.email_confirmed_at);
     return (
         <>
             <Header />

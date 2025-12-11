@@ -15,8 +15,8 @@ function SignUpContent() {
         setSuccessful('Please wait...');
         const formData = new FormData(e.target);
         const formdata = Object.fromEntries(formData.entries()); //convert into Object entries from formData
-        console.log(formdata);
-        console.log('Trying to sign up '+ formdata.name + "..., email: " + formdata.email);
+        // console.log(formdata);
+        // console.log('Trying to sign up '+ formdata.name + "..., email: " + formdata.email);
 
         if (formdata.password != formdata.confirmPassword) {
             setError('Passwords must match!');

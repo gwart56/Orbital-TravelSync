@@ -16,8 +16,8 @@ function LoginPageContent() {
         setSuccessful('Please wait...');
         const formData = new FormData(e.target);
         const formdata = Object.fromEntries(formData.entries()); //convert into Object entries from formData
-        console.log(formdata);
-        console.log('Trying to sign into email: ' + formdata.email);
+        // console.log(formdata);
+        // console.log('Trying to sign into email: ' + formdata.email);
 
         try {
             const result = await signInUser(formdata.email, formdata.password);
